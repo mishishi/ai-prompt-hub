@@ -16,8 +16,7 @@ function App() {
             <Route path="/library" element={<TemplateBrowser />} />
             <Route path="/template/:id" element={<TemplateDetail />} />
             <Route path="/generate" element={<GeneratePage />} />
-            <Route path="/edit/:id" element={<PromptEditor />} />
-          </Routes>
+            </Routes>
         </Layout>
       </BrowserRouter>
     </LanguageProvider>
