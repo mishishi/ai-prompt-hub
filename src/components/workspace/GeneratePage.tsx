@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { Sparkles, Copy, Check, Loader, Save, ThumbsUp, ThumbsDown, Zap, Lightbulb, RefreshCw, Edit3, X } from 'lucide-react';
+import { Sparkles, Copy, Check, Loader, ThumbsUp, ThumbsDown, Zap, Lightbulb, RefreshCw, Edit3, X } from 'lucide-react';
 import { aiGenerate, useQuota } from '../../utils/ai';
-import { createPrompt } from '../../store/myTemplates';
 import { copyToClipboard } from '../../utils/clipboard';
 import { useT } from '../../i18n/LanguageContext';
 
@@ -12,8 +11,7 @@ export function GeneratePage() {
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
-  const [saved, setSaved] = useState(false);
-  const [feedback, setFeedback] = useState<'up' | 'down' | null>(null);
+    const [feedback, setFeedback] = useState<'up' | 'down' | null>(null);
   const [editing, setEditing] = useState(false);
   const [editText, setEditText] = useState('');
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -37,11 +35,7 @@ export function GeneratePage() {
   };
 
   const handleCopy = async () => { if (!result) return; await copyToClipboard(result); setCopied(true); setTimeout(() => setCopied(false), 2000); };
-  const handleSave = () => {
-    if (!result) return;
-    createPrompt({ meta: { name: intent.slice(0, 60), description: intent, tags: [], platform: 'codex' }, system: { role: tq('AI Assistant', 'AI 助手') }, user: result, source: 'generated' });
-    setSaved(true); setTimeout(() => setSaved(false), 2000);
-  };
+  
   const handleFeedback = (v: 'up' | 'down') => { setFeedback(v); const k = 'promptbench-feedback'; const ex = JSON.parse(localStorage.getItem(k) || '[]'); ex.push({ intent: intent.slice(0, 100), value: v, ts: Date.now() }); localStorage.setItem(k, JSON.stringify(ex.slice(-50))); };
 
   const suggestions = [
@@ -111,7 +105,7 @@ export function GeneratePage() {
               <div className="flex items-center gap-2">
                 <button onClick={handleGenerate} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all" title={tq('Regenerate', '重新生成')}><RefreshCw size={12} />{tq('Retry', '重试')}</button>
                 <button onClick={() => { setEditing(true); setEditText(result || ''); }} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all" title={tq('Edit result', '编辑结果')}><Edit3 size={12} />{tq('Edit', '编辑')}</button>
-                <button onClick={handleSave} className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${saved ? 'bg-[var(--color-bench-success)]/10 text-[var(--color-bench-success)]' : 'text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)]'}`}>{saved ? <Check size={12} /> : <Save size={12} />}{saved ? tq('Saved!', '已保存') : tq('Save', '保存')}</button>
+                
                 <button onClick={handleCopy} className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${copied ? 'bg-[var(--color-bench-success)]/10 text-[var(--color-bench-success)]' : 'bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)] hover:bg-[var(--color-bench-accent)]/20'}`}>{copied ? <Check size={12} /> : <Copy size={12} />}{copied ? tq('Copied!', '已复制') : tq('Copy', '复制')}</button>
               </div>
             </div>

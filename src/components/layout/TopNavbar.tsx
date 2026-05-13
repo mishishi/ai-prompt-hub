@@ -11,8 +11,6 @@ export function TopNavbar() {
   const navLinks = [
     { path: '/', label: tq('Home', '首页') },
     { path: '/library', label: tq('Templates', '模板') },
-    { path: '/workspace', label: tq('My Prompts', '我的 Prompts') },
-    { path: '/generate', label: tq('AI Generate', 'AI 生成') },
   ];
 
   return (
@@ -45,10 +43,7 @@ export function TopNavbar() {
 
       <div className="flex-1" />
 
-      <button onClick={() => { const id = 'p_' + Date.now(); navigate('/edit/' + id); }} className="btn-glow flex items-center gap-1.5 px-4 py-1.5 text-sm">
-        <Plus size={15} />
-        {tq('New Prompt', '新建 Prompt')}
-      </button>
+      
 
       <button onClick={() => setLang(lang === 'zh-CN' ? 'en' : 'zh-CN')} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-colors">
         <Globe size={14} />
