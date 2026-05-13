@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Sparkles, Plus, Globe } from 'lucide-react';
+import { Sparkles, Globe } from 'lucide-react';
 import { useT } from '../../i18n/LanguageContext';
 
 export function TopNavbar() {
@@ -11,6 +11,7 @@ export function TopNavbar() {
   const navLinks = [
     { path: '/', label: tq('Home', '首页') },
     { path: '/library', label: tq('Templates', '模板') },
+    { path: '/generate', label: tq('Generate', 'AI 生成') },
   ];
 
   return (

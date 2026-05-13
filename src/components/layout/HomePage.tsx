@@ -35,8 +35,8 @@ export function HomePage() {
               </h1>
               <p className="text-lg text-[var(--color-bench-text-dim)] max-w-md leading-relaxed">
                 {tq(
-                  'Structured, AI-powered prompt templates for every stage of development. Free and open source.',
-                  '面向每个开发阶段的结构化 Prompt 模板。AI 驱动，免费开源。'
+                  'Structured prompt templates for the full development lifecycle. AI-assisted generation, one-click copy. Free & open source.',
+                  '覆盖全开发周期的结构化 Prompt 模板。AI 辅助生成，一键复制使用。免费开源。'
                 )}
               </p>
               <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
