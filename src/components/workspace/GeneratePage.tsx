@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Sparkles, Copy, Check, Loader, ThumbsUp, ThumbsDown, Zap, Lightbulb, RefreshCw, Edit3, X } from 'lucide-react';
 import { aiGenerate, useQuota } from '../../utils/ai';
 import { copyToClipboard } from '../../utils/clipboard';
+import { track } from '../../utils/analytics';
 import { useT } from '../../i18n/LanguageContext';
 
 export function GeneratePage() {
@@ -28,15 +29,15 @@ export function GeneratePage() {
 
   const handleGenerate = async () => {
     if (!intent.trim()) return;
-    if (!useQuota()) { setError(tq('Daily quota exhausted', '今日免费次数已用完')); return; }
+    if (!useQuota()) { setError(tq('Daily quota exhausted. Browse the template library instead.', '今日免费次数已用完，明天重置。试试浏览模板库？')); return; }
     setLoading(true); setError(''); setFeedback(null);
-    try { const r = await aiGenerate(intent.trim(), lang); setResult(r); } catch (e: any) { setError(e.message || 'Failed'); }
+    try { const r = await aiGenerate(intent.trim(), lang); setResult(r); track({ type: 'ai_generate', lang }); } catch (e: any) { setError(e.message || 'Something went wrong. Please try again.'); }
     finally { setLoading(false); }
   };
 
-  const handleCopy = async () => { if (!result) return; await copyToClipboard(result); setCopied(true); setTimeout(() => setCopied(false), 2000); };
+  const handleCopy = async () => { if (!result) return; track({ type: 'ai_copy', lang }); await copyToClipboard(result); setCopied(true); setTimeout(() => setCopied(false), 2000); };
   
-  const handleFeedback = (v: 'up' | 'down') => { setFeedback(v); const k = 'promptbench-feedback'; const ex = JSON.parse(localStorage.getItem(k) || '[]'); ex.push({ intent: intent.slice(0, 100), value: v, ts: Date.now() }); localStorage.setItem(k, JSON.stringify(ex.slice(-50))); };
+  const handleFeedback = (v: 'up' | 'down') => { setFeedback(v); track({ type: 'ai_feedback', lang }); const k = 'promptbench-feedback'; const ex = JSON.parse(localStorage.getItem(k) || '[]'); ex.push({ intent: intent.slice(0, 100), value: v, ts: Date.now() }); localStorage.setItem(k, JSON.stringify(ex.slice(-50))); };
 
   const suggestions = [
     { en: 'Code security review', zh: '代码安全审查' },
@@ -58,15 +59,14 @@ export function GeneratePage() {
             </div>
             <div>
               <h2 className="text-base font-bold text-[var(--color-bench-text)] font-[var(--font-display)] tracking-tight">{tq('AI Prompt Generator', 'AI Prompt 生成器')}</h2>
-              <p className="text-[11px] text-[var(--color-bench-muted)] uppercase tracking-wider">{tq('Specification', '需求规格')}</p>
-            </div>
+                          </div>
           </div>
         </div>
 
         <div className="flex-1 flex flex-col px-6 space-y-4 overflow-y-auto pb-4">
           <div>
             <label className="block text-[11px] font-semibold uppercase tracking-wider text-[var(--color-bench-muted)] mb-2.5">{tq('Task Description', '任务描述')}</label>
-            <textarea ref={inputRef} value={intent} onChange={(e) => setIntent(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleGenerate(); } }} placeholder={tq('Describe your task in plain language...', '用自然语言描述你的需求...')} rows={5} className="w-full px-4 py-3.5 bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-lg text-sm text-[var(--color-bench-text)] placeholder:text-[var(--color-bench-muted)]/40 resize-none focus:outline-none focus:border-[var(--color-bench-accent)]/40 focus:ring-1 focus:ring-[var(--color-bench-accent)]/20 transition-all font-[var(--font-body)]" />
+            <textarea ref={inputRef} value={intent} onChange={(e) => setIntent(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleGenerate(); } }} placeholder={tq('E.g., Review my React code for security, design a REST API, write tests...', '例如：审查 React 代码安全、设计 REST API、写单元测试...')} rows={5} className="w-full px-4 py-3.5 bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-lg text-sm text-[var(--color-bench-text)] placeholder:text-[var(--color-bench-muted)]/40 resize-none focus:outline-none focus:border-[var(--color-bench-accent)]/40 focus:ring-1 focus:ring-[var(--color-bench-accent)]/20 transition-all font-[var(--font-body)]" />
           </div>
           {error && <div className="p-3 rounded-xl bg-[var(--color-bench-error)]/10 border border-[var(--color-bench-error)]/20"><p className="text-xs text-[var(--color-bench-error)]">{error}</p></div>}
           <button onClick={handleGenerate} disabled={loading || !intent.trim()} className="btn-glow w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold">
@@ -79,7 +79,7 @@ export function GeneratePage() {
             </div>
           </div>
         </div>
-        <div className="px-6 py-3 border-t border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)]"><p className="text-[10px] text-[var(--color-bench-muted)] text-center uppercase tracking-wider">{tq('Enter to generate · 10 free / day', 'Enter 生成 · 每日 10 次')}</p></div>
+        <div className="px-6 py-3 border-t border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)]"><p className="text-[10px] text-[var(--color-bench-muted)] text-center uppercase tracking-wider">{tq('Press Enter to generate · 10 free / day', '回车生成 · 每日免费 10 次')}</p></div>
       </div>
 
       {/* Output Panel */}
@@ -88,7 +88,7 @@ export function GeneratePage() {
           <div className="flex-1 flex items-center justify-center p-8">
             <div className="text-center space-y-4">
               <div className="w-16 h-16 rounded-xl border border-[var(--color-bench-border)] flex items-center justify-center mx-auto bg-[var(--color-bench-elevated)]"><Sparkles size={24} className="text-[var(--color-bench-muted)]/30" /></div>
-              <p className="text-sm text-[var(--color-bench-muted)]">{tq('Describe your task and click Generate', '在左侧描述需求，点击生成')}</p>
+              <p className="text-sm text-[var(--color-bench-muted)]">{tq('Describe your task on the left, then click Generate', '在左侧描述你的任务，然后点击生成按钮')}</p>
             </div>
           </div>
         ) : (

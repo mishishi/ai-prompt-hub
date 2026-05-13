@@ -4,6 +4,7 @@ import type { LibraryTemplate } from '../../types';
 import { useT } from '../../i18n/LanguageContext';
 import { tName, tShort } from '../../data/templates/helper';
 import { copyToClipboard } from '../../utils/clipboard';
+import { getPlatformLabel } from '../../utils/platform';
 
 export function TemplateCard({ template, onClick }: { template: LibraryTemplate; onClick: () => void }) {
   const { t, lang } = useT();
@@ -13,7 +14,13 @@ export function TemplateCard({ template, onClick }: { template: LibraryTemplate;
   const handleCopy = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    const text = (lang === 'zh-CN' && template.userZh) ? template.userZh : template.user;
+    const defaults: Record<string, string | boolean> = {};
+    template.variables.forEach(v => { if (v.default !== undefined) defaults[v.name] = v.default; });
+    let text = (lang === 'zh-CN' && template.userZh) ? template.userZh : template.user;
+    template.variables.forEach(v => {
+      const val = defaults[v.name] ?? v.default;
+      if (val !== undefined && val !== null) text = text.replace(new RegExp('{{' + v.name + '}}', 'g'), String(val));
+    });
     await copyToClipboard(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -26,7 +33,7 @@ export function TemplateCard({ template, onClick }: { template: LibraryTemplate;
   };
 
   return (
-    <article className="glass-card group relative flex flex-col p-5 h-full overflow-hidden">
+    <article className="glass-card group relative flex flex-col p-5 h-full overflow-hidden cursor-pointer">
       {/* Hover glow */}
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none bg-gradient-to-br from-[var(--color-bench-accent)]/5 via-transparent to-[var(--color-bench-accent-secondary)]/5" />
 
@@ -34,7 +41,7 @@ export function TemplateCard({ template, onClick }: { template: LibraryTemplate;
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold uppercase tracking-wider bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)]">
-            {platform}
+            {getPlatformLabel(platform)}
           </span>
           <span className={`text-[11px] font-semibold px-1.5 py-0.5 rounded ${diffColors[template.difficulty] || diffColors.Intermediate} bg-white/5`}>
             {t('difficulty.' + template.difficulty)}

@@ -5,6 +5,7 @@ import { templates } from '../../data/templates';
 import { tName, tShort, tDesc, tTips, tLabel, tOptions } from '../../data/templates/helper';
 import { renderPrompt } from '../../utils/renderer';
 import { copyToClipboard } from '../../utils/clipboard';
+import { track } from '../../utils/analytics';
 import { useT } from '../../i18n/LanguageContext';
 
 export function TemplateDetail() {
@@ -15,6 +16,7 @@ export function TemplateDetail() {
   const [values, setValues] = useState<Record<string, string | boolean | string[]>>({});
   const [copied, setCopied] = useState(false);
   const [flash, setFlash] = useState(false);
+  const [ready, setReady] = useState(false);
 
   const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
 
@@ -26,9 +28,11 @@ export function TemplateDetail() {
 
   useEffect(() => {
     if (template) {
+      track({ type: 'template_view', templateId: template.id, lang });
       const defaults: Record<string, string | boolean | string[]> = {};
       template.variables.forEach((v) => { if (v.default !== undefined) defaults[v.name] = v.default; });
       setValues(defaults);
+      setReady(true);
     }
   }, [template]);
 
@@ -38,6 +42,7 @@ export function TemplateDetail() {
   }, [template, lang, values]);
 
   const handleCopy = async () => {
+    track({ type: 'template_copy', templateId: template.id, lang });
     await copyToClipboard(rendered);
     setCopied(true);
     setFlash(true);
@@ -46,6 +51,31 @@ export function TemplateDetail() {
 
   if (!template) {
     return <div className="flex items-center justify-center h-full text-[var(--color-bench-muted)]">{t('detail.notFound')}</div>;
+  }
+
+  if (!ready) {
+    return (
+      <div className="flex flex-col lg:flex-row h-full">
+        <div className="w-full lg:w-80 lg:border-r border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] p-5 space-y-4">
+          <div className="skeleton h-3 w-20" />
+          <div className="skeleton h-6 w-48" />
+          <div className="skeleton h-4 w-64" />
+          <div className="flex gap-2"><div className="skeleton h-5 w-16" /><div className="skeleton h-5 w-12" /></div>
+          <div className="pt-4 space-y-3">
+            <div className="skeleton h-10 w-full rounded-lg" />
+            <div className="skeleton h-10 w-full rounded-lg" />
+          </div>
+        </div>
+        <div className="flex-1 flex flex-col">
+          <div className="px-5 py-3 border-b border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)]">
+            <div className="skeleton h-4 w-32" />
+          </div>
+          <div className="flex-1 p-6">
+            <div className="skeleton w-full h-full rounded-xl" />
+          </div>
+        </div>
+      </div>
+    );
   }
 
   const descZh = tDesc(template, lang);

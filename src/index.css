@@ -32,6 +32,7 @@
   /* Typography */
   --font-display: 'Outfit', system-ui, sans-serif;
   --font-body: 'Work Sans', system-ui, sans-serif;
+  --default-font-family: var(--font-body);
   --font-mono: 'JetBrains Mono', monospace;
   
   /* Spacing Scale (8px grid) */
@@ -137,6 +138,10 @@ body {
 .stagger-2 { animation-delay: 0.08s; }
 .stagger-3 { animation-delay: 0.12s; }
 .stagger-4 { animation-delay: 0.16s; }
+.stagger-5 { animation-delay: 0.20s; }
+.stagger-6 { animation-delay: 0.24s; }
+.stagger-7 { animation-delay: 0.28s; }
+.stagger-8 { animation-delay: 0.32s; }
 
 .card-enter {
   opacity: 0;
@@ -181,6 +186,45 @@ body {
 }
 
 /* === Selection === */
+
+/* === Copy Particle Burst === */
+.copy-particle {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-bench-accent);
+  pointer-events: none;
+  z-index: 9999;
+  animation: particleBurst 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes particleBurst {
+  0% { opacity: 1; transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; transform: translate(var(--px), var(--py)) scale(0); }
+}
+
+/* Copy button pop feedback */
+@keyframes copyPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.copy-pop { animation: copyPop 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+
+/* === Skeleton Loading === */
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 75%);
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}
+
+@keyframes skeletonShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
 ::selection {
   background: rgba(212, 168, 67, 0.25);
   color: var(--color-bench-text);

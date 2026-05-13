@@ -1,16 +1,16 @@
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, TrendingUp, Star, ArrowRight, Zap, Code2, Shield } from 'lucide-react';
+import { Sparkles, Star, ArrowRight, Zap, Code2 } from 'lucide-react';
 import { templates } from '../../data/templates';
 import { TemplateCard } from '../templates/TemplateCard';
 import { useT } from '../../i18n/LanguageContext';
+import { track } from '../../utils/analytics';
 
 export function HomePage() {
   const navigate = useNavigate();
   const { t, lang } = useT();
   const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
 
-  const popular = templates.filter(t => t.difficulty === 'Beginner' || t.difficulty === 'Intermediate').slice(0, 4);
-  const featured = templates.filter(t => t.difficulty === 'Advanced' || t.mode === 'multi-turn').slice(0, 4);
+  const recommended = templates.slice(0, 8);
 
   return (
     <div className="page-enter">
@@ -25,7 +25,7 @@ export function HomePage() {
             <div className="flex-1 text-center lg:text-left space-y-6">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md border border-[var(--color-bench-accent)]/20 bg-[var(--color-bench-accent)]/5 text-xs font-medium text-[var(--color-bench-accent)] mb-2">
                 <Sparkles size={12} />
-                {tq('Open Source Prompt Engineering', '开源 Prompt 工程工具')}
+                {tq('Free & Open Source', '开源 · 免费使用')}
               </div>
               <h1 className="text-4xl lg:text-5xl font-extrabold text-[var(--color-bench-text)] font-[var(--font-display)] leading-tight tracking-tight">
                 {lang === 'zh-CN'
@@ -82,34 +82,10 @@ export function HomePage() {
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg border border-[var(--color-bench-accent)]/20 flex items-center justify-center">
-              <TrendingUp size={16} className="text-[var(--color-bench-accent)]" />
-            </div>
-            <h2 className="text-xl font-bold text-[var(--color-bench-text)] font-[var(--font-display)] tracking-tight">
-              {tq('Popular Templates', '热门模板')}
-            </h2>
-          </div>
-          <button onClick={() => navigate('/library')} className="flex items-center gap-1 text-sm text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)] transition-colors">
-            {tq('View all', '查看全部')}
-            <ArrowRight size={14} />
-          </button>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {popular.map((tmpl, i) => (
-            <div key={tmpl.id} className={`card-enter stagger-${i + 1}`}>
-              <TemplateCard template={tmpl} onClick={() => navigate(`/template/${tmpl.id}`)} />
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="max-w-6xl mx-auto px-6 py-16 border-t border-[var(--color-bench-border)]">
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg border border-[var(--color-bench-accent)]/20 flex items-center justify-center">
               <Star size={16} className="text-[var(--color-bench-accent)]" />
             </div>
             <h2 className="text-xl font-bold text-[var(--color-bench-text)] font-[var(--font-display)] tracking-tight">
-              {tq('Featured Templates', '精选模板')}
+              {tq('Recommended Templates', '推荐模板')}
             </h2>
           </div>
           <button onClick={() => navigate('/library')} className="flex items-center gap-1 text-sm text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)] transition-colors">
@@ -118,7 +94,7 @@ export function HomePage() {
           </button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {featured.map((tmpl, i) => (
+          {recommended.map((tmpl, i) => (
             <div key={tmpl.id} className={`card-enter stagger-${i + 1}`}>
               <TemplateCard template={tmpl} onClick={() => navigate(`/template/${tmpl.id}`)} />
             </div>
@@ -128,7 +104,7 @@ export function HomePage() {
 
       <footer className="border-t border-[var(--color-bench-border)] py-8 text-center bg-[var(--color-bench-elevated)]/50">
         <p className="text-sm text-[var(--color-bench-muted)]">
-          PromptBench · {tq('Open Source Prompt Engineering', '开源 Prompt 工程工具')}
+          PromptBench · {tq('Free & Open Source', '开源 · 免费使用')}
         </p>
       </footer>
     </div>

@@ -32,7 +32,7 @@ export function TopNavbar() {
               onClick={() => navigate(link.path)}
               className={`px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                 active
-                  ? 'bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)] shadow-[0_0_12px_var(--color-bench-accent-glow)]'
+                  ? 'bg-[var(--color-bench-accent)]/20 text-[var(--color-bench-accent)] font-semibold shadow-[0_0_12px_var(--color-bench-accent-glow)]'
                   : 'text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)]'
               }`}
             >
@@ -44,11 +44,10 @@ export function TopNavbar() {
 
       <div className="flex-1" />
 
-      
 
-      <button onClick={() => setLang(lang === 'zh-CN' ? 'en' : 'zh-CN')} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-colors">
+      <button onClick={() => setLang(lang === 'zh-CN' ? 'en' : 'zh-CN')} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-colors cursor-pointer">
         <Globe size={14} />
-        <span className="text-xs font-semibold px-1.5 py-0.5 rounded bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)]">{lang === 'zh-CN' ? '中文' : 'EN'}</span>
+        <span className="text-xs font-bold px-1.5 py-0.5 rounded bg-[var(--color-bench-accent)]/25 text-[var(--color-bench-accent)]">{lang === 'zh-CN' ? '中文' : 'EN'}</span>
       </button>
     </header>
   );
