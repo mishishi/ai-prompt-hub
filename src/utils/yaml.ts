@@ -1,4 +1,4 @@
-﻿import yaml from 'js-yaml';
+import yaml from 'js-yaml';
 import type { Prompt, PromptMeta, PromptVariable, PromptSystem, PromptOutputSchema } from '../types';
 
 export function promptToYaml(p: Prompt): string {
@@ -169,11 +169,12 @@ export function templateToCleanYaml(t: Prompt | Record<string, unknown>, lang?: 
     return promptToYaml(filtered);
   }
   const isZh = lang === 'zh-CN';
-  const meta = { name: (isZh && t.nameZh ? t.nameZh : t.name) || '', nameZh: t.nameZh || undefined, description: (isZh && t.shortZh ? t.shortZh : t.short) || '', descriptionZh: t.shortZh || undefined, tags: t.tags || t.category || [], platform: 'codex' as const };
+  const a = t as any;
+  const meta = { name: (isZh && a.nameZh ? a.nameZh : a.name) || '', nameZh: a.nameZh || undefined, description: (isZh && a.shortZh ? a.shortZh : a.short) || '', descriptionZh: a.shortZh || undefined, tags: a.tags || a.category || [], platform: 'codex' as const };
   const system = { role: '', rules: [], rulesZh: [] };
-  const user = (isZh && t.promptZh ? t.promptZh : t.prompt) || '';
-  const userZh = t.promptZh || undefined;
-  const variables = (t.variables || []).map((v: any) => ({ name: v.name || '', label: (isZh && v.labelZh ? v.labelZh : v.label) || '', labelZh: v.labelZh || undefined, type: v.type || 'string', options: (isZh && v.optionsZh ? v.optionsZh : v.options) || undefined, optionsZh: v.optionsZh || undefined, default: v.default, required: v.required }));
+  const user = (isZh && a.promptZh ? a.promptZh : a.prompt) || '';
+  const userZh = a.promptZh || undefined;
+  const variables = (a.variables || []).map((v: any) => ({ name: v.name || '', label: (isZh && v.labelZh ? v.labelZh : v.label) || '', labelZh: v.labelZh || undefined, type: v.type || 'string', options: (isZh && v.optionsZh ? v.optionsZh : v.options) || undefined, optionsZh: v.optionsZh || undefined, default: v.default, required: v.required }));
   return promptToYaml({ id: t.id || '', yaml: '', meta, variables, system, user, userZh, source: 'library', createdAt: Date.now(), updatedAt: Date.now(), version: 1, versions: [] });
 }
 
