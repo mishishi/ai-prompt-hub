@@ -12,6 +12,7 @@ export function TopNavbar() {
     { path: '/', label: tq('Home', '首页') },
     { path: '/library', label: tq('Templates', '模板') },
     { path: '/generate', label: tq('Generate', 'AI 生成') },
+    { path: '/dashboard', label: tq('Track', '效果') },
   ];
 
   return (

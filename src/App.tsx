@@ -5,6 +5,7 @@ import { HomePage } from './components/layout/HomePage';
 import { TemplateBrowser } from './components/templates/TemplateBrowser';
 import { TemplateDetail } from './components/templates/TemplateDetail';
 import { GeneratePage } from './components/workspace/GeneratePage';
+import { Dashboard } from './components/dashboard/Dashboard';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Route path="/library" element={<TemplateBrowser />} />
             <Route path="/template/:id" element={<TemplateDetail />} />
             <Route path="/generate" element={<GeneratePage />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             </Routes>
         </Layout>
       </BrowserRouter>
