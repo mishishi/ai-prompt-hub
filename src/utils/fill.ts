@@ -8,11 +8,11 @@ export function fillVars(
   let r = tmpl;
   for (const v of vars) {
     const val = vals[v.name] !== undefined ? vals[v.name] : v.default;
-    const str = val !== undefined ? String(val) : '';
-    r = r.split('{{' + v.name + '}}').join(str);
+    const str = val !== undefined ? String(val) : "";
+    r = r.split("{{" + v.name + "}}").join(str);
   }
-  r = r.replace(/\{%\s*if\s+(\w+)\s*%\}([\s\S]*?)\{%\s*endif\s*%\}/g, (_, cond, body) => {
-    return vals[cond] ? body : '';
+  r = r.replace(/\{%\s*if\s+(\w+)\s*%\}([\s\S]*?)\{%\s*endif\s*%\}/g, (_: string, cond: string, body: string) => {
+    return vals[cond] ? body : "";
   });
   return r.trim();
 }
