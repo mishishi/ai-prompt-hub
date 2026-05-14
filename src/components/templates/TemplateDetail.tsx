@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+﻿import { useState, useMemo, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Copy, Check, Sparkles, ChevronLeftIcon } from 'lucide-react';
 import { templates } from '../../data/templates';
@@ -75,27 +75,27 @@ export function TemplateDetail() {
     <div className="flex flex-col lg:flex-row h-full page-enter">
       {/* Mobile tab switcher */}
       <div className="flex lg:hidden border-b border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] shrink-0">
-        <button onClick={() => setMobileTab('params')} className={"flex-1 py-2.5 text-xs font-semibold text-center transition-all " + (mobileTab === 'params' ? "text-[var(--color-bench-accent)] border-b-2 border-[var(--color-bench-accent)]" : "text-[var(--color-bench-muted)] border-b-2 border-transparent")}>{tq('Parameters', '????')}</button>
-        <button onClick={() => setMobileTab('preview')} className={"flex-1 py-2.5 text-xs font-semibold text-center transition-all " + (mobileTab === 'preview' ? "text-[var(--color-bench-accent)] border-b-2 border-[var(--color-bench-accent)]" : "text-[var(--color-bench-muted)] border-b-2 border-transparent")}>{tq('Preview', '??')}</button>
+        <button onClick={() => setMobileTab('params')} className={"flex-1 py-2.5 text-[15px] font-semibold text-center transition-all " + (mobileTab === 'params' ? "text-[var(--color-bench-accent)] border-b-2 border-[var(--color-bench-accent)]" : "text-[var(--color-bench-muted)] border-b-2 border-transparent")}>{tq('Parameters', '????')}</button>
+        <button onClick={() => setMobileTab('preview')} className={"flex-1 py-2.5 text-[15px] font-semibold text-center transition-all " + (mobileTab === 'preview' ? "text-[var(--color-bench-accent)] border-b-2 border-[var(--color-bench-accent)]" : "text-[var(--color-bench-muted)] border-b-2 border-transparent")}>{tq('Preview', '??')}</button>
       </div>
       {/* Left panel */}
       <div className="w-full lg:w-80 lg:border-r border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] overflow-y-auto flex flex-col lg:max-h-full hidden lg:flex max-h-[50vh] lg:max-h-full border-b lg:border-b-0">
         <div className="p-5 border-b border-[var(--color-bench-border)]">
-          <button onClick={() => navigate('/library')} className="flex items-center gap-1.5 text-[11px] text-[var(--color-bench-muted)] hover:text-[var(--color-bench-accent)] transition-colors mb-3">
+          <button onClick={() => navigate('/library')} className="flex items-center gap-1.5 text-[15px] text-[var(--color-bench-muted)] hover:text-[var(--color-bench-accent)] transition-colors mb-3">
             <ChevronLeftIcon size={12} className="" />
             {t('detail.back')}
           </button>
           <h2 className="text-lg font-bold text-[var(--color-bench-text)] font-[var(--font-display)] tracking-tight">{tName(template, lang)}</h2>
-          <p className="text-xs text-[var(--color-bench-text-dim)] mt-1.5 leading-relaxed">{tShort(template, lang)}</p>
+          <p className="text-base text-[var(--color-bench-text-dim)] mt-1.5 leading-relaxed">{tShort(template, lang)}</p>
           <div className="flex items-center gap-2 mt-3 flex-wrap">
-            {template.meta.tags.slice(0, 4).map((tag) => (<span key={tag} className="text-xs px-2 py-1 rounded-md bg-white/5 text-[var(--color-bench-muted)]">{tag}</span>))}
+            {template.meta.tags.slice(0, 4).map((tag) => (<span key={tag} className="text-[15px] px-2 py-1 rounded-md bg-white/5 text-[var(--color-bench-muted)]">{tag}</span>))}
           </div>
         </div>
         {template.variables.length > 0 && (
           <div className="p-5 border-b border-[var(--color-bench-border)]">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-[11px] font-semibold uppercase tracking-wider text-[var(--color-bench-muted)]">{t('detail.variables')}</h3>
-              <span className="text-[10px] text-[var(--color-bench-muted)]/60">
+              <h3 className="text-[15px] font-semibold uppercase tracking-wider text-[var(--color-bench-muted)]">{t('detail.variables')}</h3>
+              <span className="text-[12px] text-[var(--color-bench-muted)]/60">
                 {(() => { const req = template.variables.filter(v => v.required).length; return tq(template.variables.length + ' vars, ' + req + ' required', template.variables.length + ' 个变量，' + req + ' 个必填'); })()}
               </span>
             </div>
@@ -106,21 +106,21 @@ export function TemplateDetail() {
                 const val = values[v.name];
                 return (
                   <div key={v.name} className={v.required ? 'p-2.5 -mx-2 rounded-lg bg-[var(--color-bench-accent)]/5 border border-[var(--color-bench-accent)]/10' : ''}>
-                    <label className="block text-xs font-medium text-[var(--color-bench-text)] mb-1 flex items-center gap-2">
+                    <label className="block text-[15px] font-medium text-[var(--color-bench-text)] mb-1 flex items-center gap-2">
                       {label}
-                      {v.required ? <span className="text-[10px] px-1.5 py-0.5 rounded font-semibold bg-[var(--color-bench-error)]/10 text-[var(--color-bench-error)] uppercase">{t('detail.required_badge')}</span> : <span className="text-[10px] px-1.5 py-0.5 rounded text-[var(--color-bench-muted)]/50 uppercase">{t('detail.optional_badge')}</span>}
+                      {v.required ? <span className="text-[12px] px-1.5 py-0.5 rounded font-semibold bg-[var(--color-bench-error)]/10 text-[var(--color-bench-error)] uppercase">{t('detail.required_badge')}</span> : <span className="text-[12px] px-1.5 py-0.5 rounded text-[var(--color-bench-muted)]/50 uppercase">{t('detail.optional_badge')}</span>}
                     </label>
                     {v.type === 'enum' && options.length > 0 ? (
-                      <select value={String(val ?? v.default ?? '')} onChange={(e) => setValues({ ...values, [v.name]: e.target.value })} className="w-full px-3 py-1.5 rounded-lg bg-[var(--color-bench-bg)] border border-[var(--color-bench-border)] text-xs text-[var(--color-bench-text)]">
+                      <select value={String(val ?? v.default ?? '')} onChange={(e) => setValues({ ...values, [v.name]: e.target.value })} className="w-full px-3 py-1.5 rounded-lg bg-[var(--color-bench-bg)] border border-[var(--color-bench-border)] text-[15px] text-[var(--color-bench-text)]">
                         {options.map((opt) => (<option key={opt} value={opt}>{opt}</option>))}
                       </select>
                     ) : v.type === 'boolean' ? (
                       <label className="flex items-center gap-2 cursor-pointer">
                         <input type="checkbox" checked={Boolean(val ?? v.default ?? false)} onChange={(e) => setValues({ ...values, [v.name]: e.target.checked })} className="rounded accent-[var(--color-bench-accent)]" />
-                        <span className="text-xs text-[var(--color-bench-muted)]">{val ? t('detail.enabled') : t('detail.disabled')}</span>
+                        <span className="text-[15px] text-[var(--color-bench-muted)]">{val ? t('detail.enabled') : t('detail.disabled')}</span>
                       </label>
                     ) : (
-                      <input type="text" value={String(val ?? '')} onChange={(e) => setValues({ ...values, [v.name]: e.target.value })} placeholder={v.required ? t('detail.required_placeholder') : t('detail.optional')} className="w-full px-3 py-1.5 rounded-lg bg-[var(--color-bench-bg)] border border-[var(--color-bench-border)] text-xs text-[var(--color-bench-text)] placeholder:text-[var(--color-bench-muted)]/50 focus:outline-none focus:border-[var(--color-bench-accent)]" />
+                      <input type="text" value={String(val ?? '')} onChange={(e) => setValues({ ...values, [v.name]: e.target.value })} placeholder={v.required ? t('detail.required_placeholder') : t('detail.optional')} className="w-full px-3 py-1.5 rounded-lg bg-[var(--color-bench-bg)] border border-[var(--color-bench-border)] text-[15px] text-[var(--color-bench-text)] placeholder:text-[var(--color-bench-muted)]/50 focus:outline-none focus:border-[var(--color-bench-accent)]" />
                     )}
                   </div>
                 );
@@ -130,10 +130,10 @@ export function TemplateDetail() {
         )}
         {(template.system?.role || ((template.system?.rules?.length ?? 0) > 0)) && (
           <div className="border-b border-[var(--color-bench-border)] px-5 py-3.5">
-            <h3 className="text-[11px] font-semibold uppercase tracking-wider text-[var(--color-bench-muted)] mb-2">{tq('System', '系统设定')}</h3>
-            {template.system?.role && <p className="text-xs text-[var(--color-bench-accent)] mb-2">{lang === 'zh-CN' && template.system.roleZh ? template.system.roleZh : template.system.role}</p>}
+            <h3 className="text-[15px] font-semibold uppercase tracking-wider text-[var(--color-bench-muted)] mb-2">{tq('System', '系统设定')}</h3>
+            {template.system?.role && <p className="text-base text-[var(--color-bench-accent)] mb-2">{lang === 'zh-CN' && template.system.roleZh ? template.system.roleZh : template.system.role}</p>}
             {((lang === 'zh-CN' && (template.system?.rulesZh?.length ?? 0) > 0 ? template.system.rulesZh : template.system?.rules) || []).map((rule: string, i: number) => (
-              <div key={i} className="flex items-start gap-2 text-xs text-[var(--color-bench-muted)] mb-1">
+              <div key={i} className="flex items-start gap-2 text-[15px] text-[var(--color-bench-muted)] mb-1">
                 <span className="text-[var(--color-bench-accent)] mt-0.5">•</span>
                 <span>{rule}</span>
               </div>
@@ -142,18 +142,18 @@ export function TemplateDetail() {
         )}
         {tipsText && (
           <div className="px-5 py-3.5">
-            <h3 className="text-[11px] font-semibold uppercase tracking-wider text-[var(--color-bench-muted)] mb-2 flex items-center gap-1">
+            <h3 className="text-[15px] font-semibold uppercase tracking-wider text-[var(--color-bench-muted)] mb-2 flex items-center gap-1">
               <Sparkles size={12} />{t('detail.tips')}
             </h3>
-            <p className="text-xs text-[var(--color-bench-muted)] leading-relaxed">{tipsText}</p>
+            <p className="text-base text-[var(--color-bench-muted)] leading-relaxed">{tipsText}</p>
           </div>
         )}
       </div>
       {/* Right panel: preview */}
       <div className="flex-1 flex flex-col min-h-0">
         <div className="px-5 py-3 border-b border-[var(--color-bench-border)] flex items-center justify-between bg-[var(--color-bench-elevated)]">
-          <span className="text-[11px] uppercase tracking-wider text-[var(--color-bench-muted)]">{tq('Prompt Output', 'Prompt 输出')}</span>
-          <button onClick={handleCopy} className={'flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium transition-all ' + (copied ? 'bg-[var(--color-bench-success)]/15 text-[var(--color-bench-success)]' : 'bg-[var(--color-bench-accent)] text-[var(--color-bench-bg)] hover:brightness-110')}>
+          <span className="text-base uppercase tracking-wider text-[var(--color-bench-muted)]">{tq('Prompt Output', 'Prompt 输出')}</span>
+          <button onClick={handleCopy} className={'flex items-center gap-2 px-4 py-2 rounded-lg text-base font-medium transition-all ' + (copied ? 'bg-[var(--color-bench-success)]/15 text-[var(--color-bench-success)]' : 'bg-[var(--color-bench-accent)] text-[var(--color-bench-bg)] hover:brightness-110')}>
             {copied ? <Check size={14} /> : <Copy size={14} />}
             {copied ? t('detail.copied') : t('detail.copy')}
           </button>
@@ -166,7 +166,7 @@ export function TemplateDetail() {
                 <div className="w-2.5 h-2.5 rounded-full bg-[var(--color-bench-accent)]/40" />
                 <div className="w-2.5 h-2.5 rounded-full bg-[var(--color-bench-accent)]/20" />
               </div>
-              <span className="text-[11px] text-[var(--color-bench-muted)] uppercase tracking-wider">{t('detail.preview')}</span>
+              <span className="text-[15px] text-[var(--color-bench-muted)] uppercase tracking-wider">{t('detail.preview')}</span>
             </div>
             <div className="p-6">
               <pre className="prompt-preview overflow-x-auto max-h-[calc(100vh-200px)] md:max-h-[calc(100vh-280px)]">{rendered || <span className="text-[var(--color-bench-muted)] italic">{t('detail.setValues')}</span>}</pre>

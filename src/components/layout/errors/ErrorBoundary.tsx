@@ -31,10 +31,10 @@ export class ErrorBoundary extends Component<Props, { hasError: boolean; error: 
             <h1 className="text-2xl font-bold text-[var(--color-bench-text)] font-[var(--font-display)] tracking-tight mb-3">
               {zh ? '出错了' : 'Something went wrong'}
             </h1>
-            <p className="text-sm text-[var(--color-bench-muted)] mb-2 max-w-md mx-auto">
+            <p className="text-base text-[var(--color-bench-muted)] mb-2 max-w-md mx-auto">
               {this.state.error?.message || (zh ? '发生了未知错误。' : 'An unexpected error occurred.')}
             </p>
-            <button onClick={this.handleReset} className="btn-glow inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium mt-4">
+            <button onClick={this.handleReset} className="btn-glow inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-base font-medium mt-4">
               <RefreshCw size={14} />
               {zh ? '重新加载' : 'Reload Page'}
             </button>

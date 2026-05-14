@@ -22,7 +22,7 @@ export function HomePage() {
         <div className="relative max-w-5xl mx-auto px-6 py-20 lg:py-28">
           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
             <div className="flex-1 text-center lg:text-left space-y-6">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md border border-[var(--color-bench-accent)]/20 bg-[var(--color-bench-accent)]/5 text-xs font-medium text-[var(--color-bench-accent)] mb-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md border border-[var(--color-bench-accent)]/20 bg-[var(--color-bench-accent)]/5 text-[15px] font-medium text-[var(--color-bench-accent)] mb-2">
                 <Sparkles size={12} />
                 {tq('Free & Open Source', '开源 · 免费使用')}
               </div>
@@ -43,7 +43,7 @@ export function HomePage() {
                   <Zap size={18} />
                   {tq('Generate Your Prompt', '生成你的 Prompt')}
                 </button>
-                <button onClick={() => navigate('/library')} className="btn-ghost flex items-center gap-2 px-6 py-3 text-sm font-medium">
+                <button onClick={() => navigate('/library')} className="btn-ghost flex items-center gap-2 px-6 py-3 text-base font-medium">
                   {tq('Browse Library', '浏览模板库')}
                   <ArrowRight size={16} />
                 </button>
@@ -103,7 +103,7 @@ export function HomePage() {
               {tq('Recommended Templates', '推荐模板')}
             </h2>
           </div>
-          <button onClick={() => navigate('/library')} className="flex items-center gap-1 text-sm text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)] transition-colors group">
+          <button onClick={() => navigate('/library')} className="flex items-center gap-1 text-base text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)] transition-colors group">
             <span className='group-hover:translate-x-0.5 transition-transform inline-block'>{tq('View all', '查看全部')}</span>
             <ArrowRight size={14} />
           </button>
@@ -118,7 +118,7 @@ export function HomePage() {
       </section>
 
       <footer className="border-t border-[var(--color-bench-border)] py-8 text-center bg-[var(--color-bench-elevated)]/50">
-        <p className="text-sm text-[var(--color-bench-muted)]">
+        <p className="text-base text-[var(--color-bench-muted)]">
           PromptBench · {tq('Free & Open Source', '开源 · 免费使用')}
         </p>
       </footer>

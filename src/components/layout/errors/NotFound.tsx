@@ -17,15 +17,15 @@ export function NotFound() {
         <p className="text-lg text-[var(--color-bench-text-dim)] mb-2">
           {tq('Page not found', '页面未找到')}
         </p>
-        <p className="text-sm text-[var(--color-bench-muted)] mb-8 max-w-md mx-auto">
+        <p className="text-base text-[var(--color-bench-muted)] mb-8 max-w-md mx-auto">
           {tq('The page you are looking for does not exist or has been moved.', '你访问的页面不存在或已被移动。')}
         </p>
         <div className="flex items-center justify-center gap-3">
-          <button onClick={() => navigate(-1)} className="btn-ghost inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium">
+          <button onClick={() => navigate(-1)} className="btn-ghost inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-base font-medium">
             <ArrowLeft size={14} />
             {tq('Go Back', '返回上页')}
           </button>
-          <button onClick={() => navigate('/')} className="btn-glow inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium">
+          <button onClick={() => navigate('/')} className="btn-glow inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-base font-medium">
             <Home size={14} />
             {tq('Home', '首页')}
           </button>
