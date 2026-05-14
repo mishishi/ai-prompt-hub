@@ -64,8 +64,8 @@ export const changelogGenerator: LibraryTemplate = {
       "显著标注破坏性变更"
     ]
   },
-  "user": "## Task\nGenerate changelog for {{version}} ({{scope}}).\n\nOutput in keepachangelog.com format.",
-  "userZh": "## 目标\n为 {{version}}（{{scope}}）生成更新日志。\n\n按 keepachangelog.com 格式输出。",
+  "user": "## Task\nGenerate a changelog for version {{version}} ({{scope}}).\n\n## Input\nProvide the list of commits, merged PRs, or release notes since the last release.\n\n## Output Structure\n- Group entries by category: Added, Changed, Fixed, Removed, Security\n- One line per change, active voice\n- Highlight breaking changes with a warning prefix\n- Follow keepachangelog.com format\n\n## Example\n### Added\n- Support for OAuth 2.0 social login\n### Fixed\n- Race condition in session timeout handler",
+  "userZh": "## 目标\n为版本 {{version}}（{{scope}}）生成更新日志。\n\n## 输入\n提供自上次发布以来的 commit 列表、合并 PR 或发布说明。\n\n## 输出结构\n- 按分类归组：新增、变更、修复、移除、安全\n- 每条一行，主动语态\n- 破坏性变更用警告前缀标注\n- 遵循 keepachangelog.com 格式\n\n## 示例\n### 新增\n- 支持 OAuth 2.0 社交登录\n### 修复\n- 修复 session 超时处理中的竞态条件",
   "output_schema": {
     "type": "markdown"
   },

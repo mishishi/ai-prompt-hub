@@ -81,8 +81,8 @@ export const productRoadmap: LibraryTemplate = {
       "风险登记"
     ]
   },
-  "user": "## Task\nBuild a {{timeframe}} roadmap for: {{vision}}\n\nTeam capacity: {{resources}}\n\nOutput: Now/Next/Later items, themes, milestones, dependencies, risks.",
-  "userZh": "## 目标\n为 {{vision}} 构建 {{timeframe}} 路线图。\n\n团队容量：{{resources}}\n\n输出：现在/下一步/之后事项、主题、里程碑、依赖、风险。",
+  "user": "## Task\nBuild a {{timeframe}} product roadmap based on the following vision.\n\n## Vision\n{{vision}}\n\n## Context\nTeam capacity: {{resources}}\n\n## Requirements\n- Structure as Now / Next / Later\n- Group items by strategic theme\n- Map dependencies between initiatives\n- Define success metrics for each theme\n- Include a risk register (top 3 risks with mitigation)\n\n## Output\nProvide: 1) Strategic themes 2) Now/Next/Later timeline 3) Key milestones 4) Dependency map 5) Risk register",
+  "userZh": "## 目标\n基于以下愿景构建 {{timeframe}} 产品路线图。\n\n## 愿景\n{{vision}}\n\n## 背景\n团队容量：{{resources}}\n\n## 要求\n- 以 现在/下一步/之后 结构组织\n- 按战略主题分组\n- 映射各项之间的依赖关系\n- 为每个主题定义成功指标\n- 包含风险登记（前 3 个风险及缓解方案）\n\n## 输出\n提供：1) 战略主题 2) 现在/下一步/之后时间线 3) 关键里程碑 4) 依赖关系图 5) 风险登记",
   "output_schema": {
     "type": "markdown"
   },

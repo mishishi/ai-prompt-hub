@@ -84,8 +84,8 @@ export const sprintRetrospective: LibraryTemplate = {
       "团队健康检查"
     ]
   },
-  "user": "## Task\nGenerate {{retro_format}} retro for {{sprint_name}}.\n\nAchievements: {{achievements}}\nChallenges: {{challenges}}\n\nOutput: Summary, what went well, what to improve, action items with owners.",
-  "userZh": "## 目标\n为 {{sprint_name}} 生成 {{retro_format}} 回顾。\n\n成果：{{achievements}}\n挑战：{{challenges}}\n\n输出：摘要、进展顺利之处、改进方向、有负责人的行动项。",
+  "user": "## Task\nGenerate a {{retro_format}} sprint retrospective for {{sprint_name}}.\n\n## Key Achievements\n{{achievements}}\n\n## Challenges Faced\n{{challenges}}\n\n## Requirements\n- Celebrate wins and acknowledge contributions first\n- Identify root causes for challenges, not just symptoms\n- Create specific action items with owners and deadlines\n- Track carry-over items from the previous retrospective\n- Include a brief team health check\n\n## Output\nProvide: 1) Summary 2) What went well 3) What to improve 4) Action items with owners 5) Team health score",
+  "userZh": "## 目标\n为 {{sprint_name}} 生成 {{retro_format}} 回顾总结。\n\n## 关键成果\n{{achievements}}\n\n## 遇到的挑战\n{{challenges}}\n\n## 要求\n- 首先庆祝成果并肯定团队贡献\n- 识别挑战的根本原因而非表面症状\n- 创建具体的行动项，附带负责人和截止日期\n- 追踪上次回顾的遗留事项\n- 包含简短的团队健康检查\n\n## 输出\n提供：1) 摘要 2) 进展顺利之处 3) 改进方向 4) 含负责人的行动项 5) 团队健康评分",
   "output_schema": {
     "type": "markdown"
   },

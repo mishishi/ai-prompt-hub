@@ -79,8 +79,8 @@ export const sqlAnalysisQuery: LibraryTemplate = {
       "使用显式 JOIN"
     ]
   },
-  "user": "## Task\nWrite a {{dialect}} query to answer: {{question}}\n\nAvailable tables: {{tables}}\n\nOutput: Query, explanation, and performance notes.",
-  "userZh": "## 目标\n编写 {{dialect}} 查询回答：{{question}}\n\n可用表：{{tables}}\n\n输出：查询语句、解释、性能说明。",
+  "user": "## Task\nWrite a {{dialect}} SQL query to answer the following business question.\n\n## Question\n{{question}}\n\n## Available Tables\n{{tables}}\n\n## Requirements\n- Use CTEs for complex logic to improve readability\n- Add inline comments explaining non-obvious logic\n- Handle NULLs and edge cases explicitly\n- Consider query performance (index usage, avoid full table scans)\n\n## Output\nProvide: 1) The complete SQL query 2) A brief explanation of the approach 3) Performance notes (index recommendations, expected execution plan)",
+  "userZh": "## 目标\n编写 {{dialect}} 查询，回答以下业务问题。\n\n## 问题\n{{question}}\n\n## 可用数据表\n{{tables}}\n\n## 要求\n- 使用 CTE 处理复杂逻辑，提升可读性\n- 为非显而易见的逻辑添加行内注释\n- 显式处理 NULL 值和边界情况\n- 考虑查询性能（索引利用，避免全表扫描）\n\n## 输出\n提供：1) 完整 SQL 查询 2) 方案简述 3) 性能说明（索引建议、预期执行计划）",
   "output_schema": {
     "type": "markdown"
   },

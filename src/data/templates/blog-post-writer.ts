@@ -25,8 +25,8 @@ export const blogPostWriter: LibraryTemplate = {
     "rules": ["Start with an attention-grabbing headline", "Use H2/H3 for structure", "Add a hooking intro", "End with a call-to-action", "Optimize for keywords naturally"],
     "rulesZh": ["以抓人眼球的标题开头", "用 H2/H3 组织层级", "添加吸引人的引言", "以行动号召结尾", "自然融入关键词"]
   },
-  "user": "## Task\nWrite a blog post about {{topic}}.\n\n- Tone: {{tone}}\n- Length: {{length}}\n\nDeliver: 1) Title 2) Outline 3) Full article with intro and conclusion",
-  "userZh": "## 目标\n写一篇关于 {{topic}} 的博客文章。\n\n- 语气：{{tone}}\n- 篇幅：{{length}}\n\n交付：1) 标题 2) 大纲 3) 含引言和结论的完整文章",
+  "user": "## Task\nWrite a technical blog post about {{topic}}.\n\n## Target Audience\n{{audience}}\n\n## Requirements\n- Word count: {{word_count}}\n- Include a compelling title and subtitle\n- Start with a hook that states the problem\n- Structure with clear headings and subheadings\n- Include code snippets where relevant (with language tags)\n- End with a summary and next steps\n\n## Output\nProvide the complete blog post in Markdown format, ready to publish.",
+  "userZh": "## 目标\n撰写一篇关于 {{topic}} 的技术博客。\n\n## 目标读者\n{{audience}}\n\n## 要求\n- 字数：{{word_count}}\n- 包含吸引人的标题和副标题\n- 以问题陈述开头作为引子\n- 使用清晰的标题和子标题组织结构\n- 在合适位置加入代码片段（标注语言）\n- 以总结和后续步骤结尾\n\n## 输出\n提供完整的 Markdown 格式博客，可直接发布。",
   "output_schema": { "type": "markdown" },
   "category": ["writing"],
   "difficulty": "Beginner",

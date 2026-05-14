@@ -79,8 +79,8 @@ export const dashboardMetrics: LibraryTemplate = {
       "记录计算公式"
     ]
   },
-  "user": "## Task\nDesign dashboard metrics for {{domain}}.\n\nBusiness Goals: {{goals}} | Tool: {{tool}}\n\nOutput: North Star metric, KPI tree, visualization suggestions, alert rules.",
-  "userZh": "## 目标\n为 {{domain}} 设计仪表板指标。\n\n业务目标：{{goals}} | 工具：{{tool}}\n\n输出：北极星指标、KPI 树、可视化建议、预警规则。",
+  "user": "## Task\nDesign a dashboard metrics framework for {{domain}}.\n\n## Business Goals\n{{goals}}\n\n## BI Tool\n{{tool}}\n\n## Requirements\n- Define the North Star metric first (the one metric that matters most)\n- Create a KPI tree (leading + lagging indicators)\n- Group metrics by user journey stage\n- Set alert thresholds for critical metrics\n- Document calculation formulas for each metric\n\n## Output\nProvide: 1) North Star metric definition 2) KPI hierarchy tree 3) Dashboard layout suggestion 4) Alert rules 5) Formula reference",
+  "userZh": "## 目标\n为 {{domain}} 设计仪表板指标框架。\n\n## 业务目标\n{{goals}}\n\n## BI 工具\n{{tool}}\n\n## 要求\n- 首先定义北极星指标（最重要的那个指标）\n- 创建 KPI 树（先导指标 + 滞后指标）\n- 按用户旅程阶段分组指标\n- 为关键指标设置预警阈值\n- 记录每个指标的计算公式\n\n## 输出\n提供：1) 北极星指标定义 2) KPI 层级树 3) 仪表板布局建议 4) 预警规则 5) 公式参考",
   "output_schema": {
     "type": "markdown"
   },

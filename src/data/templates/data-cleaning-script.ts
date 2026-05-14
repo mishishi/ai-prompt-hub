@@ -87,8 +87,8 @@ export const dataCleaningScript: LibraryTemplate = {
       "添加汇总统计"
     ]
   },
-  "user": "## Task\nWrite a {{language}} script to clean {{file_format}} data.\n\nIssues to address: {{issues}}\n\nInclude: null handling, outlier detection, type casting, validation checks",
-  "userZh": "## 目标\n编写{{language}}脚本清洗{{file_format}}数据。\n\n需处理的问题：{{issues}}\n\n包含：空值处理、异常值检测、类型转换、验证检查",
+  "user": "## Task\nWrite a {{language}} script to clean and preprocess {{file_format}} data.\n\n## Data Issues to Address\n{{issues}}\n\n## Requirements\n- Handle NULL values explicitly (fill, drop, or flag)\n- Detect and handle outliers with statistical methods\n- Normalize column names (snake_case)\n- Validate and cast data types\n- Print summary statistics before and after cleaning\n- Log all transformations for audit trail\n\n## Output\nProvide the complete script with: 1) Imports 2) Load function 3) Clean function 4) Validate function 5) Save function 6) Example usage",
+  "userZh": "## 目标\n编写 {{language}} 脚本清洗 {{file_format}} 数据。\n\n## 需处理的数据问题\n{{issues}}\n\n## 要求\n- 显式处理 NULL 值（填充、删除或标记）\n- 使用统计方法检测和处理异常值\n- 规范化列名（使用 snake_case）\n- 验证并转换数据类型\n- 输出清洗前后的汇总统计\n- 记录所有转换操作用于审计追溯\n\n## 输出\n提供完整脚本，包含：1) 导入 2) 加载函数 3) 清洗函数 4) 验证函数 5) 保存函数 6) 使用示例",
   "output_schema": {
     "type": "markdown"
   },

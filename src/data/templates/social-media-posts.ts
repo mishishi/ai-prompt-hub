@@ -65,8 +65,8 @@ export const socialMediaPosts: LibraryTemplate = {
       "以 CTA 结尾"
     ]
   },
-  "user": "## Task\nCreate social posts about {{topic}} for {{platform}}.\n\nOutput text + hashtags for each platform.",
-  "userZh": "## 目标\n为 {{topic}} 创建 {{platform}} 社交媒体内容。\n\n输出每个平台的帖文和标签。",
+  "user": "## Task\nCreate compelling social media posts about {{topic}} for {{platform}}.\n\n## Requirements\n- Hook in the first line to grab attention\n- Include a clear call-to-action\n- Use appropriate tone for each platform\n- Twitter/X: max 280 characters, 1-2 relevant hashtags\n- LinkedIn: 3-5 paragraphs, professional tone, 3-5 hashtags\n\n## Output\nProvide the full post text plus a list of recommended hashtags for each platform.",
+  "userZh": "## 目标\n为 {{topic}} 创建 {{platform}} 的社交媒体内容。\n\n## 要求\n- 首行要抓人眼球\n- 包含明确的行动号召（CTA）\n- 根据平台使用合适语调\n- Twitter/X：最多 280 字，1-2 个相关标签\n- 领英：3-5 段，专业语调，3-5 个标签\n\n## 输出\n提供完整帖文文案和推荐标签列表。",
   "output_schema": {
     "type": "markdown"
   },

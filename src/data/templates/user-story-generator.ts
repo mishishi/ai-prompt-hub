@@ -75,8 +75,8 @@ export const userStoryGenerator: LibraryTemplate = {
       "考虑边缘情况"
     ]
   },
-  "user": "## Task\nGenerate user stories for: {{feature}}\n\nPersona: {{persona}} | Format: {{format}}\n\nOutput: 3-5 well-formed stories with acceptance criteria.",
-  "userZh": "## 目标\n为 {{feature}} 生成用户故事。\n\n用户画像：{{persona}} | 格式：{{format}}\n\n输出：3-5 个完善的故事及验收标准。",
+  "user": "## Task\nGenerate well-formed user stories for the following feature idea.\n\n## Feature\n{{feature}}\n\n## Target Persona\n{{persona}}\n\n## Format\n{{format}}\n\n## Requirements\n- Each story must include acceptance criteria\n- Define clear Done conditions\n- Consider both happy path and edge cases\n- Link each story to specific business value\n\n## Output\nGenerate 3-5 complete user stories. For each story include: Title, Story statement, Acceptance criteria (3-5 items), Priority (P0/P1/P2), Effort estimate (S/M/L)",
+  "userZh": "## 目标\n为以下功能想法生成完善的用户故事。\n\n## 功能\n{{feature}}\n\n## 目标用户画像\n{{persona}}\n\n## 格式\n{{format}}\n\n## 要求\n- 每个故事必须包含验收标准\n- 定义明确的完成条件\n- 同时考虑正常流程和边缘情况\n- 为每个故事关联具体的业务价值\n\n## 输出\n生成 3-5 个完整用户故事。每个故事包含：标题、故事陈述、验收标准（3-5 条）、优先级（P0/P1/P2）、工作量估算（小/中/大）",
   "output_schema": {
     "type": "markdown"
   },
