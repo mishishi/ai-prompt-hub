@@ -34,7 +34,7 @@ export function TemplateDetail() {
   }, [template]);
   const rendered = useMemo(() => {
     if (!template) return '';
-    return renderPrompt(template, 'codex', lang, values);
+    return renderPrompt(template, lang, values);
   }, [template, lang, values]);
   const handleCopy = async () => {
     track({ type: 'template_copy', templateId: template.id, lang });

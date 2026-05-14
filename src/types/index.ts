@@ -2,6 +2,8 @@ export interface PromptVariable {
   name: string;
   label: string;
   type: 'enum' | 'boolean' | 'string';
+  labelZh?: string;
+  optionsZh?: string[];
   options?: string[];
   default?: string | boolean;
   required?: boolean;

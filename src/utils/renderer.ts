@@ -1,9 +1,9 @@
-﻿import type { LibraryTemplate, Prompt, Platform } from '../types';
+import type { LibraryTemplate, Prompt } from '../types';
 import { fillVars } from './fill';
 
 function isZh(lang: string): boolean { return lang === 'zh-CN'; }
 
-export function renderPrompt(t: LibraryTemplate | Prompt, platform: Platform, lang: string, values: Record<string, string | boolean | string[]>): string {
+export function renderPrompt(t: LibraryTemplate | Prompt, lang: string, values: Record<string, string | boolean | string[]>): string {
   // Handle Prompt type
   if ('meta' in t && 'system' in t) {
     const p = t as Prompt;
