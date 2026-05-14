@@ -18,3 +18,20 @@ function spawnCopyParticles() {
     setTimeout(() => particle.remove(), 500);
   }
 }
+
+
+export function copyParticles(x: number, y: number) {
+  const count = 6;
+  for (let i = 0; i < count; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'copy-particle';
+    const angle = (Math.PI * 2 * i) / count;
+    const distance = 20 + Math.random() * 20;
+    particle.style.setProperty('--px', Math.cos(angle) * distance + 'px');
+    particle.style.setProperty('--py', Math.sin(angle) * distance + 'px');
+    particle.style.left = x + 'px';
+    particle.style.top = y + 'px';
+    document.body.appendChild(particle);
+    setTimeout(() => particle.remove(), 600);
+  }
+}

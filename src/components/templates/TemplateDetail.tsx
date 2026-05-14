@@ -17,6 +17,7 @@ export function TemplateDetail() {
   const [copied, setCopied] = useState(false);
   const [flash, setFlash] = useState(false);
   const [ready, setReady] = useState(false);
+  const [mobileTab, setMobileTab] = useState<'params' | 'preview'>('params');
   const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') navigate('/library'); };
@@ -72,8 +73,13 @@ export function TemplateDetail() {
   }
   return (
     <div className="flex flex-col lg:flex-row h-full page-enter">
+      {/* Mobile tab switcher */}
+      <div className="flex lg:hidden border-b border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] shrink-0">
+        <button onClick={() => setMobileTab('params')} className={"flex-1 py-2.5 text-xs font-semibold text-center transition-all " + (mobileTab === 'params' ? "text-[var(--color-bench-accent)] border-b-2 border-[var(--color-bench-accent)]" : "text-[var(--color-bench-muted)] border-b-2 border-transparent")}>{tq('Parameters', '????')}</button>
+        <button onClick={() => setMobileTab('preview')} className={"flex-1 py-2.5 text-xs font-semibold text-center transition-all " + (mobileTab === 'preview' ? "text-[var(--color-bench-accent)] border-b-2 border-[var(--color-bench-accent)]" : "text-[var(--color-bench-muted)] border-b-2 border-transparent")}>{tq('Preview', '??')}</button>
+      </div>
       {/* Left panel */}
-      <div className="w-full lg:w-80 lg:border-r border-b lg:border-b-0 border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] overflow-y-auto flex flex-col lg:max-h-full max-h-[50vh]">
+      <div className="w-full lg:w-80 lg:border-r border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] overflow-y-auto flex flex-col lg:max-h-full hidden lg:flex max-h-[50vh] lg:max-h-full border-b lg:border-b-0">
         <div className="p-5 border-b border-[var(--color-bench-border)]">
           <button onClick={() => navigate('/library')} className="flex items-center gap-1.5 text-[11px] text-[var(--color-bench-muted)] hover:text-[var(--color-bench-accent)] transition-colors mb-3">
             <ChevronLeftIcon size={12} className="" />
@@ -163,7 +169,7 @@ export function TemplateDetail() {
               <span className="text-[11px] text-[var(--color-bench-muted)] uppercase tracking-wider">{t('detail.preview')}</span>
             </div>
             <div className="p-6">
-              <pre className="prompt-preview overflow-x-auto max-h-[calc(100vh-280px)]">{rendered || <span className="text-[var(--color-bench-muted)] italic">{t('detail.setValues')}</span>}</pre>
+              <pre className="prompt-preview overflow-x-auto max-h-[calc(100vh-200px)] md:max-h-[calc(100vh-280px)]">{rendered || <span className="text-[var(--color-bench-muted)] italic">{t('detail.setValues')}</span>}</pre>
             </div>
           </div>
         </div>

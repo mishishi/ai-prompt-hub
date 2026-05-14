@@ -24,14 +24,14 @@ export function TopNavbar() {
         <span className="text-base font-bold text-[var(--color-bench-text)] font-[var(--font-display)] tracking-tight">PromptBench</span>
       </div>
 
-      <nav className="flex items-center gap-1">
+      <nav className="flex items-center gap-0.5 overflow-x-auto">
         {navLinks.map((link) => {
           const active = link.path === '/' ? location.pathname === '/' : link.path === '/library' ? (location.pathname.startsWith(link.path) || location.pathname.startsWith('/template/')) : location.pathname.startsWith(link.path);
           return (
             <button
               key={link.path}
               onClick={() => navigate(link.path)}
-              className={`px-3.5 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+              className={`px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 sm:px-3.5 ${
                 active
                   ? 'bg-[var(--color-bench-accent)]/20 text-[var(--color-bench-accent)] font-semibold shadow-[0_0_12px_var(--color-bench-accent-glow)]'
                   : 'text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)]'

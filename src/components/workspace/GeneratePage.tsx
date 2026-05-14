@@ -35,7 +35,7 @@ export function GeneratePage() {
     try {
       await aiGenerate(intent.trim(), lang, (chunk) => setResult(chunk));
       track({ type: 'ai_generate', lang });
-    } catch (e: any) { setError(e.message || 'Something went wrong. Please try again.'); }
+    } catch (e: any) { setError(e.message || tq('API error. Please try again.', 'API 错误，请重试。')); }
     finally { setLoading(false); }
   };
 
@@ -93,7 +93,7 @@ export function GeneratePage() {
       </div>
 
       {/* Output Panel */}
-      <div className="flex-1 flex flex-col min-h-0 bg-[var(--color-bench-bg)] min-h-[300px]">
+      <div className="flex-1 flex flex-col min-h-0 bg-[var(--color-bench-bg)] min-h-[250px] sm:min-h-[400px]">
         {loading && !result ? (
           <div className="flex-1 flex items-center justify-center p-8">
             <div className="text-center space-y-4">
@@ -127,7 +127,7 @@ export function GeneratePage() {
               </div>
             </div>
             {!editing ? (
-            <div className="flex-1 overflow-y-auto bg-[var(--color-bench-bg)]"><pre className="p-6 text-sm text-[var(--color-bench-text)] leading-relaxed whitespace-pre-wrap font-mono">{result}{loading && <span className="inline-block w-2 h-4 bg-[var(--color-bench-accent)] ml-0.5 animate-pulse align-middle" />}</pre></div>
+            <div className="flex-1 overflow-y-auto bg-[var(--color-bench-bg)]"><pre className="p-6 text-sm text-[var(--color-bench-text)] leading-relaxed whitespace-pre-wrap font-mono">{result}{loading && <span className="ai-cursor" />}</pre></div>
             ) : (
             <div className="flex-1 flex flex-col">
               <div className="px-5 py-2 border-b border-[var(--color-bench-border)] flex items-center justify-between bg-[var(--color-bench-elevated)]">

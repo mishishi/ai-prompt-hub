@@ -2,6 +2,8 @@ import { useMemo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BarChart3, Eye, Copy, Zap, ThumbsUp, ThumbsDown, TrendingUp, Clock } from 'lucide-react';
 import { getStats, getEvents } from '../../utils/analytics';
+import { templates } from '../../data/templates';
+import { tName } from '../../data/templates/helper';
 import type { AnalyticsEvent } from '../../utils/analytics';
 import { useT } from '../../i18n/LanguageContext';
 
@@ -46,7 +48,10 @@ export function Dashboard() {
     return events.slice(-10).reverse();
   }, [events]);
 
-  const formatId = (id: string) => id.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  const templateName = (id: string) => {
+    const tmpl = templates.find(t => t.id === id);
+    return tmpl ? tName(tmpl, lang) : id.replace(/-/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase());
+  };
   const timeAgo = (ts: number) => {
     const s = Math.floor((Date.now() - ts) / 1000);
     if (s < 60) return tq(s + 's ago', s + ' 秒前');
@@ -144,7 +149,7 @@ export function Dashboard() {
                 ) : (
                   topByViews.map(([id, count]) => (
                     <div key={id} className="flex items-center justify-between py-2 border-b border-[var(--color-bench-border)]/50 last:border-0">
-                      <button onClick={() => navigate('/template/' + id)} className="text-sm text-[var(--color-bench-text)] hover:text-[var(--color-bench-accent)] transition-colors text-left">{formatId(id)}</button>
+                      <button onClick={() => navigate('/template/' + id)} className="text-sm text-[var(--color-bench-text)] hover:text-[var(--color-bench-accent)] transition-colors text-left">{templateName(id)}</button>
                       <span className="text-xs text-[var(--color-bench-muted)]">{count} {tq('views', '次')}</span>
                     </div>
                   ))
@@ -165,7 +170,7 @@ export function Dashboard() {
                 ) : (
                   topByConversion.map(([id, rate]) => (
                     <div key={id} className="flex items-center justify-between py-2 border-b border-[var(--color-bench-border)]/50 last:border-0">
-                      <button onClick={() => navigate('/template/' + id)} className="text-sm text-[var(--color-bench-text)] hover:text-[var(--color-bench-accent)] transition-colors text-left">{formatId(id)}</button>
+                      <button onClick={() => navigate('/template/' + id)} className="text-sm text-[var(--color-bench-text)] hover:text-[var(--color-bench-accent)] transition-colors text-left">{templateName(id)}</button>
                       <span className="text-xs font-medium text-[var(--color-bench-success)]">{rate}</span>
                     </div>
                   ))
@@ -219,8 +224,8 @@ export function Dashboard() {
                   <div key={i} className="flex items-center gap-3 text-xs">
                     <Clock size={12} className="text-[var(--color-bench-muted)] flex-shrink-0" />
                     <span className="text-[var(--color-bench-muted)]">
-                      {e.type === 'template_view' && tq('Viewed', '查看了') + ' ' + formatId(e.templateId || '')}
-                      {e.type === 'template_copy' && tq('Copied', '复制了') + ' ' + formatId(e.templateId || '')}
+                      {e.type === 'template_view' && tq('Viewed', '查看了') + ' ' + templateName(e.templateId || '')}
+                      {e.type === 'template_copy' && tq('Copied', '复制了') + ' ' + templateName(e.templateId || '')}
                       {e.type === 'ai_generate' && tq('Generated a prompt', '生成了一个 Prompt')}
                       {e.type === 'ai_copy' && tq('Copied AI result', '复制了 AI 结果')}
                       {e.type === 'ai_feedback' && tq('Left feedback', '留下了反馈')}
