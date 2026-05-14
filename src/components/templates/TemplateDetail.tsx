@@ -163,7 +163,7 @@ export function TemplateDetail() {
               <span className="text-[11px] text-[var(--color-bench-muted)] uppercase tracking-wider">{t('detail.preview')}</span>
             </div>
             <div className="p-6">
-              <pre className="text-sm text-[var(--color-bench-text)] leading-relaxed whitespace-pre-wrap font-mono overflow-x-auto max-h-[calc(100vh-280px)]">{rendered || <span className="text-[var(--color-bench-muted)] italic">{t('detail.setValues')}</span>}</pre>
+              <pre className="prompt-preview overflow-x-auto max-h-[calc(100vh-280px)]">{rendered || <span className="text-[var(--color-bench-muted)] italic">{t('detail.setValues')}</span>}</pre>
             </div>
           </div>
         </div>

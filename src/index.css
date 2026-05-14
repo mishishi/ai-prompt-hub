@@ -33,7 +33,7 @@
   --font-display: 'Outfit', system-ui, sans-serif;
   --font-body: 'Work Sans', system-ui, sans-serif;
   --default-font-family: var(--font-body);
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-mono: 'Geist Mono', 'JetBrains Mono', monospace;
   
   /* Spacing Scale (8px grid) */
   --space-unit: 0.5rem;
@@ -247,4 +247,115 @@ body {
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--color-bench-accent-glow), transparent);
   border: none;
+}
+
+/* === Prompt Content Preview === */
+.prompt-preview {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.75;
+  color: var(--color-bench-text);
+  white-space: pre-wrap;
+  word-break: break-word;
+  letter-spacing: 0;
+}
+
+.prompt-preview .prompt-section {
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.prompt-preview .prompt-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.prompt-preview .prompt-heading {
+  color: var(--color-bench-accent);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.prompt-preview .prompt-rule {
+  padding-left: 1rem;
+  color: var(--color-bench-text-dim);
+  position: relative;
+}
+
+.prompt-preview .prompt-rule::before {
+  content: '•';
+  position: absolute;
+  left: 0.25rem;
+  color: var(--color-bench-accent);
+  opacity: 0.6;
+}
+
+/* === Template Detail Refinements === */
+.template-detail-meta {
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+
+.template-detail-tag {
+  font-size: 0.6875rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 0.375rem;
+  background: rgba(255,255,255,0.04);
+  color: var(--color-bench-muted);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+/* === Card Typography Refinements === */
+.template-card-title {
+  font-size: 0.875rem;
+  line-height: 1.35;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.template-card-desc {
+  font-size: 0.75rem;
+  line-height: 1.55;
+  color: var(--color-bench-text-dim);
+}
+
+/* === Form Elements Refinement === */
+.input-bench {
+  background: var(--color-bench-bg);
+  border: 1px solid var(--color-bench-border);
+  border-radius: var(--radius-md);
+  padding: 0.625rem 0.875rem;
+  font-size: 0.8125rem;
+  color: var(--color-bench-text);
+  transition: border-color 0.2s ease;
+}
+
+.input-bench:focus {
+  outline: none;
+  border-color: var(--color-bench-accent);
+  box-shadow: 0 0 0 3px var(--color-bench-accent-glow);
+}
+
+.input-bench::placeholder {
+  color: var(--color-bench-muted);
+  opacity: 0.6;
+}
+
+/* === Stat Card Specific === */
+.stat-value {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.stat-label {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
 }
