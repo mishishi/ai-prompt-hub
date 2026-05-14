@@ -24,7 +24,7 @@ export function TopNavbar() {
         <div className="w-8 h-8 rounded-lg bg-[var(--color-bench-accent)] flex items-center justify-center shadow-lg shadow-[var(--color-bench-accent)]/20 group-hover:shadow-[var(--color-bench-accent)]/40 transition-shadow">
           <Sparkles size={16} className="text-white" />
         </div>
-        <span className="text-base font-bold text-[var(--color-bench-text)] font-[var(--font-display)] tracking-tight">PromptBench</span>
+        <span className="text-sm font-bold text-[var(--color-bench-text)] font-[var(--font-display)] tracking-tight">PromptBench</span>
       </div>
 
       <nav className="flex items-center gap-0.5 overflow-x-auto">
@@ -34,7 +34,7 @@ export function TopNavbar() {
             <button
               key={link.path}
               onClick={() => navigate(link.path)}
-              className={`px-2.5 py-1.5 rounded-lg text-[15px] sm:text-base font-medium transition-all duration-200 sm:px-3.5 ${
+              className={`px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 sm:px-3.5 ${
                 active
                   ? 'bg-[var(--color-bench-accent)]/20 text-[var(--color-bench-accent)] font-semibold shadow-[0_0_12px_var(--color-bench-accent-glow)]'
                   : 'text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)]'
@@ -49,9 +49,9 @@ export function TopNavbar() {
       <div className="flex-1" />
 
 
-      <button onClick={() => { setLang(lang === 'zh-CN' ? 'en' : 'zh-CN'); setSwitchAnim(true); setTimeout(() => setSwitchAnim(false), 300); }} className={"flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-base text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 cursor-pointer " + (switchAnim ? "scale-110" : "")}>
+      <button onClick={() => { setLang(lang === 'zh-CN' ? 'en' : 'zh-CN'); setSwitchAnim(true); setTimeout(() => setSwitchAnim(false), 300); }} className={"flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 cursor-pointer " + (switchAnim ? "scale-110" : "")}>
         <Globe size={14} />
-        <span className="text-[15px] font-bold px-1.5 py-0.5 rounded bg-[var(--color-bench-accent)]/25 text-[var(--color-bench-accent)]">{lang === 'zh-CN' ? '中文' : 'EN'}</span>
+        <span className="text-xs font-bold px-1.5 py-0.5 rounded bg-[var(--color-bench-accent)]/25 text-[var(--color-bench-accent)]">{lang === 'zh-CN' ? '中文' : 'EN'}</span>
       </button>
     </header>
   );

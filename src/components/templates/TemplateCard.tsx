@@ -40,30 +40,30 @@ export function TemplateCard({ template, onClick }: { template: LibraryTemplate;
       <div className="relative z-10 flex flex-col h-full">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-base font-semibold uppercase tracking-wider bg-[var(--color-bench-accent-secondary)]/10 text-[var(--color-bench-accent-secondary)]">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-sm font-semibold uppercase tracking-wider bg-[var(--color-bench-accent-secondary)]/10 text-[var(--color-bench-accent-secondary)]">
             {getPlatformLabel(platform, lang)}
           </span>
-          <span className={`text-base font-semibold px-1.5 py-0.5 rounded ${diffColors[template.difficulty] || diffColors.Intermediate} bg-white/5`}>
+          <span className={`text-sm font-semibold px-1.5 py-0.5 rounded ${diffColors[template.difficulty] || diffColors.Intermediate} bg-white/5`}>
             {t('difficulty.' + template.difficulty)}
           </span>
         </div>
 
         {/* Content */}
-        <h3 className="text-base font-semibold text-[var(--color-bench-text)] mb-2 leading-snug font-[var(--font-display)]">
+        <h3 className="text-sm font-semibold text-[var(--color-bench-text)] mb-2 leading-snug font-[var(--font-display)]">
           {tName(template, lang)}
         </h3>
-        <p className="text-base text-[var(--color-bench-text-dim)] leading-relaxed line-clamp-2 flex-1">
+        <p className="text-sm text-[var(--color-bench-text-dim)] leading-relaxed line-clamp-2 flex-1">
           {tShort(template, lang)}
         </p>
 
-        <span className={`text-base font-semibold px-1.5 py-0.5 rounded bg-[var(--color-bench-accent-secondary)]/10 text-[var(--color-bench-accent-secondary)]`}>{template.mode && t('mode.' + template.mode)}</span>
+        <span className={`text-sm font-semibold px-1.5 py-0.5 rounded bg-[var(--color-bench-accent-secondary)]/10 text-[var(--color-bench-accent-secondary)]`}>{template.mode && t('mode.' + template.mode)}</span>
         
         <div className="flex items-center justify-between pt-4 mt-4 border-t border-[var(--color-bench-border)] group-hover:border-[var(--color-bench-accent)]/30 transition-colors">
-          <span className="text-base font-medium text-[var(--color-bench-muted)] uppercase tracking-wider">
+          <span className="text-sm font-medium text-[var(--color-bench-muted)] uppercase tracking-wider">
             {t('category.' + template.category[0])}
           </span>
           <div className="flex items-center gap-1.5">
-            <button onClick={handleCopy} className={`flex items-center gap-1 text-base font-medium transition-colors ${copied ? 'text-[var(--color-bench-success)]' : 'text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)]'}`}>
+            <button onClick={handleCopy} className={`flex items-center gap-1 text-sm font-medium transition-colors ${copied ? 'text-[var(--color-bench-success)]' : 'text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)]'}`}>
             {copied ? <Check size={11} /> : <Copy size={11} />}
             {copied ? t('card.copied') : t('card.copy')}
           </button>

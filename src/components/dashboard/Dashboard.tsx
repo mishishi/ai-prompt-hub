@@ -71,7 +71,7 @@ export function Dashboard() {
           <h2 className="text-2xl font-bold text-[var(--color-bench-text)] font-[var(--font-display)] tracking-tight">
             {tq('Effect Tracking', '效果追踪')}
           </h2>
-          <p className="text-base text-[var(--color-bench-text-dim)]">
+          <p className="text-sm text-[var(--color-bench-text-dim)]">
             {tq('See how your prompts perform', '查看你的 Prompt 使用效果')}
           </p>
         </div>
@@ -82,13 +82,13 @@ export function Dashboard() {
           <div className="w-16 h-16 rounded-xl border border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] flex items-center justify-center mx-auto mb-4">
             <BarChart3 size={24} className="text-[var(--color-bench-muted)]" />
           </div>
-          <p className="text-base text-[var(--color-bench-text-dim)] mb-1">
+          <p className="text-sm text-[var(--color-bench-text-dim)] mb-1">
             {tq('No data yet', '暂无数据')}
           </p>
-          <p className="text-base text-[var(--color-bench-muted)] mb-6">
+          <p className="text-sm text-[var(--color-bench-muted)] mb-6">
             {tq('Use templates and the AI generator to start tracking', '使用模板和 AI 生成器后这里会出现数据')}
           </p>
-          <button onClick={() => navigate('/library')} className="btn-glow inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-base font-medium">
+          <button onClick={() => navigate('/library')} className="btn-glow inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium">
             <Eye size={14} />
             {tq('Browse Templates', '浏览模板')}
           </button>
@@ -98,7 +98,7 @@ export function Dashboard() {
           {/* Stats Grid */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <div className="bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-xl p-5">
-              <div className="flex items-center gap-2 text-[var(--color-bench-muted)] text-[15px] mb-2">
+              <div className="flex items-center gap-2 text-[var(--color-bench-muted)] text-xs mb-2">
                 <Eye size={14} />
                 {tq('Template Views', '模板查看')}
               </div>
@@ -107,7 +107,7 @@ export function Dashboard() {
               </div>
             </div>
             <div className="bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-xl p-5">
-              <div className="flex items-center gap-2 text-[var(--color-bench-muted)] text-[15px] mb-2">
+              <div className="flex items-center gap-2 text-[var(--color-bench-muted)] text-xs mb-2">
                 <Copy size={14} />
                 {tq('Copies', '复制次数')}
               </div>
@@ -116,7 +116,7 @@ export function Dashboard() {
               </div>
             </div>
             <div className="bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-xl p-5">
-              <div className="flex items-center gap-2 text-[var(--color-bench-muted)] text-[15px] mb-2">
+              <div className="flex items-center gap-2 text-[var(--color-bench-muted)] text-xs mb-2">
                 <Zap size={14} />
                 {tq('AI Generated', 'AI 生成')}
               </div>
@@ -125,7 +125,7 @@ export function Dashboard() {
               </div>
             </div>
             <div className="bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-xl p-5">
-              <div className="flex items-center gap-2 text-[var(--color-bench-muted)] text-[15px] mb-2">
+              <div className="flex items-center gap-2 text-[var(--color-bench-muted)] text-xs mb-2">
                 <TrendingUp size={14} />
                 {tq('Satisfaction', '满意度')}
               </div>
@@ -139,18 +139,18 @@ export function Dashboard() {
             {/* Top Viewed */}
             <div className="bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-xl overflow-hidden">
               <div className="px-5 py-3.5 border-b border-[var(--color-bench-border)]">
-                <h3 className="text-base font-semibold text-[var(--color-bench-text)]">
+                <h3 className="text-sm font-semibold text-[var(--color-bench-text)]">
                   {tq('Most Viewed Templates', '最常查看的模板')}
                 </h3>
               </div>
               <div className="p-4">
                 {topByViews.length === 0 ? (
-                  <p className="text-base text-[var(--color-bench-muted)] py-4 text-center">{tq('No views yet', '暂无查看记录')}</p>
+                  <p className="text-sm text-[var(--color-bench-muted)] py-4 text-center">{tq('No views yet', '暂无查看记录')}</p>
                 ) : (
                   topByViews.map(([id, count]) => (
                     <div key={id} className="flex items-center justify-between py-2 border-b border-[var(--color-bench-border)]/50 last:border-0">
-                      <button onClick={() => navigate('/template/' + id)} className="text-base text-[var(--color-bench-text)] hover:text-[var(--color-bench-accent)] transition-colors text-left">{templateName(id)}</button>
-                      <span className="text-[15px] text-[var(--color-bench-muted)]">{count} {tq('views', '次')}</span>
+                      <button onClick={() => navigate('/template/' + id)} className="text-sm text-[var(--color-bench-text)] hover:text-[var(--color-bench-accent)] transition-colors text-left">{templateName(id)}</button>
+                      <span className="text-xs text-[var(--color-bench-muted)]">{count} {tq('views', '次')}</span>
                     </div>
                   ))
                 )}
@@ -160,18 +160,18 @@ export function Dashboard() {
             {/* Top Conversion */}
             <div className="bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-xl overflow-hidden">
               <div className="px-5 py-3.5 border-b border-[var(--color-bench-border)]">
-                <h3 className="text-base font-semibold text-[var(--color-bench-text)]">
+                <h3 className="text-sm font-semibold text-[var(--color-bench-text)]">
                   {tq('Best Conversion Rate', '最佳转化率')}
                 </h3>
               </div>
               <div className="p-4">
                 {topByConversion.length === 0 ? (
-                  <p className="text-base text-[var(--color-bench-muted)] py-4 text-center">{tq('No copies yet', '暂无复制记录')}</p>
+                  <p className="text-sm text-[var(--color-bench-muted)] py-4 text-center">{tq('No copies yet', '暂无复制记录')}</p>
                 ) : (
                   topByConversion.map(([id, rate]) => (
                     <div key={id} className="flex items-center justify-between py-2 border-b border-[var(--color-bench-border)]/50 last:border-0">
-                      <button onClick={() => navigate('/template/' + id)} className="text-base text-[var(--color-bench-text)] hover:text-[var(--color-bench-accent)] transition-colors text-left">{templateName(id)}</button>
-                      <span className="text-[15px] font-medium text-[var(--color-bench-success)]">{rate}</span>
+                      <button onClick={() => navigate('/template/' + id)} className="text-sm text-[var(--color-bench-text)] hover:text-[var(--color-bench-accent)] transition-colors text-left">{templateName(id)}</button>
+                      <span className="text-xs font-medium text-[var(--color-bench-success)]">{rate}</span>
                     </div>
                   ))
                 )}
@@ -183,7 +183,7 @@ export function Dashboard() {
           {feedbackTotal > 0 && (
             <div className="mt-6 bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-xl overflow-hidden">
               <div className="px-5 py-3.5 border-b border-[var(--color-bench-border)] flex items-center justify-between">
-                <h3 className="text-base font-semibold text-[var(--color-bench-text)]">
+                <h3 className="text-sm font-semibold text-[var(--color-bench-text)]">
                   {tq('AI Prompt Feedback', 'AI 生成反馈')}
                 </h3>
               </div>
@@ -194,7 +194,7 @@ export function Dashboard() {
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-[var(--color-bench-success)] font-[var(--font-display)]">{thumbsUp}</div>
-                    <div className="text-base text-[var(--color-bench-muted)]">{tq('Helpful', '有帮助')}</div>
+                    <div className="text-sm text-[var(--color-bench-muted)]">{tq('Helpful', '有帮助')}</div>
                   </div>
                 </div>
                 <div className="w-px h-12 bg-[var(--color-bench-border)]" />
@@ -204,7 +204,7 @@ export function Dashboard() {
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-[var(--color-bench-error)] font-[var(--font-display)]">{thumbsDown}</div>
-                    <div className="text-base text-[var(--color-bench-muted)]">{tq('Not Helpful', '没帮助')}</div>
+                    <div className="text-sm text-[var(--color-bench-muted)]">{tq('Not Helpful', '没帮助')}</div>
                   </div>
                 </div>
               </div>
@@ -215,13 +215,13 @@ export function Dashboard() {
           {recentEvents.length > 0 && (
             <div className="mt-6 bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-xl overflow-hidden">
               <div className="px-5 py-3.5 border-b border-[var(--color-bench-border)]">
-                <h3 className="text-base font-semibold text-[var(--color-bench-text)]">
+                <h3 className="text-sm font-semibold text-[var(--color-bench-text)]">
                   {tq('Recent Activity', '最近动态')}
                 </h3>
               </div>
               <div className="p-4 space-y-2">
                 {recentEvents.map((e, i) => (
-                  <div key={i} className="flex items-center gap-3 text-base">
+                  <div key={i} className="flex items-center gap-3 text-sm">
                     {e.type === 'template_view' ? <Eye size={12} className="text-[var(--color-bench-accent)] flex-shrink-0" /> : e.type === 'template_copy' ? <Copy size={12} className="text-[var(--color-bench-success)] flex-shrink-0" /> : e.type === 'ai_generate' ? <Zap size={12} className="text-[var(--color-bench-accent)] flex-shrink-0" /> : e.type === 'ai_copy' ? <Copy size={12} className="text-[var(--color-bench-success)] flex-shrink-0" /> : <ThumbsUp size={12} className="text-[var(--color-bench-warn)] flex-shrink-0" />}
                     <span className="text-[var(--color-bench-muted)]">
                       {e.type === 'template_view' && tq('Viewed', '查看了') + ' ' + templateName(e.templateId || '')}
