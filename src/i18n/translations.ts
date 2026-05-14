@@ -5,6 +5,8 @@ export const UI: Record<Lang, Record<string, string>> = {
   "browser.title": "Template Library",
   "browser.subtitle": "Structured prompt templates for every dev task — browse, tweak, copy.",
   "browser.search": "Search by name, description, or tag...",
+  "browser.searchHint": "press /",
+  "browser.shortcut": "Ctrl+K",
   "browser.all": "All",
   "browser.empty": "No matching templates",
   "browser.emptyHint": "Try a different keyword or category",
@@ -39,12 +41,15 @@ export const UI: Record<Lang, Record<string, string>> = {
   "difficulty.Intermediate": "Intermediate",
   "difficulty.Advanced": "Advanced",
   "mode.multi-turn": "Multi-turn",
-  "mode.multi-agent": "Multi-agent"
+  "mode.multi-agent": "Multi-agent",
+  "mode.single-turn": "Single-turn"
 },
   "zh-CN": {
   "browser.title": "模板库",
   "browser.subtitle": "覆盖主流开发场景的结构化模板，浏览、调参、一键复制。",
   "browser.search": "按名称、描述或标签搜索...",
+  "browser.searchHint": "按 /",
+  "browser.shortcut": "Ctrl+K",
   "browser.all": "全部",
   "browser.empty": "未找到匹配的模板",
   "browser.emptyHint": "试试换个关键词或分类",
@@ -79,7 +84,8 @@ export const UI: Record<Lang, Record<string, string>> = {
   "difficulty.Intermediate": "进阶",
   "difficulty.Advanced": "专家",
   "mode.multi-turn": "多轮对话",
-  "mode.multi-agent": "多角色审查"
+  "mode.multi-agent": "多角色审查",
+  "mode.single-turn": "单轮对话"
 },
 };
 

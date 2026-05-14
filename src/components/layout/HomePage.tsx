@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+﻿import { useNavigate } from 'react-router-dom';
 import { Sparkles, Star, ArrowRight, Zap, Code2 } from 'lucide-react';
 import { templates } from '../../data/templates';
 import { TemplateCard } from '../templates/TemplateCard';
@@ -74,7 +74,23 @@ export function HomePage() {
                 </div>
               </div>
             </div>
-          </div>
+          
+            {/* Mobile-only simplified illustration */}
+            <div className="flex lg:hidden items-center justify-center pt-6">
+              <div className="relative w-56 h-40">
+                <div className="absolute inset-0 rounded-xl bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)]" />
+                <div className="absolute inset-3 rounded-xl bg-[var(--color-bench-surface-solid)] border border-[var(--color-bench-border)] flex flex-col p-3 gap-1.5">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-2 h-2 rounded-full bg-red-400/60" />
+                    <div className="w-2 h-2 rounded-full bg-yellow-400/60" />
+                    <div className="w-2 h-2 rounded-full bg-green-400/60" />
+                  </div>
+                  <div className="h-1.5 w-3/4 rounded bg-[var(--color-bench-accent)]/20" />
+                  <div className="h-1.5 w-1/2 rounded bg-[var(--color-bench-accent)]/10" />
+                  <div className="h-1.5 w-2/3 rounded bg-[var(--color-bench-accent)]/10" />
+                </div>
+              </div>
+            </div></div>
         </div>
       </section>
 
@@ -88,8 +104,8 @@ export function HomePage() {
               {tq('Recommended Templates', '推荐模板')}
             </h2>
           </div>
-          <button onClick={() => navigate('/library')} className="flex items-center gap-1 text-sm text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)] transition-colors">
-            {tq('View all', '查看全部')}
+          <button onClick={() => navigate('/library')} className="flex items-center gap-1 text-sm text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)] transition-colors group">
+            <span className='group-hover:translate-x-0.5 transition-transform inline-block'>{tq('View all', '查看全部')}</span>
             <ArrowRight size={14} />
           </button>
         </div>

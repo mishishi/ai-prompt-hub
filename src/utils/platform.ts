@@ -6,7 +6,14 @@ export const PLATFORMS: { id: Platform; label: string; color: string }[] = [
   { id: 'gpt', label: 'ChatGPT', color: '#3fb950' },
 ];
 
-export function getPlatformLabel(p: Platform): string {
+const ZH_LABELS: Record<Platform, string> = {
+  codex: 'Codex 通用',
+  claude: 'Claude Code',
+  gpt: 'ChatGPT',
+};
+
+export function getPlatformLabel(p: Platform, lang?: string): string {
+  if (lang === 'zh-CN') return ZH_LABELS[p] || p;
   return PLATFORMS.find((x) => x.id === p)?.label ?? p;
 }
 

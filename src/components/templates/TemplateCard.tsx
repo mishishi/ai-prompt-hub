@@ -40,8 +40,8 @@ export function TemplateCard({ template, onClick }: { template: LibraryTemplate;
       <div className="relative z-10 flex flex-col h-full">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold uppercase tracking-wider bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)]">
-            {getPlatformLabel(platform)}
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold uppercase tracking-wider bg-[var(--color-bench-accent-secondary)]/10 text-[var(--color-bench-accent-secondary)]">
+            {getPlatformLabel(platform, lang)}
           </span>
           <span className={`text-[11px] font-semibold px-1.5 py-0.5 rounded ${diffColors[template.difficulty] || diffColors.Intermediate} bg-white/5`}>
             {t('difficulty.' + template.difficulty)}
@@ -56,7 +56,8 @@ export function TemplateCard({ template, onClick }: { template: LibraryTemplate;
           {tShort(template, lang)}
         </p>
 
-        {/* Footer */}
+        <span className={`text-[11px] font-semibold px-1.5 py-0.5 rounded bg-[var(--color-bench-accent-secondary)]/10 text-[var(--color-bench-accent-secondary)]`}>{template.mode ? t("mode." + template.mode) : ""}</span>
+        
         <div className="flex items-center justify-between pt-4 mt-4 border-t border-[var(--color-bench-border)] group-hover:border-[var(--color-bench-accent)]/30 transition-colors">
           <span className="text-[11px] font-medium text-[var(--color-bench-muted)] uppercase tracking-wider">
             {t('category.' + template.category[0])}

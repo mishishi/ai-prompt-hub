@@ -17,6 +17,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   });
 
   const changeLang = useCallback((l: Lang) => {
+    document.documentElement.lang = l === 'zh-CN' ? 'zh-CN' : 'en';
+    document.title = l === 'zh-CN' ? 'PromptBench — 结构化 Prompt 工程' : 'PromptBench — Structured Prompt Engineering';
     localStorage.setItem('promptbench-lang', l);
     setLang(l);
   }, []);

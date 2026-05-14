@@ -1,4 +1,4 @@
-﻿export interface PromptVariable {
+export interface PromptVariable {
   name: string;
   label: string;
   type: 'enum' | 'boolean' | 'string';
@@ -68,6 +68,7 @@ export interface LibraryTemplate {
   difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
   mode?: 'single-turn' | 'multi-turn' | 'multi-agent';
   usage_tips?: string;
+  usage_tipsZh?: string;
   stages?: { name: string; nameZh?: string }[];
 }
 

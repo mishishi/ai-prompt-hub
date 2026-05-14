@@ -10,7 +10,7 @@ export function tDesc(t: LibraryTemplate, lang?: string): string | undefined {
   return (lang === 'zh-CN' && t.meta.descriptionZh) ? t.meta.descriptionZh : t.meta.description;
 }
 export function tTips(t: LibraryTemplate, lang?: string): string | undefined {
-  return t.usage_tips;
+  return (lang === 'zh-CN' && t.usage_tipsZh) ? t.usage_tipsZh : t.usage_tips;
 }
 export function tLabel(v: { label: string; labelZh?: string }, lang?: string): string {
   return (lang === 'zh-CN' && v.labelZh) ? v.labelZh : v.label;

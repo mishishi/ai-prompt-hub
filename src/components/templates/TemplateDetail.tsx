@@ -1,13 +1,12 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Copy, Check, Sparkles, ChevronRightIcon } from 'lucide-react';
+import { Copy, Check, Sparkles, ChevronLeftIcon } from 'lucide-react';
 import { templates } from '../../data/templates';
-import { tName, tShort, tDesc, tTips, tLabel, tOptions } from '../../data/templates/helper';
+import { tName, tShort, tTips, tLabel, tOptions } from '../../data/templates/helper';
 import { renderPrompt } from '../../utils/renderer';
 import { copyToClipboard } from '../../utils/clipboard';
 import { track } from '../../utils/analytics';
 import { useT } from '../../i18n/LanguageContext';
-
 export function TemplateDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -17,15 +16,12 @@ export function TemplateDetail() {
   const [copied, setCopied] = useState(false);
   const [flash, setFlash] = useState(false);
   const [ready, setReady] = useState(false);
-
   const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
-
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') navigate('/library'); };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, [navigate]);
-
   useEffect(() => {
     if (template) {
       track({ type: 'template_view', templateId: template.id, lang });
@@ -35,12 +31,10 @@ export function TemplateDetail() {
       setReady(true);
     }
   }, [template]);
-
   const rendered = useMemo(() => {
     if (!template) return '';
     return renderPrompt(template, 'codex', lang, values);
   }, [template, lang, values]);
-
   const handleCopy = async () => {
     track({ type: 'template_copy', templateId: template.id, lang });
     await copyToClipboard(rendered);
@@ -48,11 +42,9 @@ export function TemplateDetail() {
     setFlash(true);
     setTimeout(() => { setCopied(false); setFlash(false); }, 2000);
   };
-
   if (!template) {
     return <div className="flex items-center justify-center h-full text-[var(--color-bench-muted)]">{t('detail.notFound')}</div>;
   }
-
   if (!ready) {
     return (
       <div className="flex flex-col lg:flex-row h-full">
@@ -77,27 +69,22 @@ export function TemplateDetail() {
       </div>
     );
   }
-
-  const descZh = tDesc(template, lang);
   const tipsZh = tTips(template, lang);
-
   return (
     <div className="flex flex-col lg:flex-row h-full page-enter">
       {/* Left panel */}
       <div className="w-full lg:w-80 lg:border-r border-b lg:border-b-0 border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] overflow-y-auto flex flex-col lg:max-h-full max-h-[50vh]">
         <div className="p-5 border-b border-[var(--color-bench-border)]">
           <button onClick={() => navigate('/library')} className="flex items-center gap-1.5 text-[11px] text-[var(--color-bench-muted)] hover:text-[var(--color-bench-accent)] transition-colors mb-3">
-            <ChevronRightIcon size={12} className="rotate-180" />
+            <ChevronLeftIcon size={12} className="" />
             {t('detail.back')}
           </button>
           <h2 className="text-lg font-bold text-[var(--color-bench-text)] font-[var(--font-display)] tracking-tight">{tName(template, lang)}</h2>
           <p className="text-xs text-[var(--color-bench-text-dim)] mt-1.5 leading-relaxed">{tShort(template, lang)}</p>
-          {descZh && <p className="text-xs text-[var(--color-bench-muted)]/80 mt-2 leading-relaxed">{descZh}</p>}
           <div className="flex items-center gap-2 mt-3 flex-wrap">
             {template.meta.tags.slice(0, 4).map((tag) => (<span key={tag} className="text-xs px-2 py-1 rounded-md bg-white/5 text-[var(--color-bench-muted)]">{tag}</span>))}
           </div>
         </div>
-
         {template.variables.length > 0 && (
           <div className="p-5 border-b border-[var(--color-bench-border)]">
             <div className="flex items-center justify-between mb-4">
@@ -135,7 +122,6 @@ export function TemplateDetail() {
             </div>
           </div>
         )}
-
         {(template.system?.role || (template.system?.rules?.length > 0)) && (
           <div className="border-b border-[var(--color-bench-border)] px-5 py-3.5">
             <h3 className="text-[11px] font-semibold uppercase tracking-wider text-[var(--color-bench-muted)] mb-2">{tq('System', '系统设定')}</h3>
@@ -148,17 +134,15 @@ export function TemplateDetail() {
             ))}
           </div>
         )}
-
-        {tipsZh && (
+        {tipsText && (
           <div className="px-5 py-3.5">
             <h3 className="text-[11px] font-semibold uppercase tracking-wider text-[var(--color-bench-muted)] mb-2 flex items-center gap-1">
               <Sparkles size={12} />{t('detail.tips')}
             </h3>
-            <p className="text-xs text-[var(--color-bench-muted)] leading-relaxed">{tipsZh}</p>
+            <p className="text-xs text-[var(--color-bench-muted)] leading-relaxed">{tipsText}</p>
           </div>
         )}
       </div>
-
       {/* Right panel: preview */}
       <div className="flex-1 flex flex-col min-h-0">
         <div className="px-5 py-3 border-b border-[var(--color-bench-border)] flex items-center justify-between bg-[var(--color-bench-elevated)]">
@@ -168,7 +152,6 @@ export function TemplateDetail() {
             {copied ? t('detail.copied') : t('detail.copy')}
           </button>
         </div>
-
         <div className="flex-1 overflow-y-auto p-6 bg-[var(--color-bench-bg)]">
           <div className={'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-xl overflow-hidden shadow-lg ' + (flash ? 'preview-flash' : '')}>
             <div className="px-5 py-3 border-b border-[var(--color-bench-border)] flex items-center gap-3 bg-[var(--color-bench-surface-solid)]">

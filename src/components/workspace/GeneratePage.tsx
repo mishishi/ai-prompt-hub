@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+﻿import { useState, useRef, useEffect } from 'react';
 import { Sparkles, Copy, Check, Loader, ThumbsUp, ThumbsDown, Zap, Lightbulb, RefreshCw, Edit3, X } from 'lucide-react';
 import { aiGenerate, useQuota } from '../../utils/ai';
 import { copyToClipboard } from '../../utils/clipboard';
@@ -62,7 +62,8 @@ export function GeneratePage() {
               <Sparkles size={18} className="text-[var(--color-bench-bg)]" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-[var(--color-bench-text)] font-[var(--font-display)] tracking-tight">{tq('AI Prompt Generator', 'AI Prompt 生成器')}</h2>
+              <h2 className="text-base font-bold text-[var(--color-bench-text)] font-[var(--font-display)] tracking-tight">{tq("AI Prompt Generator", "AI Prompt 生成器")}</h2>
+              <p className="text-xs text-[var(--color-bench-text-dim)] mt-1">{tq("Describe your task and we will generate a professional prompt", "描述你的任务，我们帮你生成专业 Prompt")}</p>
                           </div>
           </div>
         </div>
@@ -70,6 +71,11 @@ export function GeneratePage() {
         <div className="flex-1 flex flex-col px-6 space-y-4 overflow-y-auto pb-4">
           <div>
             <label className="block text-[11px] font-semibold uppercase tracking-wider text-[var(--color-bench-muted)] mb-2.5">{tq('Task Description', '任务描述')}</label>
+                          <div className="flex flex-wrap gap-2 justify-start mb-3">
+                <button onClick={() => { setIntent(tq('I need a code review prompt that checks for security vulnerabilities', '我需要一个检查安全漏洞的代码审查 prompt')); }} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)] hover:border-[var(--color-bench-accent)]/30 transition-all">{tq('Code Review', '代码审查')}</button>
+                <button onClick={() => { setIntent(tq('I need a prompt to generate a React component with TypeScript', '我需要一个用 TypeScript 生成 React 组件的 prompt')); }} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)] hover:border-[var(--color-bench-accent)]/30 transition-all">{tq('React Component', 'React 组件')}</button>
+                <button onClick={() => { setIntent(tq('I need a prompt that writes unit tests for my code', '我需要一个为代码编写单元测试的 prompt')); }} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)] hover:border-[var(--color-bench-accent)]/30 transition-all">{tq('Unit Tests', '单元测试')}</button>
+              </div>
             <textarea ref={inputRef} value={intent} onChange={(e) => setIntent(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleGenerate(); } }} placeholder={tq('E.g., Review my React code for security, design a REST API, write tests...', '例如：审查 React 代码安全、设计 REST API、写单元测试...')} rows={5} className="w-full px-4 py-3.5 bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-lg text-sm text-[var(--color-bench-text)] placeholder:text-[var(--color-bench-muted)]/40 resize-none focus:outline-none focus:border-[var(--color-bench-accent)]/40 focus:ring-1 focus:ring-[var(--color-bench-accent)]/20 transition-all font-[var(--font-body)]" />
           </div>
           {error && <div className="p-3 rounded-xl bg-[var(--color-bench-error)]/10 border border-[var(--color-bench-error)]/20"><p className="text-xs text-[var(--color-bench-error)]">{error}</p></div>}

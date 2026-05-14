@@ -25,7 +25,7 @@ export function TopNavbar() {
 
       <nav className="flex items-center gap-1">
         {navLinks.map((link) => {
-          const active = link.path === '/' ? location.pathname === '/' : location.pathname.startsWith(link.path);
+          const active = link.path === '/' ? location.pathname === '/' : link.path === '/library' ? (location.pathname.startsWith(link.path) || location.pathname.startsWith('/template/')) : location.pathname.startsWith(link.path);
           return (
             <button
               key={link.path}
