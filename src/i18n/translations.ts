@@ -1,4 +1,4 @@
-export type Lang = "en" | "zh-CN";
+﻿export type Lang = "en" | "zh-CN";
 
 export const UI: Record<Lang, Record<string, string>> = {
   en: {
@@ -37,6 +37,8 @@ export const UI: Record<Lang, Record<string, string>> = {
   "category.language": "Language Specific",
   "category.devops": "DevOps",
   "category.efficiency": "Dev Efficiency",
+  "category.writing": "Writing",
+  "category.product": "Product",
   "difficulty.Beginner": "Beginner",
   "difficulty.Intermediate": "Intermediate",
   "difficulty.Advanced": "Advanced",
@@ -80,6 +82,8 @@ export const UI: Record<Lang, Record<string, string>> = {
   "category.language": "语言专项",
   "category.devops": "DevOps",
   "category.efficiency": "开发效率",
+  "category.writing": "Writing",
+  "category.product": "Product",
   "difficulty.Beginner": "入门",
   "difficulty.Intermediate": "进阶",
   "difficulty.Advanced": "专家",

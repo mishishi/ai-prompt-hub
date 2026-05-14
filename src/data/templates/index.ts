@@ -31,6 +31,8 @@ import { prdToPrototype } from './prd-to-prototype';
 import { uxReview } from './ux-review';
 import { responsiveReview } from './responsive-review';
 import { componentMigration } from './component-migration';
+import { blogPostWriter } from './blog-post-writer';
+import { techTutorialWriter } from './tech-tutorial-writer';
 import { designSystemBuilder } from './design-system-builder';
 
 export { tName, tShort, tDesc, tTips } from './helper';
@@ -61,6 +63,8 @@ export const categories = [
   { id: 'data', name: 'Data & DB', icon: 'Database' },
   { id: 'language', name: 'Language Specific', icon: 'Code2' },
   { id: 'efficiency', name: 'Dev Efficiency', icon: 'Zap' },
+  { id: 'writing', name: 'Writing', icon: 'PenLine' },
+  { id: 'product', name: 'Product', icon: 'Lightbulb' },
 ];
 
 export function getTemplatesByCategory(cat: string): LibraryTemplate[] {

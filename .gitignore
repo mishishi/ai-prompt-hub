@@ -33,4 +33,4 @@ _*.txt
 f.endsWith('.ts')
 
 # Audit
-.audit/
+.audit/test-results/
