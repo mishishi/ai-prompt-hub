@@ -1,12 +1,18 @@
-﻿import { defineConfig } from '@playwright/test';
+import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
   testDir: './e2e',
   timeout: 30000,
-  retries: 0,
+  retries: 1,
   use: {
-    baseURL: 'http://localhost:3006',
+    baseURL: 'http://127.0.0.1:3006',
     headless: true,
-    viewport: { width: 1280, height: 720 },
+    screenshot: 'only-on-failure',
+  },
+  webServer: {
+    command: 'npx vite --port 3006',
+    url: 'http://127.0.0.1:3006',
+    reuseExistingServer: true,
+    timeout: 30000,
   },
 });

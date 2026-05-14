@@ -31,9 +31,22 @@ import { prdToPrototype } from './prd-to-prototype';
 import { uxReview } from './ux-review';
 import { responsiveReview } from './responsive-review';
 import { componentMigration } from './component-migration';
+import { designSystemBuilder } from './design-system-builder';
 import { blogPostWriter } from './blog-post-writer';
 import { techTutorialWriter } from './tech-tutorial-writer';
-import { designSystemBuilder } from './design-system-builder';
+import { changelogGenerator } from './changelog-generator';
+import { releaseNotesWriter } from './release-notes-writer';
+import { socialMediaPosts } from './social-media-posts';
+import { dataAnalysisReport } from './data-analysis-report';
+import { dataCleaningScript } from './data-cleaning-script';
+import { sqlAnalysisQuery } from './sql-analysis-query';
+import { dashboardMetrics } from './dashboard-metrics';
+import { abTestAnalysis } from './ab-test-analysis';
+import { userStoryGenerator } from './user-story-generator';
+import { competitorAnalysis } from './competitor-analysis';
+import { productRoadmap } from './product-roadmap';
+import { featureSpecWriter } from './feature-spec-writer';
+import { sprintRetrospective } from './sprint-retrospective';
 
 export { tName, tShort, tDesc, tTips } from './helper';
 
@@ -50,6 +63,10 @@ export const templates: LibraryTemplate[] = [
   pythonBestPractices, typescriptTypeOptimizer,
   prDescriptionGen, regexGenerator,
   prdToPrototype, uxReview, responsiveReview, componentMigration, designSystemBuilder,
+  blogPostWriter, techTutorialWriter,
+  changelogGenerator, releaseNotesWriter, socialMediaPosts,
+  dataAnalysisReport, dataCleaningScript, sqlAnalysisQuery, dashboardMetrics, abTestAnalysis,
+  userStoryGenerator, competitorAnalysis, productRoadmap, featureSpecWriter, sprintRetrospective,
 ];
 
 export const categories = [

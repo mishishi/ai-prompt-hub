@@ -12,6 +12,7 @@ export function TemplateDetail() {
   const navigate = useNavigate();
   const { t, lang } = useT();
   const template = templates.find((tmpl) => tmpl.id === id);
+  const tipsText = template ? tTips(template, lang) : '';
   const [values, setValues] = useState<Record<string, string | boolean | string[]>>({});
   const [copied, setCopied] = useState(false);
   const [flash, setFlash] = useState(false);
