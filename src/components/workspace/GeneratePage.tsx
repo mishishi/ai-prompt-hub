@@ -31,7 +31,11 @@ export function GeneratePage() {
     if (!intent.trim()) return;
     if (!useQuota()) { setError(tq('Daily quota exhausted. Browse the template library instead.', '今日免费次数已用完，明天重置。试试浏览模板库？')); return; }
     setLoading(true); setError(''); setFeedback(null);
-    try { const r = await aiGenerate(intent.trim(), lang); setResult(r); track({ type: 'ai_generate', lang }); } catch (e: any) { setError(e.message || 'Something went wrong. Please try again.'); }
+    setResult('');
+    try {
+      const r = await aiGenerate(intent.trim(), lang, (chunk) => setResult(chunk));
+      track({ type: 'ai_generate', lang });
+    } catch (e: any) { setError(e.message || 'Something went wrong. Please try again.'); }
     finally { setLoading(false); }
   };
 
@@ -84,7 +88,14 @@ export function GeneratePage() {
 
       {/* Output Panel */}
       <div className="flex-1 flex flex-col min-h-0 bg-[var(--color-bench-bg)] min-h-[300px]">
-        {!result ? (
+        {loading && !result ? (
+          <div className="flex-1 flex items-center justify-center p-8">
+            <div className="text-center space-y-4">
+              <div className="inline-block w-5 h-5 bg-[var(--color-bench-accent)] rounded-full animate-bounce" />
+              <p className="text-sm text-[var(--color-bench-muted)]">{tq('Generating your prompt...', '正在生成你的 Prompt...')}</p>
+            </div>
+          </div>
+        ) : !result ? (
           <div className="flex-1 flex items-center justify-center p-8">
             <div className="text-center space-y-4">
               <div className="w-16 h-16 rounded-xl border border-[var(--color-bench-border)] flex items-center justify-center mx-auto bg-[var(--color-bench-elevated)]"><Sparkles size={24} className="text-[var(--color-bench-muted)]/30" /></div>
@@ -110,7 +121,7 @@ export function GeneratePage() {
               </div>
             </div>
             {!editing ? (
-            <div className="flex-1 overflow-y-auto bg-[var(--color-bench-bg)]"><pre className="p-6 text-sm text-[var(--color-bench-text)] leading-relaxed whitespace-pre-wrap font-mono">{result}</pre></div>
+            <div className="flex-1 overflow-y-auto bg-[var(--color-bench-bg)]"><pre className="p-6 text-sm text-[var(--color-bench-text)] leading-relaxed whitespace-pre-wrap font-mono">{result}{loading && <span className="inline-block w-2 h-4 bg-[var(--color-bench-accent)] ml-0.5 animate-pulse align-middle" />}</pre></div>
             ) : (
             <div className="flex-1 flex flex-col">
               <div className="px-5 py-2 border-b border-[var(--color-bench-border)] flex items-center justify-between bg-[var(--color-bench-elevated)]">
