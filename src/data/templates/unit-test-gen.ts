@@ -92,5 +92,6 @@ export const unitTestGen: LibraryTemplate = {
   ],
   "difficulty": "Intermediate",
   "mode": "single-turn",
-  "usage_tips": "Paste the function or class to test. Include type definitions for better test generation."
+  "usage_tips": "Paste the function or class to test. Include type definitions for better test generation.",
+  "usage_tipsZh": "粘贴待测试的函数或类，附上类型定义可获得更完善的测试。"
 };

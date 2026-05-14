@@ -70,5 +70,6 @@ export const prReviewAgent: LibraryTemplate = {
   ],
   "difficulty": "Intermediate",
   "mode": "single-turn",
-  "usage_tips": "Paste the git diff or link to the PR for best results."
+  "usage_tips": "Paste the git diff or link to the PR for best results.",
+  "usage_tipsZh": "粘贴 git diff 或 PR 链接效果最佳。"
 };

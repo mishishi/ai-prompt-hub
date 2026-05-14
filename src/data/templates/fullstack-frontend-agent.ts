@@ -81,5 +81,6 @@ export const fullstackFrontendAgent: LibraryTemplate = {
   ],
   "difficulty": "Advanced",
   "mode": "multi-turn",
-  "usage_tips": "Describe the project as specifically as possible. Include user stories or screenshots if available."
+  "usage_tips": "Describe the project as specifically as possible. Include user stories or screenshots if available.",
+  "usage_tipsZh": "尽可能具体描述项目，附上用户故事或截图效果更佳。"
 };

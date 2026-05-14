@@ -93,5 +93,6 @@ export const performanceReview: LibraryTemplate = {
   ],
   "difficulty": "Advanced",
   "mode": "single-turn",
-  "usage_tips": "Include profiling data or describe the observed slowness for more targeted advice."
+  "usage_tips": "Include profiling data or describe the observed slowness for more targeted advice.",
+  "usage_tipsZh": "提供性能分析数据或描述观察到的具体卡顿现象，可获得更有针对性的建议。"
 };

@@ -91,5 +91,6 @@ export const securityCodeReview: LibraryTemplate = {
   ],
   "difficulty": "Intermediate",
   "mode": "single-turn",
-  "usage_tips": "Paste the full function or file. Include dependency versions if relevant."
+  "usage_tips": "Paste the full function or file. Include dependency versions if relevant.",
+  "usage_tipsZh": "粘贴完整函数或文件，附上依赖版本信息更佳。"
 };

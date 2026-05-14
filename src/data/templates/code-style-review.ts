@@ -89,5 +89,6 @@ export const codeStyleReview: LibraryTemplate = {
   ],
   "difficulty": "Beginner",
   "mode": "single-turn",
-  "usage_tips": "For best results, mention which style guide you follow in your project."
+  "usage_tips": "For best results, mention which style guide you follow in your project.",
+  "usage_tipsZh": "提及项目遵循的代码风格指南可获得更精准建议。"
 };

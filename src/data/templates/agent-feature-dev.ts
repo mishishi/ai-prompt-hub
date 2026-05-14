@@ -80,5 +80,6 @@ export const agentFeatureDev: LibraryTemplate = {
   ],
   "difficulty": "Advanced",
   "mode": "multi-turn",
-  "usage_tips": "Be specific about the feature requirements. Include acceptance criteria if available."
+  "usage_tips": "Be specific about the feature requirements. Include acceptance criteria if available.",
+  "usage_tipsZh": "详细描述功能需求，附上验收标准效果更佳。"
 };
