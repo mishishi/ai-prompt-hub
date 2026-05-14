@@ -1,4 +1,4 @@
-﻿import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Search, Sparkles, Zap } from 'lucide-react';
 import { templates, categories, getTemplatesByCategory, searchTemplates } from '../../data/templates';
@@ -8,7 +8,7 @@ import { useT } from '../../i18n/LanguageContext';
 export function TemplateBrowser() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { t } = useT();
+  const { t, lang } = useT();
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [activeCategory, setActiveCategory] = useState<string | null>(searchParams.get('category') || null);
 

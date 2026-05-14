@@ -1,5 +1,5 @@
-﻿import { describe, it, expect } from 'vitest';
-import { t, UI } from '../i18n/translations';
+import { describe, it, expect } from 'vitest';
+import { t } from '../i18n/translations';
 
 describe('translations', () => {
   it('returns zh-CN translation when available', () => {

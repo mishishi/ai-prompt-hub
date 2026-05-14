@@ -1,4 +1,4 @@
-import type { LibraryTemplate, Prompt } from '../types';
+import type { LibraryTemplate, Prompt, Platform } from '../types';
 import { fillVars } from './fill';
 
 function isZh(lang: string): boolean { return lang === 'zh-CN'; }

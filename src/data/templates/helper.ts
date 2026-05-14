@@ -18,6 +18,6 @@ export function tLabel(v: { label: string; labelZh?: string }, lang?: string): s
 export function tOptions(v: { options?: string[]; optionsZh?: string[] }, lang?: string): string[] {
   return (lang === 'zh-CN' && v.optionsZh) ? v.optionsZh : (v.options || []);
 }
-export function tStage(s: any, lang?: string): string { return s?.stage || ''; }
-export function tSkillWhen(s: any, lang?: string): string { return s?.when || ''; }
-export function tSkillHow(s: any, lang?: string): string { return s?.how || ''; }
+export function tStage(s: any, _lang?: string): string { return s?.stage || ''; }
+export function tSkillWhen(s: any, _lang?: string): string { return s?.when || ''; }
+export function tSkillHow(s: any, _lang?: string): string { return s?.how || ''; }

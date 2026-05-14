@@ -1,4 +1,4 @@
-﻿import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Sparkles, Copy, Check, Loader, ThumbsUp, ThumbsDown, Zap, Lightbulb, RefreshCw, Edit3, X } from 'lucide-react';
 import { aiGenerate, useQuota } from '../../utils/ai';
 import { copyToClipboard } from '../../utils/clipboard';
@@ -6,7 +6,7 @@ import { track } from '../../utils/analytics';
 import { useT } from '../../i18n/LanguageContext';
 
 export function GeneratePage() {
-  const { t, lang } = useT();
+  const { lang } = useT();
   const [intent, setIntent] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
@@ -33,7 +33,7 @@ export function GeneratePage() {
     setLoading(true); setError(''); setFeedback(null);
     setResult('');
     try {
-      const r = await aiGenerate(intent.trim(), lang, (chunk) => setResult(chunk));
+      await aiGenerate(intent.trim(), lang, (chunk) => setResult(chunk));
       track({ type: 'ai_generate', lang });
     } catch (e: any) { setError(e.message || 'Something went wrong. Please try again.'); }
     finally { setLoading(false); }

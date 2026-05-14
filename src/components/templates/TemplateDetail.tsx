@@ -37,7 +37,7 @@ export function TemplateDetail() {
     return renderPrompt(template, lang, values);
   }, [template, lang, values]);
   const handleCopy = async () => {
-    track({ type: 'template_copy', templateId: template.id, lang });
+    track({ type: 'template_copy', templateId: template!.id, lang });
     await copyToClipboard(rendered);
     setCopied(true);
     setFlash(true);
@@ -70,7 +70,6 @@ export function TemplateDetail() {
       </div>
     );
   }
-  const tipsZh = tTips(template, lang);
   return (
     <div className="flex flex-col lg:flex-row h-full page-enter">
       {/* Left panel */}
@@ -123,11 +122,11 @@ export function TemplateDetail() {
             </div>
           </div>
         )}
-        {(template.system?.role || (template.system?.rules?.length > 0)) && (
+        {(template.system?.role || ((template.system?.rules?.length ?? 0) > 0)) && (
           <div className="border-b border-[var(--color-bench-border)] px-5 py-3.5">
             <h3 className="text-[11px] font-semibold uppercase tracking-wider text-[var(--color-bench-muted)] mb-2">{tq('System', '系统设定')}</h3>
             {template.system?.role && <p className="text-xs text-[var(--color-bench-accent)] mb-2">{lang === 'zh-CN' && template.system.roleZh ? template.system.roleZh : template.system.role}</p>}
-            {((lang === 'zh-CN' && template.system?.rulesZh?.length > 0 ? template.system.rulesZh : template.system?.rules) || []).map((rule: string, i: number) => (
+            {((lang === 'zh-CN' && (template.system?.rulesZh?.length ?? 0) > 0 ? template.system.rulesZh : template.system?.rules) || []).map((rule: string, i: number) => (
               <div key={i} className="flex items-start gap-2 text-xs text-[var(--color-bench-muted)] mb-1">
                 <span className="text-[var(--color-bench-accent)] mt-0.5">•</span>
                 <span>{rule}</span>

@@ -1,13 +1,12 @@
-﻿import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Sparkles, Star, ArrowRight, Zap, Code2 } from 'lucide-react';
 import { templates } from '../../data/templates';
 import { TemplateCard } from '../templates/TemplateCard';
 import { useT } from '../../i18n/LanguageContext';
-import { track } from '../../utils/analytics';
 
 export function HomePage() {
   const navigate = useNavigate();
-  const { t, lang } = useT();
+  const { lang } = useT();
   const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
 
   const recommended = templates.slice(0, 8);

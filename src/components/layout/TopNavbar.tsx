@@ -5,7 +5,7 @@ import { useT } from '../../i18n/LanguageContext';
 export function TopNavbar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { t, lang, setLang } = useT();
+  const { lang, setLang } = useT();
   const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
 
   const navLinks = [

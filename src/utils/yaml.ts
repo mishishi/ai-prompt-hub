@@ -133,25 +133,26 @@ export function renderPrompt(p: Prompt, values: Record<string, string | boolean>
 }
 
 export function templateToCleanYaml(t: Prompt | Record<string, unknown>, lang?: string): string {
+  const anyT = t as any;
   if (t.meta && t.system) {
     const isZh = lang === 'zh-CN';
     const filtered: any = {
-      id: t.id || '',
+      id: anyT.id || '',
       yaml: '',
       meta: {
-        name: isZh && t.meta.nameZh ? t.meta.nameZh : t.meta.name,
-        description: isZh && t.meta.descriptionZh ? t.meta.descriptionZh : t.meta.description,
-        tags: t.meta.tags,
-        platform: t.meta.platform,
+        name: isZh && anyT.meta.nameZh ? anyT.meta.nameZh : anyT.meta.name,
+        description: isZh && anyT.meta.descriptionZh ? anyT.meta.descriptionZh : anyT.meta.description,
+        tags: anyT.meta.tags,
+        platform: anyT.meta.platform,
       },
       system: {
-        role: isZh && t.system.roleZh ? t.system.roleZh : t.system.role,
-        personality: isZh && t.system.personalityZh ? t.system.personalityZh : t.system.personality,
-        rules: isZh && t.system.rulesZh ? t.system.rulesZh : (t.system.rules || []),
-        stop_rules: isZh && t.system.stop_rulesZh ? t.system.stop_rulesZh : (t.system.stop_rules || []),
+        role: isZh && anyT.system.roleZh ? anyT.system.roleZh : anyT.system.role,
+        personality: isZh && anyT.system.personalityZh ? anyT.system.personalityZh : anyT.system.personality,
+        rules: isZh && anyT.system.rulesZh ? anyT.system.rulesZh : (anyT.system.rules || []),
+        stop_rules: isZh && anyT.system.stop_rulesZh ? anyT.system.stop_rulesZh : (anyT.system.stop_rules || []),
       },
-      user: isZh && t.userZh ? t.userZh : t.user,
-      variables: (t.variables || []).map((v: any) => ({
+      user: isZh && anyT.userZh ? anyT.userZh : anyT.user,
+      variables: (anyT.variables || []).map((v: any) => ({
         name: v.name,
         label: isZh && v.labelZh ? v.labelZh : v.label,
         type: v.type,
@@ -165,7 +166,7 @@ export function templateToCleanYaml(t: Prompt | Record<string, unknown>, lang?: 
       version: t.version || 1,
       versions: [],
     };
-    if (t.output_schema) filtered.output_schema = t.output_schema;
+    if (anyT.output_schema) filtered.output_schema = anyT.output_schema;
     return promptToYaml(filtered);
   }
   const isZh = lang === 'zh-CN';
@@ -175,7 +176,7 @@ export function templateToCleanYaml(t: Prompt | Record<string, unknown>, lang?: 
   const user = (isZh && a.promptZh ? a.promptZh : a.prompt) || '';
   const userZh = a.promptZh || undefined;
   const variables = (a.variables || []).map((v: any) => ({ name: v.name || '', label: (isZh && v.labelZh ? v.labelZh : v.label) || '', labelZh: v.labelZh || undefined, type: v.type || 'string', options: (isZh && v.optionsZh ? v.optionsZh : v.options) || undefined, optionsZh: v.optionsZh || undefined, default: v.default, required: v.required }));
-  return promptToYaml({ id: t.id || '', yaml: '', meta, variables, system, user, userZh, source: 'library', createdAt: Date.now(), updatedAt: Date.now(), version: 1, versions: [] });
+  return promptToYaml({ id: a.id || '', yaml: '', meta, variables, system, user, userZh, source: 'library', createdAt: Date.now(), updatedAt: Date.now(), version: 1, versions: [] });
 }
 
 export function yamlToTemplate(y: string, id: string): (Prompt & { name?: string; short?: string; description?: string; category?: string[]; tags?: string[]; difficulty?: string; prompt?: string; promptZh?: string }) | null {
