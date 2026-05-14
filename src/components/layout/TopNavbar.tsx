@@ -1,3 +1,4 @@
+﻿import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Sparkles, Globe } from 'lucide-react';
 import { useT } from '../../i18n/LanguageContext';
@@ -6,12 +7,14 @@ export function TopNavbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { lang, setLang } = useT();
+  const [switchAnim, setSwitchAnim] = useState(false);
   const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
 
   const navLinks = [
     { path: '/', label: tq('Home', '首页') },
     { path: '/library', label: tq('Templates', '模板') },
     { path: '/generate', label: tq('Generate', 'AI 生成') },
+    { path: '/prompts', label: tq('My Prompts', '我的 Prompt') },
     { path: '/dashboard', label: tq('Track', '效果') },
   ];
 
@@ -46,7 +49,7 @@ export function TopNavbar() {
       <div className="flex-1" />
 
 
-      <button onClick={() => setLang(lang === 'zh-CN' ? 'en' : 'zh-CN')} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-colors cursor-pointer">
+      <button onClick={() => { setLang(lang === 'zh-CN' ? 'en' : 'zh-CN'); setSwitchAnim(true); setTimeout(() => setSwitchAnim(false), 300); }} className={"flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 cursor-pointer " + (switchAnim ? "scale-110" : "")}>
         <Globe size={14} />
         <span className="text-xs font-bold px-1.5 py-0.5 rounded bg-[var(--color-bench-accent)]/25 text-[var(--color-bench-accent)]">{lang === 'zh-CN' ? '中文' : 'EN'}</span>
       </button>

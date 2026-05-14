@@ -1,6 +1,6 @@
-import { useMemo, useState, useEffect } from 'react';
+﻿import { useMemo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BarChart3, Eye, Copy, Zap, ThumbsUp, ThumbsDown, TrendingUp, Clock } from 'lucide-react';
+import { BarChart3, Eye, Copy, Zap, ThumbsUp, ThumbsDown, TrendingUp, } from 'lucide-react';
 import { getStats, getEvents } from '../../utils/analytics';
 import { templates } from '../../data/templates';
 import { tName } from '../../data/templates/helper';
@@ -222,7 +222,7 @@ export function Dashboard() {
               <div className="p-4 space-y-2">
                 {recentEvents.map((e, i) => (
                   <div key={i} className="flex items-center gap-3 text-xs">
-                    <Clock size={12} className="text-[var(--color-bench-muted)] flex-shrink-0" />
+                    {e.type === 'template_view' ? <Eye size={12} className="text-[var(--color-bench-accent)] flex-shrink-0" /> : e.type === 'template_copy' ? <Copy size={12} className="text-[var(--color-bench-success)] flex-shrink-0" /> : e.type === 'ai_generate' ? <Zap size={12} className="text-[var(--color-bench-accent)] flex-shrink-0" /> : e.type === 'ai_copy' ? <Copy size={12} className="text-[var(--color-bench-success)] flex-shrink-0" /> : <ThumbsUp size={12} className="text-[var(--color-bench-warn)] flex-shrink-0" />}
                     <span className="text-[var(--color-bench-muted)]">
                       {e.type === 'template_view' && tq('Viewed', '查看了') + ' ' + templateName(e.templateId || '')}
                       {e.type === 'template_copy' && tq('Copied', '复制了') + ' ' + templateName(e.templateId || '')}

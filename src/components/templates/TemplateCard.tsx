@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Copy, Check, Eye } from 'lucide-react';
+import { Copy, Check } from 'lucide-react';
 import type { LibraryTemplate } from '../../types';
 import { useT } from '../../i18n/LanguageContext';
 import { tName, tShort } from '../../data/templates/helper';
@@ -33,7 +33,7 @@ export function TemplateCard({ template, onClick }: { template: LibraryTemplate;
   };
 
   return (
-    <article className="glass-card group relative flex flex-col p-5 h-full overflow-hidden cursor-pointer">
+    <article onClick={onClick} className="glass-card group relative flex flex-col p-5 h-full overflow-hidden cursor-pointer">
       {/* Hover glow */}
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none bg-gradient-to-br from-[var(--color-bench-accent)]/5 via-transparent to-[var(--color-bench-accent-secondary)]/5" />
 
@@ -56,14 +56,13 @@ export function TemplateCard({ template, onClick }: { template: LibraryTemplate;
           {tShort(template, lang)}
         </p>
 
-        <span className={`text-[11px] font-semibold px-1.5 py-0.5 rounded bg-[var(--color-bench-accent-secondary)]/10 text-[var(--color-bench-accent-secondary)]`}>{template.mode ? t("mode." + template.mode) : ""}</span>
+        <span className={`text-[11px] font-semibold px-1.5 py-0.5 rounded bg-[var(--color-bench-accent-secondary)]/10 text-[var(--color-bench-accent-secondary)]`}>{template.mode && t('mode.' + template.mode)}</span>
         
         <div className="flex items-center justify-between pt-4 mt-4 border-t border-[var(--color-bench-border)] group-hover:border-[var(--color-bench-accent)]/30 transition-colors">
           <span className="text-[11px] font-medium text-[var(--color-bench-muted)] uppercase tracking-wider">
             {t('category.' + template.category[0])}
           </span>
           <div className="flex items-center gap-1.5">
-            <button onClick={(e) => { e.stopPropagation(); onClick(); }} className="flex items-center gap-1 px-2 py-1 rounded text-[11px] font-medium text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)] hover:bg-[var(--color-bench-accent)]/10 transition-colors"><Eye size={11} />{t('card.preview')}</button>
             <button onClick={handleCopy} className={`flex items-center gap-1 text-[11px] font-medium transition-colors ${copied ? 'text-[var(--color-bench-success)]' : 'text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)]'}`}>
             {copied ? <Check size={11} /> : <Copy size={11} />}
             {copied ? t('card.copied') : t('card.copy')}

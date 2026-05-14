@@ -2,6 +2,7 @@ import { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { LanguageProvider } from './i18n/LanguageContext';
 import { Layout } from './components/layout/Layout';
+import { PromptsPage } from './components/prompts/PromptsPage';
 import { HomePage } from './components/layout/HomePage';
 import { TemplateBrowser } from './components/templates/TemplateBrowser';
 import { TemplateDetail } from './components/templates/TemplateDetail';
@@ -25,6 +26,7 @@ function App() {
             <Route path="/library" element={<TemplateBrowser />} />
             <Route path="/template/:id" element={<TemplateDetail />} />
             <Route path="/generate" element={<Suspense fallback={<LoadingFallback />}><GeneratePage /></Suspense>} />
+            <Route path="/prompts" element={<PromptsPage />} />
             <Route path="/dashboard" element={<Suspense fallback={<LoadingFallback />}><Dashboard /></Suspense>} />
             <Route path="*" element={<NotFound />} />
             </Routes>
