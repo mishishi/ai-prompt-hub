@@ -51,6 +51,10 @@ export const apiDesign: LibraryTemplate = {
   },
   "user": "## Task\nDesign a RESTful API for {{resource}}.\n\n## Requirements\nDesign a RESTful API for {{resource}}.\n\nProvide:\n1. Resource model with all fields and types\n2. Endpoints: GET(list/detail), POST(create), PUT(update), DELETE\n3. Request/response examples for each endpoint\n4. Error response format\n5. OpenAPI 3.0 spec snippet\n6. Pagination and filtering recommendations\n\n## Acceptance Criteria\n- [ ] Resource model fields and types are complete\n- [ ] API follows RESTful conventions\n- [ ] Includes error response format and status codes\n- [ ] Has pagination/sorting/filtering strategy\n\n## Constraints\n- Do not use verbs in resource names — use plural nouns\n- Do not return 200 for errors\n- Do not mix inconsistent response formats",
   "userZh": "## 目标\n为 {{resource}} 设计 RESTful API。\n\n## 要求\n为 {{resource}} 设计 RESTful API。\n\n请提供：\n1. 资源模型（所有字段及类型）\n2. 端点：GET（列表/详情）、POST（创建）、PUT（更新）、DELETE\n3. 每个端点的请求/响应示例\n4. 错误响应格式\n5. OpenAPI 3.0 规范片段\n6. 分页和筛选建议\n\n## 验收标准\n- [ ] 资源模型字段和类型完整清晰\n- [ ] 接口符合 RESTful 规范\n- [ ] 包含错误响应格式和状态码\n- [ ] 有分页/排序/筛选方案\n\n## 约束\n- 不要用动词命名资源——用复数名词\n- 错误时不要返回 200 状态码\n- 不要混用不同的响应格式",
+  "output_schema": {
+    "type": "code"
+  },
+  
   "category": [
     "architecture"
   ],

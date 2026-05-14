@@ -62,6 +62,10 @@ export const pythonBestPractices: LibraryTemplate = {
   },
   "user": "## Task\nReview this Python code targeting {{py_version}}.\n\n## Requirements\nReview this Python code targeting {{py_version}}.\n\nCheck:\n1. Type hints completeness and correctness\n2. Pythonic idioms (list comprehensions, generators, context managers)\n3. Standard library usage (pathlib, dataclasses, enum)\n4. Error handling patterns\n5. Performance considerations (generators vs lists, __slots__)\n\nProvide before/after examples for each improvement.\n\n## Acceptance Criteria\n- [ ] Each suggestion has before/after code comparison\n- [ ] Explains why the change is better\n- [ ] Flags security risks when relevant\n- [ ] Does not break existing functionality\n\n## Constraints\n- Do not modify project structure or file names\n- Do not enforce personal style preferences\n- Respect existing project conventions",
   "userZh": "## 目标\n审查此 Python 代码，目标版本 {{py_version}}。\n\n## 要求\n审查此 Python 代码，目标版本 {{py_version}}。\n\n检查：\n1. 类型注解完整性和正确性\n2. Pythonic 惯用写法（列表推导、生成器、上下文管理器）\n3. 标准库使用（pathlib、dataclasses、enum）\n4. 错误处理模式\n5. 性能考量（生成器 vs 列表、__slots__）\n\n每个改进请提供前后对比示例。\n\n## 验收标准\n- [ ] 每个建议给出前后对比代码\n- [ ] 解释了为什么这样改更好\n- [ ] 涉及安全问题时标注风险等级\n- [ ] 不破坏现有功能\n\n## 约束\n- 不要修改项目结构或文件名\n- 不要强制个人风格偏好\n- 遵循项目现有约定",
+  "output_schema": {
+    "type": "markdown"
+  },
+  
   "category": [
     "language"
   ],

@@ -59,6 +59,10 @@ export const onboardingAgent: LibraryTemplate = {
   },
   "user": "## Task\nHelp a new {{role}} developer onboard to the project codebase.\n\n## Requirements\nI am a new {{role}} developer on this project. Help me onboard.\n\nProvide:\n1. Architecture overview (high-level diagram description)\n2. Key directories and their purposes\n3. Core data flows\n4. Development workflow (how to run, test, deploy)\n5. Common tasks and which files to modify\n6. Gotchas and conventions to know\n\n## Acceptance Criteria\n- [ ] Code runs without syntax errors\n- [ ] Core logic has tests\n- [ ] Includes setup and usage instructions\n- [ ] No hardcoded secrets or placeholder credentials\n\n## Constraints\n- Do not output all code at once — follow architecture > implementation > tests order\n- Do not use any type\n- Do not skip error state handling",
   "userZh": "## 目标\n帮助一位新 {{role}} 开发者快速上手项目代码库。\n\n## 要求\n我是此项目的新 {{role}} 开发者，请帮我快速上手。\n\n请提供：\n1. 架构概览（高层架构描述）\n2. 关键目录及用途\n3. 核心数据流\n4. 开发流程（如何运行、测试、部署）\n5. 常见任务及对应修改的文件\n6. 需要了解的坑和约定\n\n## 验收标准\n- [ ] 代码可直接运行，无语法错误\n- [ ] 核心功能有对应测试\n- [ ] 包含启动和使用说明\n- [ ] 无硬编码密钥或占位凭据\n\n## 约束\n- 不要一次性输出所有代码——按架构→实现→测试的顺序\n- 不要使用 any 类型\n- 不要跳过错误状态处理",
+  "output_schema": {
+    "type": "markdown"
+  },
+  
   "category": [
     "agentic"
   ],

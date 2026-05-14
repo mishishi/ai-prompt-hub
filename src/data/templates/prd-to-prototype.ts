@@ -58,6 +58,10 @@ export const prdToPrototype: LibraryTemplate = {
   },
   "user": "## Task\nConvert this PRD into a {{fidelity}} prototype.\n\n## Requirements\nConvert this PRD into a {{fidelity}} prototype.\n\nDeliverables:\n1. User flow diagram (text-based)\n2. Component tree\n3. All source code\n4. Sample data\n5. Instructions to run locally\n6. Known limitations and next steps\n\n## Acceptance Criteria\n- [ ] All UI states handled (default, hover, focus, active, disabled, loading, error, empty)\n- [ ] Responsive design, mobile-friendly\n- [ ] Keyboard navigation supported\n- [ ] ARIA attributes for screen readers\n\n## Constraints\n- Do not use inline styles — use CSS Modules or Tailwind\n- Do not use div for everything — use semantic HTML elements\n- Do not use absolute positioning for layout — use Grid or Flexbox",
   "userZh": "## 目标\n将此 PRD 转化为 {{fidelity}} 原型。\n\n## 要求\n将此 PRD 转化为 {{fidelity}} 原型。\n\n交付物：\n1. 用户流程图（文本描述）\n2. 组件树\n3. 全部源码\n4. 示例数据\n5. 本地运行说明\n6. 已知限制和后续计划\n\n## 验收标准\n- [ ] UI 状态完整（默认、悬停、焦点、激活、禁用、加载、错误、空）\n- [ ] 响应式设计，支持移动端\n- [ ] 支持键盘导航\n- [ ] 包含 ARIA 属性支持屏幕阅读器\n\n## 约束\n- 不要用内联样式——用 CSS Modules 或 Tailwind\n- 不要用 div 替代语义化元素——button 就是按钮\n- 不要用绝对定位做布局——用 Grid 或 Flexbox",
+  "output_schema": {
+    "type": "code"
+  },
+  
   "category": [
     "frontend"
   ],

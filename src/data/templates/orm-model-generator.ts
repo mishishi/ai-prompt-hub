@@ -62,6 +62,10 @@ export const ormModelGenerator: LibraryTemplate = {
   },
   "user": "## Task\nGenerate {{orm}} models for this database schema.\n\n## Requirements\nGenerate {{orm}} models for this database schema.\n\nProvide:\n1. All model definitions with types and relations\n2. Migration file to create the schema\n3. Seed data script\n4. Example queries for common operations\n\n## Acceptance Criteria\n- [ ] Before/after comparison provided\n- [ ] Each recommendation has clear reasoning\n- [ ] Expected performance improvement quantified\n- [ ] Optimization does not affect correctness\n\n## Constraints\n- Do not optimize queries that are not bottlenecks\n- Do not suggest destructive data changes\n- All changes must be reversible",
   "userZh": "## 目标\n为此数据库 Schema 生成 {{orm}} 模型。\n\n## 要求\n为此数据库 Schema 生成 {{orm}} 模型。\n\n请提供：\n1. 所有模型定义（含类型和关系）\n2. 用于创建 Schema 的迁移文件\n3. 种子数据脚本\n4. 常用操作的查询示例\n\n## 验收标准\n- [ ] 给出了优化前后对比\n- [ ] 每个建议有明确原因说明\n- [ ] 包含预期性能提升数据\n- [ ] 优化不影响正确性\n\n## 约束\n- 不要优化没有瓶颈的查询\n- 不要建议删除生产数据\n- 所有变更要可回滚",
+  "output_schema": {
+    "type": "code"
+  },
+  
   "category": [
     "data"
   ],

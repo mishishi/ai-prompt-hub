@@ -60,6 +60,10 @@ export const responsiveReview: LibraryTemplate = {
   },
   "user": "## Task\nReview this page for responsive design.\n\n## Requirements\nReview this page for responsive design.\n\nTarget: {{devices}}\n\nCheck:\n1. Layout — does it adapt smoothly at all breakpoints?\n2. Typography — is text readable at all sizes?\n3. Images — are they properly sized and optimized?\n4. Touch — are interactive elements tappable on mobile?\n5. Navigation — does it work on small screens?\n6. Forms — are inputs usable on touch devices?\n\n## Acceptance Criteria\n- [ ] All UI states handled (default, hover, focus, active, disabled, loading, error, empty)\n- [ ] Responsive design, mobile-friendly\n- [ ] Keyboard navigation supported\n- [ ] ARIA attributes for screen readers\n\n## Constraints\n- Do not use inline styles — use CSS Modules or Tailwind\n- Do not use div for everything — use semantic HTML elements\n- Do not use absolute positioning for layout — use Grid or Flexbox",
   "userZh": "## 目标\n审查此页面的响应式设计。\n\n## 要求\n审查此页面的响应式设计。\n\n目标设备：{{devices}}\n\n检查：\n1. 布局 — 所有断点下是否平滑适配？\n2. 排版 — 所有尺寸下文字是否可读？\n3. 图片 — 大小和优化是否合理？\n4. 触控 — 移动端交互元素是否可点击？\n5. 导航 — 小屏幕下是否可用？\n6. 表单 — 触控设备上输入是否方便？\n\n## 验收标准\n- [ ] UI 状态完整（默认、悬停、焦点、激活、禁用、加载、错误、空）\n- [ ] 响应式设计，支持移动端\n- [ ] 支持键盘导航\n- [ ] 包含 ARIA 属性支持屏幕阅读器\n\n## 约束\n- 不要用内联样式——用 CSS Modules 或 Tailwind\n- 不要用 div 替代语义化元素——button 就是按钮\n- 不要用绝对定位做布局——用 Grid 或 Flexbox",
+  "output_schema": {
+    "type": "markdown"
+  },
+  
   "category": [
     "frontend"
   ],

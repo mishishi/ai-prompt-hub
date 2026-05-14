@@ -70,6 +70,10 @@ export const dbSchemaDesign: LibraryTemplate = {
   },
   "user": "## Task\nDesign a {{db}} schema for a {{domain}} application.\n\n## Requirements\nDesign a {{db}} schema for a {{domain}} application.\n\nProvide:\n1. Entity relationship description\n2. All tables with columns, types, constraints\n3. Indexes with reasoning\n4. Migration strategy\n5. Sample queries for common operations\n\n## Acceptance Criteria\n- [ ] Resource model fields and types are complete\n- [ ] API follows RESTful conventions\n- [ ] Includes error response format and status codes\n- [ ] Has pagination/sorting/filtering strategy\n\n## Constraints\n- Do not use verbs in resource names — use plural nouns\n- Do not return 200 for errors\n- Do not mix inconsistent response formats",
   "userZh": "## 目标\n为 {{domain}} 应用设计 {{db}} 数据库 Schema。\n\n## 要求\n为 {{domain}} 应用设计 {{db}} 数据库 Schema。\n\n请提供：\n1. 实体关系描述\n2. 所有表的列、类型、约束\n3. 索引及原因说明\n4. 迁移策略\n5. 常用操作的示例查询\n\n## 验收标准\n- [ ] 资源模型字段和类型完整清晰\n- [ ] 接口符合 RESTful 规范\n- [ ] 包含错误响应格式和状态码\n- [ ] 有分页/排序/筛选方案\n\n## 约束\n- 不要用动词命名资源——用复数名词\n- 错误时不要返回 200 状态码\n- 不要混用不同的响应格式",
+  "output_schema": {
+    "type": "code"
+  },
+  
   "category": [
     "architecture"
   ],

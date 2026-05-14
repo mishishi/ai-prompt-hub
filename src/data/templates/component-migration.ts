@@ -81,6 +81,10 @@ export const componentMigration: LibraryTemplate = {
   },
   "user": "## Task\nMigrate from {{from}} to {{to}}.\n\n## Requirements\nMigrate from {{from}} to {{to}}.\n\nProvide:\n1. Pattern mapping table (old API -> new API)\n2. Migration order (leaf components first)\n3. Before/after for each component\n4. State management migration strategy\n5. Testing strategy during migration\n\n## Acceptance Criteria\n- [ ] All UI states handled (default, hover, focus, active, disabled, loading, error, empty)\n- [ ] Responsive design, mobile-friendly\n- [ ] Keyboard navigation supported\n- [ ] ARIA attributes for screen readers\n\n## Constraints\n- Do not use inline styles — use CSS Modules or Tailwind\n- Do not use div for everything — use semantic HTML elements\n- Do not use absolute positioning for layout — use Grid or Flexbox",
   "userZh": "## 目标\n从 {{from}} 迁移到 {{to}}。\n\n## 要求\n从 {{from}} 迁移到 {{to}}。\n\n请提供：\n1. 模式映射表（旧 API → 新 API）\n2. 迁移顺序（叶子组件优先）\n3. 每个组件的前后对比\n4. 状态管理迁移策略\n5. 迁移期间的测试策略\n\n## 验收标准\n- [ ] UI 状态完整（默认、悬停、焦点、激活、禁用、加载、错误、空）\n- [ ] 响应式设计，支持移动端\n- [ ] 支持键盘导航\n- [ ] 包含 ARIA 属性支持屏幕阅读器\n\n## 约束\n- 不要用内联样式——用 CSS Modules 或 Tailwind\n- 不要用 div 替代语义化元素——button 就是按钮\n- 不要用绝对定位做布局——用 Grid 或 Flexbox",
+  "output_schema": {
+    "type": "code"
+  },
+  
   "category": [
     "frontend"
   ],

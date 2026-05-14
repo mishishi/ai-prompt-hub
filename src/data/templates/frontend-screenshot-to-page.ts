@@ -61,6 +61,10 @@ export const frontendScreenshotToPage: LibraryTemplate = {
   },
   "user": "## Task\nConvert this design into {{framework}} code.\n\n## Requirements\nConvert this design into {{framework}} code.\n\nRequirements:\n1. Pixel-perfect visual match\n2. Responsive: mobile-first with breakpoints at 768px and 1024px\n3. Accessible: proper ARIA labels, focus management, semantic HTML\n4. Component structure: identify and extract reusable pieces\n5. Include loading and empty states\n\n## Acceptance Criteria\n- [ ] All UI states handled (default, hover, focus, active, disabled, loading, error, empty)\n- [ ] Responsive design, mobile-friendly\n- [ ] Keyboard navigation supported\n- [ ] ARIA attributes for screen readers\n\n## Constraints\n- Do not use inline styles — use CSS Modules or Tailwind\n- Do not use div for everything — use semantic HTML elements\n- Do not use absolute positioning for layout — use Grid or Flexbox",
   "userZh": "## 目标\n将此设计转换为 {{framework}} 代码。\n\n## 要求\n将此设计转换为 {{framework}} 代码。\n\n要求：\n1. 像素级视觉还原\n2. 响应式：移动优先，768px 和 1024px 断点\n3. 无障碍：正确的 ARIA 标签、焦点管理、语义化 HTML\n4. 组件结构：识别并提取可复用组件\n5. 包含加载和空状态\n\n## 验收标准\n- [ ] UI 状态完整（默认、悬停、焦点、激活、禁用、加载、错误、空）\n- [ ] 响应式设计，支持移动端\n- [ ] 支持键盘导航\n- [ ] 包含 ARIA 属性支持屏幕阅读器\n\n## 约束\n- 不要用内联样式——用 CSS Modules 或 Tailwind\n- 不要用 div 替代语义化元素——button 就是按钮\n- 不要用绝对定位做布局——用 Grid 或 Flexbox",
+  "output_schema": {
+    "type": "code"
+  },
+  
   "category": [
     "frontend"
   ],

@@ -60,6 +60,10 @@ export const apiDocGenerator: LibraryTemplate = {
   },
   "user": "## Task\nGenerate {{format}} documentation for this API code.\n\n## Requirements\nGenerate {{format}} documentation for this API code.\n\nInclude:\n1. Overview and base URL\n2. Authentication details\n3. All endpoints with method, path, parameters\n4. Request/response examples for each endpoint\n5. Error codes reference\n6. Rate limiting info\n\n## Acceptance Criteria\n- [ ] Code runs without syntax errors\n- [ ] Core logic has tests\n- [ ] Includes setup and usage instructions\n- [ ] No hardcoded secrets or placeholder credentials\n\n## Constraints\n- Do not output all code at once — follow architecture > implementation > tests order\n- Do not use any type\n- Do not skip error state handling",
   "userZh": "## 目标\n为此 API 代码生成 {{format}} 格式的文档。\n\n## 要求\n为此 API 代码生成 {{format}} 格式的文档。\n\n包含：\n1. 概述和基础 URL\n2. 认证详情\n3. 所有端点（方法、路径、参数）\n4. 每个端点的请求/响应示例\n5. 错误码参考\n6. 速率限制信息\n\n## 验收标准\n- [ ] 代码可直接运行，无语法错误\n- [ ] 核心功能有对应测试\n- [ ] 包含启动和使用说明\n- [ ] 无硬编码密钥或占位凭据\n\n## 约束\n- 不要一次性输出所有代码——按架构→实现→测试的顺序\n- 不要使用 any 类型\n- 不要跳过错误状态处理",
+  "output_schema": {
+    "type": "markdown"
+  },
+  
   "category": [
     "documentation"
   ],

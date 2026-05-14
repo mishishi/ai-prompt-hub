@@ -62,6 +62,10 @@ export const dockerfileOpt: LibraryTemplate = {
   },
   "user": "## Task\nOptimize this Dockerfile.\n\n## Requirements\nOptimize this Dockerfile.\n\nPriority: {{priority}}\n\nProvide:\n1. Current issues identified\n2. Optimized Dockerfile with comments\n3. Expected improvements (size, build time, security)\n4. .dockerignore recommendations\n\n## Acceptance Criteria\n- [ ] Config is ready to use\n- [ ] Includes caching strategy for faster builds\n- [ ] Secrets use environment variables, not hardcoded\n- [ ] Includes failure notifications\n\n## Constraints\n- Do not hardcode keys or tokens\n- Do not use floating version tags — pin with commit SHA\n- Set reasonable timeout for every job",
   "userZh": "## 目标\n优化此 Dockerfile。\n\n## 要求\n优化此 Dockerfile。\n\n优先级：{{priority}}\n\n请提供：\n1. 识别到的当前问题\n2. 优化后的 Dockerfile（含注释）\n3. 预期提升（大小、构建时间、安全性）\n4. .dockerignore 建议\n\n## 验收标准\n- [ ] 配置文件可直接使用\n- [ ] 包含缓存策略加速构建\n- [ ] 敏感信息使用 secrets 而非硬编码\n- [ ] 包含失败通知\n\n## 约束\n- 不要硬编码密钥或 token\n- 不要使用浮动版本号（用 commit SHA 固定）\n- 每个 job 设置合理超时",
+  "output_schema": {
+    "type": "code"
+  },
+  
   "category": [
     "devops"
   ],

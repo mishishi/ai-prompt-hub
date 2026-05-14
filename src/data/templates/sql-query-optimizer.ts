@@ -60,6 +60,10 @@ export const sqlQueryOptimizer: LibraryTemplate = {
   },
   "user": "## Task\nOptimize this {{db}} SQL query.\n\n## Requirements\nOptimize this {{db}} SQL query.\n\nAnalyze:\n1. Current execution plan and bottlenecks\n2. Missing indexes\n3. Query rewrite suggestions\n4. Schema changes if needed\n5. Expected performance improvement\n\n## Acceptance Criteria\n- [ ] Before/after comparison provided\n- [ ] Each recommendation has clear reasoning\n- [ ] Expected performance improvement quantified\n- [ ] Optimization does not affect correctness\n\n## Constraints\n- Do not optimize queries that are not bottlenecks\n- Do not suggest destructive data changes\n- All changes must be reversible",
   "userZh": "## 目标\n优化此 {{db}} SQL 查询。\n\n## 要求\n优化此 {{db}} SQL 查询。\n\n分析：\n1. 当前执行计划和瓶颈\n2. 缺失的索引\n3. 查询重写建议\n4. 必要的 Schema 变更\n5. 预期性能提升\n\n## 验收标准\n- [ ] 给出了优化前后对比\n- [ ] 每个建议有明确原因说明\n- [ ] 包含预期性能提升数据\n- [ ] 优化不影响正确性\n\n## 约束\n- 不要优化没有瓶颈的查询\n- 不要建议删除生产数据\n- 所有变更要可回滚",
+  "output_schema": {
+    "type": "code"
+  },
+  
   "category": [
     "data"
   ],

@@ -61,6 +61,10 @@ export const readmeGenerator: LibraryTemplate = {
   },
   "user": "## Task\nGenerate a README for this {{project_type}} project.\n\n## Requirements\nGenerate a README for this {{project_type}} project.\n\nSections:\n1. Title and one-line description\n2. Features (bullet list)\n3. Quick start (install, configure, run)\n4. Usage examples with code\n5. API reference (if applicable)\n6. Configuration options\n7. Contributing guide\n8. License\n\n## Acceptance Criteria\n- [ ] Code runs without syntax errors\n- [ ] Core logic has tests\n- [ ] Includes setup and usage instructions\n- [ ] No hardcoded secrets or placeholder credentials\n\n## Constraints\n- Do not output all code at once — follow architecture > implementation > tests order\n- Do not use any type\n- Do not skip error state handling",
   "userZh": "## 目标\n为此 {{project_type}} 项目生成 README。\n\n## 要求\n为此 {{project_type}} 项目生成 README。\n\n章节：\n1. 标题和一句话简介\n2. 功能特性（列表）\n3. 快速上手（安装、配置、运行）\n4. 使用示例（含代码）\n5. API 参考（如适用）\n6. 配置选项\n7. 贡献指南\n8. 许可证\n\n## 验收标准\n- [ ] 代码可直接运行，无语法错误\n- [ ] 核心功能有对应测试\n- [ ] 包含启动和使用说明\n- [ ] 无硬编码密钥或占位凭据\n\n## 约束\n- 不要一次性输出所有代码——按架构→实现→测试的顺序\n- 不要使用 any 类型\n- 不要跳过错误状态处理",
+  "output_schema": {
+    "type": "markdown"
+  },
+  
   "category": [
     "documentation"
   ],

@@ -62,6 +62,10 @@ export const frontendRefactorAgent: LibraryTemplate = {
   },
   "user": "## Task\nRefactor this frontend codebase:\n\n## Requirements\nRefactor this frontend codebase:\n\nTarget: {{target}}\n\nProvide:\n1. Migration plan with phases\n2. Before/after examples for each pattern\n3. All refactored files\n4. Regression test checklist\n\n## Acceptance Criteria\n- [ ] Code runs without syntax errors\n- [ ] Core logic has tests\n- [ ] Includes setup and usage instructions\n- [ ] No hardcoded secrets or placeholder credentials\n\n## Constraints\n- Do not output all code at once — follow architecture > implementation > tests order\n- Do not use any type\n- Do not skip error state handling",
   "userZh": "## 目标\n重构此前端项目：\n\n## 要求\n重构此前端项目：\n\n目标：{{target}}\n\n请提供：\n1. 分阶段的迁移计划\n2. 每种模式的前后对比示例\n3. 全部重构后的文件\n4. 回归测试清单\n\n## 验收标准\n- [ ] 代码可直接运行，无语法错误\n- [ ] 核心功能有对应测试\n- [ ] 包含启动和使用说明\n- [ ] 无硬编码密钥或占位凭据\n\n## 约束\n- 不要一次性输出所有代码——按架构→实现→测试的顺序\n- 不要使用 any 类型\n- 不要跳过错误状态处理",
+  "output_schema": {
+    "type": "code"
+  },
+  
   "category": [
     "agentic",
     "frontend"

@@ -60,6 +60,10 @@ export const apiIntegrationTest: LibraryTemplate = {
   },
   "user": "## Task\nGenerate integration tests for this {{api_type}} API.\n\n## Requirements\nGenerate integration tests for this {{api_type}} API.\n\nTest each endpoint for:\n1. 200 success with valid input\n2. 400/422 with invalid input\n3. 401 without auth / 403 with insufficient permissions\n4. 404 for non-existent resources\n5. Response schema validation\n\nProvide the test file with setup and teardown.\n\n## Acceptance Criteria\n- [ ] Covers happy path, edge cases, and error paths\n- [ ] Each test is independent with clear name\n- [ ] Uses AAA pattern (Arrange, Act, Assert)\n- [ ] No test order dependencies\n\n## Constraints\n- Do not test third-party library internals\n- Do not use setTimeout for async — use async/await\n- Do not test private methods",
   "userZh": "## 目标\n为此 {{api_type}} API 生成集成测试。\n\n## 要求\n为此 {{api_type}} API 生成集成测试。\n\n每个端点测试：\n1. 200 成功（有效输入）\n2. 400/422（无效输入）\n3. 401 无认证 / 403 权限不足\n4. 404 不存在的资源\n5. 响应结构校验\n\n提供含 setup 和 teardown 的测试文件。\n\n## 验收标准\n- [ ] 覆盖正常路径、边界情况、错误路径\n- [ ] 每个测试独立且包含清晰的测试名称\n- [ ] 使用 AAA 模式（准备、执行、断言）\n- [ ] 不依赖测试执行顺序\n\n## 约束\n- 不要测试第三方库的内部实现\n- 不要用 setTimeout 等待异步操作——用 async/await\n- 不要测试私有方法",
+  "output_schema": {
+    "type": "code"
+  },
+  
   "category": [
     "testing"
   ],

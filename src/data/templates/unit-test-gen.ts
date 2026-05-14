@@ -83,6 +83,10 @@ export const unitTestGen: LibraryTemplate = {
   },
   "user": "## Task\nGenerate {{framework}} unit tests for this {{language}} code.\n\n## Requirements\nGenerate {{framework}} unit tests for this {{language}} code.\n\nCover:\n1. Happy path (expected input returns expected output)\n2. Edge cases (null, undefined, empty, very large values)\n3. Error paths (invalid input, network failures, timeouts)\n4. Boundary values\n\nUse AAA pattern: Arrange, Act, Assert\n\n## Acceptance Criteria\n- [ ] Covers happy path, edge cases, and error paths\n- [ ] Each test is independent with clear name\n- [ ] Uses AAA pattern (Arrange, Act, Assert)\n- [ ] No test order dependencies\n\n## Constraints\n- Do not test third-party library internals\n- Do not use setTimeout for async — use async/await\n- Do not test private methods",
   "userZh": "## 目标\n为以下 {{language}} 代码生成 {{framework}} 单元测试。\n\n## 要求\n为以下 {{language}} 代码生成 {{framework}} 单元测试。\n\n覆盖：\n1. 正常路径（预期输入返回预期输出）\n2. 边界情况（null、undefined、空值、超大值）\n3. 错误路径（无效输入、网络失败、超时）\n4. 边界值测试\n\n使用 AAA 模式：准备、执行、断言\n\n## 验收标准\n- [ ] 覆盖正常路径、边界情况、错误路径\n- [ ] 每个测试独立且包含清晰的测试名称\n- [ ] 使用 AAA 模式（准备、执行、断言）\n- [ ] 不依赖测试执行顺序\n\n## 约束\n- 不要测试第三方库的内部实现\n- 不要用 setTimeout 等待异步操作——用 async/await\n- 不要测试私有方法",
+  "output_schema": {
+    "type": "code"
+  },
+  
   "category": [
     "testing"
   ],

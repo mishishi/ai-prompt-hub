@@ -70,6 +70,10 @@ export const reactComponentGen: LibraryTemplate = {
   },
   "user": "## Task\nCreate a React component: {{component}}\n\n## Requirements\nCreate a React component: {{component}}\n\nStyling: {{styling}}\n\nProvide:\n1. Component with TypeScript props interface\n2. All UI states handled\n3. Keyboard and screen reader accessibility\n4. Unit tests with React Testing Library\n5. Usage examples\n\n## Acceptance Criteria\n- [ ] All UI states handled (default, hover, focus, active, disabled, loading, error, empty)\n- [ ] Responsive design, mobile-friendly\n- [ ] Keyboard navigation supported\n- [ ] ARIA attributes for screen readers\n\n## Constraints\n- Do not use inline styles — use CSS Modules or Tailwind\n- Do not use div for everything — use semantic HTML elements\n- Do not use absolute positioning for layout — use Grid or Flexbox",
   "userZh": "## 目标\n创建一个 React 组件：{{component}}\n\n## 要求\n创建一个 React 组件：{{component}}\n\n样式方案：{{styling}}\n\n请提供：\n1. 带 TypeScript props 接口的组件\n2. 所有 UI 状态处理\n3. 键盘和屏幕阅读器无障碍支持\n4. React Testing Library 单元测试\n5. 使用示例\n\n## 验收标准\n- [ ] UI 状态完整（默认、悬停、焦点、激活、禁用、加载、错误、空）\n- [ ] 响应式设计，支持移动端\n- [ ] 支持键盘导航\n- [ ] 包含 ARIA 属性支持屏幕阅读器\n\n## 约束\n- 不要用内联样式——用 CSS Modules 或 Tailwind\n- 不要用 div 替代语义化元素——button 就是按钮\n- 不要用绝对定位做布局——用 Grid 或 Flexbox",
+  "output_schema": {
+    "type": "code"
+  },
+  
   "category": [
     "frontend"
   ],

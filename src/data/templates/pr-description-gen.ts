@@ -62,6 +62,10 @@ export const prDescriptionGen: LibraryTemplate = {
   },
   "user": "## Task\nGenerate a PR description from this diff.\n\n## Requirements\nGenerate a PR description from this diff.\n\nTarget audience: {{audience}}\n\nSections:\n1. Summary (one sentence)\n2. Problem & motivation\n3. Changes overview (bullet list)\n4. Screenshots (note where UI screenshots are needed)\n5. Testing performed\n6. Breaking changes (if any)\n7. Checklist\n\n## Acceptance Criteria\n- [ ] Output is ready to use without manual editing\n- [ ] Includes usage examples\n- [ ] Format follows specification\n- [ ] Includes common pitfalls\n\n## Constraints\n- Do not output redundant content — only what the user needs\n- Do not modify user original input\n- When unsure, provide multiple options instead of guessing",
   "userZh": "## 目标\n根据此 diff 生成 PR 描述。\n\n## 要求\n根据此 diff 生成 PR 描述。\n\n读者：{{audience}}\n\n章节：\n1. 摘要（一句话）\n2. 问题与动机\n3. 变更概览（列表）\n4. 截图（标注需要 UI 截图的位置）\n5. 测试情况\n6. 破坏性变更（如有）\n7. 检查清单\n\n## 验收标准\n- [ ] 输出可直接使用，无需手动调整\n- [ ] 包含使用示例\n- [ ] 格式符合规范\n- [ ] 包含常见错误提醒\n\n## 约束\n- 不要输出冗余内容——只给用户需要的\n- 不要修改用户的原始输入\n- 如果不确定，给出多个选项而非猜测",
+  "output_schema": {
+    "type": "markdown"
+  },
+  
   "category": [
     "efficiency"
   ],

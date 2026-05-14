@@ -60,6 +60,10 @@ export const typescriptTypeOptimizer: LibraryTemplate = {
   },
   "user": "## Task\nAudit these TypeScript types.\n\n## Requirements\nAudit these TypeScript types.\n\nStrictness: {{strictness}}\n\nIdentify:\n1. any types and unsafe casts — suggest replacements\n2. Overly wide types that allow invalid states\n3. Missing null/undefined checks\n4. Opportunities for discriminated unions\n5. Generic improvements\n\nProvide corrected type definitions.\n\n## Acceptance Criteria\n- [ ] Each suggestion has before/after code comparison\n- [ ] Explains why the change is better\n- [ ] Flags security risks when relevant\n- [ ] Does not break existing functionality\n\n## Constraints\n- Do not modify project structure or file names\n- Do not enforce personal style preferences\n- Respect existing project conventions",
   "userZh": "## 目标\n审查此 TypeScript 类型定义。\n\n## 要求\n审查此 TypeScript 类型定义。\n\n严格程度：{{strictness}}\n\n识别：\n1. any 类型和不安全的类型断言 — 给出替代方案\n2. 过于宽泛的类型（允许非法状态）\n3. 缺少 null/undefined 检查\n4. 可使用可辨识联合类型的机会\n5. 泛型改进\n\n请提供修正后的类型定义。\n\n## 验收标准\n- [ ] 每个建议给出前后对比代码\n- [ ] 解释了为什么这样改更好\n- [ ] 涉及安全问题时标注风险等级\n- [ ] 不破坏现有功能\n\n## 约束\n- 不要修改项目结构或文件名\n- 不要强制个人风格偏好\n- 遵循项目现有约定",
+  "output_schema": {
+    "type": "code"
+  },
+  
   "category": [
     "language"
   ],

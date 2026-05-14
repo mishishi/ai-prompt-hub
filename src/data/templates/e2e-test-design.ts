@@ -60,6 +60,10 @@ export const e2eTestDesign: LibraryTemplate = {
   },
   "user": "## Task\nDesign an E2E test plan using {{tool}} for this application.\n\n## Requirements\nDesign an E2E test plan using {{tool}} for this application.\n\nInclude:\n1. Critical user journeys (top 5 flows)\n2. Test scenarios for each journey with given/when/then\n3. Selector strategy (data-testid naming convention)\n4. Test data management approach\n5. CI integration with parallel execution\n\n## Acceptance Criteria\n- [ ] Covers happy path, edge cases, and error paths\n- [ ] Each test is independent with clear name\n- [ ] Uses AAA pattern (Arrange, Act, Assert)\n- [ ] No test order dependencies\n\n## Constraints\n- Do not test third-party library internals\n- Do not use setTimeout for async — use async/await\n- Do not test private methods",
   "userZh": "## 目标\n使用 {{tool}} 为此应用设计 E2E 测试方案。\n\n## 要求\n使用 {{tool}} 为此应用设计 E2E 测试方案。\n\n包含：\n1. 关键用户旅程（前 5 个流程）\n2. 每个旅程的测试场景（given/when/then）\n3. 选择器策略（data-testid 命名规范）\n4. 测试数据管理方案\n5. 并行执行的 CI 集成方案\n\n## 验收标准\n- [ ] 覆盖正常路径、边界情况、错误路径\n- [ ] 每个测试独立且包含清晰的测试名称\n- [ ] 使用 AAA 模式（准备、执行、断言）\n- [ ] 不依赖测试执行顺序\n\n## 约束\n- 不要测试第三方库的内部实现\n- 不要用 setTimeout 等待异步操作——用 async/await\n- 不要测试私有方法",
+  "output_schema": {
+    "type": "code"
+  },
+  
   "category": [
     "testing"
   ],

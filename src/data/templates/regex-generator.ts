@@ -84,6 +84,10 @@ export const regexGenerator: LibraryTemplate = {
   },
   "user": "## Task\nGenerate a {{language}} regex for this requirement.\n\n## Requirements\nGenerate a {{language}} regex for this requirement.\n\nFlags: {{flags}}\n\nProvide:\n1. The regex pattern\n2. Plain-language explanation of each component\n3. Test cases (should match + should not match)\n4. {{language}} code example with the regex in use\n5. Performance notes (backtracking risks)\n\n## Acceptance Criteria\n- [ ] Output is ready to use without manual editing\n- [ ] Includes usage examples\n- [ ] Format follows specification\n- [ ] Includes common pitfalls\n\n## Constraints\n- Do not output redundant content — only what the user needs\n- Do not modify user original input\n- When unsure, provide multiple options instead of guessing",
   "userZh": "## 目标\n为以下需求生成 {{language}} 正则表达式。\n\n## 要求\n为以下需求生成 {{language}} 正则表达式。\n\n标志：{{flags}}\n\n请提供：\n1. 正则表达式\n2. 每个组成部分的通俗解释\n3. 测试用例（应匹配 + 不应匹配）\n4. {{language}} 代码使用示例\n5. 性能说明（回溯风险）\n\n## 验收标准\n- [ ] 输出可直接使用，无需手动调整\n- [ ] 包含使用示例\n- [ ] 格式符合规范\n- [ ] 包含常见错误提醒\n\n## 约束\n- 不要输出冗余内容——只给用户需要的\n- 不要修改用户的原始输入\n- 如果不确定，给出多个选项而非猜测",
+  "output_schema": {
+    "type": "code"
+  },
+  
   "category": [
     "efficiency"
   ],
