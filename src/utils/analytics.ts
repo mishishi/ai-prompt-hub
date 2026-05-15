@@ -1,5 +1,5 @@
 export interface AnalyticsEvent {
-  type: 'template_view' | 'template_copy' | 'ai_generate' | 'ai_copy' | 'ai_feedback' | 'ai_save';
+  type: 'template_view' | 'template_copy' | 'ai_generate' | 'ai_copy' | 'ai_feedback' | 'ai_save' | 'template_save';
   templateId?: string;
   timestamp: number;
   lang?: string;

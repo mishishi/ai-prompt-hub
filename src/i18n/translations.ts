@@ -1,4 +1,4 @@
-export type Lang = "en" | "zh-CN";
+﻿export type Lang = "en" | "zh-CN";
 
 export const UI: Record<Lang, Record<string, string>> = {
   en: {
@@ -25,6 +25,8 @@ export const UI: Record<Lang, Record<string, string>> = {
   "detail.required_placeholder": "Required...",
   "detail.copy": "Copy Prompt",
   "detail.copied": "Copied!",
+  "detail.save": "Save",
+  "detail.saved": "Saved!",
   "detail.preview": "Preview",
   "detail.setValues": "Fill in the required variables to preview...",
   "category.code-review": "Code Review",
@@ -70,6 +72,8 @@ export const UI: Record<Lang, Record<string, string>> = {
   "detail.required_placeholder": "必填...",
   "detail.copy": "复制 Prompt",
   "detail.copied": "已复制！",
+  "detail.save": "保存",
+  "detail.saved": "已保存！",
   "detail.preview": "预览",
   "detail.setValues": "填写必填变量后即可预览生成效果...",
   "category.code-review": "代码审查",

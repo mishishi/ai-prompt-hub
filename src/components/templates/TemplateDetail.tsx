@@ -1,12 +1,14 @@
 ﻿import { useState, useMemo, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Copy, Check, Sparkles, ChevronLeftIcon } from 'lucide-react';
+import { Copy, Check, Sparkles, ChevronLeftIcon, Save } from 'lucide-react';
 import { templates } from '../../data/templates';
 import { tName, tShort, tTips, tLabel, tOptions } from '../../data/templates/helper';
 import { renderPrompt } from '../../utils/renderer';
 import { copyToClipboard } from '../../utils/clipboard';
 import { track } from '../../utils/analytics';
 import { useT } from '../../i18n/LanguageContext';
+import { savePrompt, generateId } from '../../utils/storage';
+import type { Prompt } from '../../types';
 export function TemplateDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -16,6 +18,7 @@ export function TemplateDetail() {
   const [values, setValues] = useState<Record<string, string | boolean | string[]>>({});
   const [copied, setCopied] = useState(false);
   const [flash, setFlash] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [ready, setReady] = useState(false);
   const [mobileTab, setMobileTab] = useState<'params' | 'preview'>('params');
   const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
@@ -37,6 +40,36 @@ export function TemplateDetail() {
     if (!template) return '';
     return renderPrompt(template, lang, values);
   }, [template, lang, values]);
+
+  const handleSave = () => {
+    if (!template) return;
+    const id = generateId();
+    const r = rendered;
+    const p: Prompt = {
+      id,
+      yaml: "",
+      meta: { name: template.meta.name, nameZh: template.meta.nameZh, description: template.meta.description, descriptionZh: template.meta.descriptionZh, tags: [...template.meta.tags], platform: template.meta.platform },
+      variables: template.variables.map(v => ({ ...v })),
+      system: {
+        role: template.system.role || "", roleZh: template.system.roleZh,
+        personality: template.system.personality, personalityZh: template.system.personalityZh,
+        rules: [...(template.system.rules || [])], rulesZh: [...(template.system.rulesZh || [])],
+        stop_rules: [...(template.system.stop_rules || [])], stop_rulesZh: [...(template.system.stop_rulesZh || [])]
+      },
+      user: r,
+      userZh: lang === "zh-CN" ? r : undefined,
+      source: "library",
+      forkedFrom: template.id,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      version: 1,
+      versions: [],
+    };
+    savePrompt(p);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+    track({ type: "template_save", templateId: template.id, lang });
+  };
   const handleCopy = async () => {
     track({ type: 'template_copy', templateId: template!.id, lang });
     await copyToClipboard(rendered);
@@ -75,11 +108,11 @@ export function TemplateDetail() {
     <div className="flex flex-col lg:flex-row h-full page-enter">
       {/* Mobile tab switcher */}
       <div className="flex lg:hidden border-b border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] shrink-0">
-        <button onClick={() => setMobileTab('params')} className={"flex-1 py-2.5 text-xs font-semibold text-center transition-all " + (mobileTab === 'params' ? "text-[var(--color-bench-accent)] border-b-2 border-[var(--color-bench-accent)]" : "text-[var(--color-bench-muted)] border-b-2 border-transparent")}>{tq('Parameters', '????')}</button>
-        <button onClick={() => setMobileTab('preview')} className={"flex-1 py-2.5 text-xs font-semibold text-center transition-all " + (mobileTab === 'preview' ? "text-[var(--color-bench-accent)] border-b-2 border-[var(--color-bench-accent)]" : "text-[var(--color-bench-muted)] border-b-2 border-transparent")}>{tq('Preview', '??')}</button>
+        <button onClick={() => setMobileTab('params')} className={"flex-1 py-2.5 text-xs font-semibold text-center transition-all " + (mobileTab === 'params' ? "text-[var(--color-bench-accent)] border-b-2 border-[var(--color-bench-accent)]" : "text-[var(--color-bench-muted)] border-b-2 border-transparent")}>{tq('Parameters', '参数设置')}</button>
+        <button onClick={() => setMobileTab('preview')} className={"flex-1 py-2.5 text-xs font-semibold text-center transition-all " + (mobileTab === 'preview' ? "text-[var(--color-bench-accent)] border-b-2 border-[var(--color-bench-accent)]" : "text-[var(--color-bench-muted)] border-b-2 border-transparent")}>{tq('Preview', '预览')}</button>
       </div>
       {/* Left panel */}
-      <div className="w-full lg:w-80 lg:border-r border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] overflow-y-auto flex flex-col lg:max-h-full hidden lg:flex max-h-[50vh] lg:max-h-full border-b lg:border-b-0">
+      <div className={"w-full lg:w-80 lg:border-r border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] overflow-y-auto flex flex-col lg:max-h-full max-h-[50vh] lg:max-h-full border-b lg:border-b-0 " + (mobileTab === 'params' ? "flex" : "hidden") + " lg:flex"}>
         <div className="p-5 border-b border-[var(--color-bench-border)]">
           <button onClick={() => navigate('/library')} className="flex items-center gap-1.5 text-xs text-[var(--color-bench-muted)] hover:text-[var(--color-bench-accent)] transition-colors mb-3">
             <ChevronLeftIcon size={12} className="" />
@@ -157,6 +190,7 @@ export function TemplateDetail() {
             {copied ? <Check size={14} /> : <Copy size={14} />}
             {copied ? t('detail.copied') : t('detail.copy')}
           </button>
+          <button onClick={handleSave} className={"flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all " + (saved ? "bg-[var(--color-bench-success)]/15 text-[var(--color-bench-success)]" : "bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)] hover:bg-[var(--color-bench-accent)]/20")}><Save size={14} />{t(saved ? "detail.saved" : "detail.save")}</button>
         </div>
         <div className="flex-1 overflow-y-auto p-6 bg-[var(--color-bench-bg)]">
           <div className={'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-xl overflow-hidden shadow-lg ' + (flash ? 'preview-flash' : '')}>
