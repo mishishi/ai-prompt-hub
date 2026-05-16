@@ -20,9 +20,19 @@ function save(events: AnalyticsEvent[]) {
 }
 
 export function track(event: Omit<AnalyticsEvent, 'timestamp'>) {
+  const fullEvent = { ...event, timestamp: Date.now() };
+
+  // Local storage (always works)
   const events = load();
-  events.push({ ...event, timestamp: Date.now() });
+  events.push(fullEvent);
   save(events);
+
+  // Sync to Vercel KV (fire-and-forget)
+  fetch('/api/events', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(fullEvent),
+  }).catch(() => {});
 }
 
 export function getStats() {

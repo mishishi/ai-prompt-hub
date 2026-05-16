@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from 'react';
+import { useMemo, useState, useEffect, type ReactNode } from 'react';
 import { BarChart3, Eye, Copy, Zap, ThumbsUp, RefreshCw, Star, TrendingUp } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
@@ -17,6 +17,17 @@ export function Dashboard() {
   const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
   const [today, setToday] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [kvData, setKvData] = useState<any>(null);
+  const [kvLoading, setKvLoading] = useState(false);
+
+  useEffect(() => {
+    setKvLoading(true);
+    fetch(`/api/stats${today ? '?today=1' : ''}`)
+      .then(r => r.json())
+      .then(data => { if (!data.error) setKvData(data); })
+      .catch(() => {})
+      .finally(() => setKvLoading(false));
+  }, [refreshKey, today]);
 
   const events: AnalyticsEvent[] = useMemo(() => getEvents(), [refreshKey]);
   const favorites = useMemo(() => getFavorites(), [refreshKey]);
@@ -26,13 +37,20 @@ export function Dashboard() {
   const todayTs = todayStart.getTime();
   const filteredEvents = today ? events.filter(e => e.timestamp >= todayTs) : events;
 
+  const mergedEvents = useMemo(() => {
+    if (!kvData?.events) return filteredEvents;
+    const localIds = new Set(filteredEvents.map((e: any) => e.timestamp + (e.templateId || '')));
+    const kvEvents = kvData.events.filter((e: any) => !localIds.has(e.timestamp + (e.templateId || '')));
+    return [...filteredEvents, ...kvEvents].sort((a: any, b: any) => a.timestamp - b.timestamp);
+  }, [filteredEvents, kvData]);
+
   // Stats from filtered events
   const filteredStats = useMemo(() => {
     const views: Record<string, number> = {};
     const copies: Record<string, number> = {};
     let aiGen = 0;
     let aiCopy = 0;
-    for (const e of filteredEvents) {
+    for (const e of mergedEvents) {
       if (e.type === 'template_view' && e.templateId) views[e.templateId] = (views[e.templateId] || 0) + 1;
       if (e.type === 'template_copy' && e.templateId) copies[e.templateId] = (copies[e.templateId] || 0) + 1;
       if (e.type === 'ai_generate') aiGen++;
@@ -77,7 +95,7 @@ export function Dashboard() {
   // Category distribution for chart
   const catDist = useMemo(() => {
     const dist: Record<string, number> = {};
-    for (const e of filteredEvents) {
+    for (const e of mergedEvents) {
       if (e.type !== 'template_view') continue;
       const tmpl = templates.find(tpl => tpl.id === e.templateId);
       if (tmpl) tmpl.category.forEach(c => { dist[c] = (dist[c] || 0) + 1; });
@@ -90,6 +108,7 @@ export function Dashboard() {
 
   // 7-day trend
   const trendData = useMemo(() => {
+    if (kvData?.trend) return kvData.trend;
     const days: { date: string; views: number; copies: number; gens: number }[] = [];
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
@@ -109,7 +128,7 @@ export function Dashboard() {
   }, [events, lang]);
 
   // Recent events
-  const recentEvents = useMemo(() => filteredEvents.slice(-8).reverse(), [filteredEvents]);
+  const recentEvents = useMemo(() => mergedEvents.slice(-8).reverse(), [mergedEvents]);
 
 
 
@@ -135,7 +154,7 @@ export function Dashboard() {
             {tq('Today', '今日')}
           </button>
           <button onClick={() => setRefreshKey(k => k + 1)} className="p-2 rounded-lg text-[var(--color-bench-muted)] hover:text-[var(--color-bench-text)] hover:bg-[var(--color-bench-elevated)] transition-colors cursor-pointer">
-            <RefreshCw size={14} />
+            <RefreshCw size={14} className={kvLoading ? "animate-spin" : ""} />
           </button>
         </div>
       </div>
