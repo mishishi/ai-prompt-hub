@@ -2,7 +2,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { Copy, Check, Sparkles, ChevronLeftIcon, Save, Link2 } from 'lucide-react';
 import { templates } from '../../data/templates';
-import { TemplateCard } from './TemplateCard';
 import { tName, tShort, tTips, tLabel, tOptions } from '../../data/templates/helper';
 import { renderPrompt } from '../../utils/renderer';
 import { copyToClipboard } from '../../utils/clipboard';
@@ -45,12 +44,6 @@ export function TemplateDetail() {
     return renderPrompt(template, lang, values);
   }, [template, lang, values]);
 
-  const related = useMemo(() => {
-    if (!template) return [];
-    return templates
-      .filter(t => t.id !== template.id && t.category.some(c => template.category.includes(c)))
-      .slice(0, 3);
-  }, [template]);
 
   const handleShare = () => {
     const url = window.location.href;
@@ -224,21 +217,6 @@ const handleSave = () => {
               <pre className="prompt-preview overflow-x-auto max-h-[calc(100vh-200px)] md:max-h-[calc(100vh-280px)]">{rendered || <span className="text-[var(--color-bench-muted)] italic">{t('detail.setValues')}</span>}</pre>
             </div>
           </div>
-
-          {related.length > 0 && (
-            <div className="mt-5">
-              <h3 className="text-xs font-semibold text-[var(--color-bench-muted)] uppercase tracking-wider mb-2.5">
-                {tq('Related', '相关推荐')}
-              </h3>
-              <div className="flex gap-2 overflow-x-auto pb-1">
-                {related.map((tmpl) => (
-                  <div key={tmpl.id} className="flex-shrink-0 w-48" onClick={() => navigate('/template/' + tmpl.id)}>
-                    <TemplateCard template={tmpl} onClick={() => navigate('/template/' + tmpl.id)} />
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>
