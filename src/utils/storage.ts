@@ -28,3 +28,31 @@ export function deletePrompt(id: string): void {
 export function generateId(): string {
   return 'prompt_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
 }
+
+
+const FAVORITES_KEY = 'promptbench-favorites';
+
+export function getFavorites(): string[] {
+  try {
+    const raw = localStorage.getItem(FAVORITES_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+export function toggleFavorite(id: string): boolean {
+  const favs = getFavorites();
+  const idx = favs.indexOf(id);
+  if (idx >= 0) {
+    favs.splice(idx, 1);
+    localStorage.setItem(FAVORITES_KEY, JSON.stringify(favs));
+    return false;
+  } else {
+    favs.push(id);
+    localStorage.setItem(FAVORITES_KEY, JSON.stringify(favs));
+    return true;
+  }
+}
+
+export function isFavorite(id: string): boolean {
+  return getFavorites().includes(id);
+}

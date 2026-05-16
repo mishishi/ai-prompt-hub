@@ -1,14 +1,16 @@
 import { useState } from 'react';
-import { Copy, Check } from 'lucide-react';
+import { Copy, Check, Star } from 'lucide-react';
 import type { LibraryTemplate } from '../../types';
 import { useT } from '../../i18n/LanguageContext';
 import { tName, tShort } from '../../data/templates/helper';
 import { copyToClipboard } from '../../utils/clipboard';
+import { toggleFavorite, isFavorite } from '../../utils/storage';
 import { getPlatformLabel } from '../../utils/platform';
 
 export function TemplateCard({ template, onClick }: { template: LibraryTemplate; onClick: () => void }) {
   const { t, lang } = useT();
   const [copied, setCopied] = useState(false);
+  const [fav, setFav] = useState(() => isFavorite(template.id));
   const platform = template.meta.platform;
 
   const handleCopy = async (e: React.MouseEvent) => {
@@ -26,6 +28,13 @@ export function TemplateCard({ template, onClick }: { template: LibraryTemplate;
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleFavorite = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const now = toggleFavorite(template.id);
+    setFav(now);
+  };
+
   const diffColors: Record<string, string> = {
     Beginner: 'text-[var(--color-difficulty-beginner)]',
     Intermediate: 'text-[var(--color-difficulty-intermediate)]',
@@ -40,6 +49,9 @@ export function TemplateCard({ template, onClick }: { template: LibraryTemplate;
       <div className="relative z-10 flex flex-col h-full">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
+          <button onClick={handleFavorite} className={`absolute top-3 right-3 z-20 p-1.5 rounded-lg transition-all duration-200 ${fav ? 'text-[var(--color-bench-warn)] bg-[var(--color-bench-warn)]/10' : 'text-[var(--color-bench-muted)] hover:text-[var(--color-bench-warn)] hover:bg-[var(--color-bench-warn)]/10 opacity-0 group-hover:opacity-100'}`} title={fav ? 'Unfavorite' : 'Favorite'}>
+            <Star size={14} fill={fav ? 'currentColor' : 'none'} />
+          </button>
           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-sm font-semibold uppercase tracking-wider bg-[var(--color-bench-accent-secondary)]/10 text-[var(--color-bench-accent-secondary)]">
             {getPlatformLabel(platform, lang)}
           </span>

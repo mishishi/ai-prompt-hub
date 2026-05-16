@@ -1,7 +1,8 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Search, Sparkles, Zap } from 'lucide-react';
+import { Search, Sparkles, Zap, Star } from 'lucide-react';
 import { templates, categories, getTemplatesByCategory, searchTemplates } from '../../data/templates';
+import { getFavorites } from '../../utils/storage';
 import { TemplateCard } from './TemplateCard';
 import { useT } from '../../i18n/LanguageContext';
 
@@ -11,6 +12,8 @@ export function TemplateBrowser() {
   const { t, lang } = useT();
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [activeCategory, setActiveCategory] = useState<string | null>(searchParams.get('category') || null);
+  const [showFavorites, setShowFavorites] = useState(false);
+  const favorites = useMemo(() => getFavorites(), []);
 
   useEffect(() => {
     if (searchParams.get('focus') === 'search') {
@@ -29,10 +32,14 @@ export function TemplateBrowser() {
   }, []);
 
   const filtered = useMemo(() => {
-    if (search.trim()) return searchTemplates(search);
+    if (search.trim()) {
+      const results = searchTemplates(search);
+      return showFavorites ? results.filter(t => favorites.includes(t.id)) : results;
+    }
+    if (showFavorites) return templates.filter(t => favorites.includes(t.id));
     if (activeCategory) return getTemplatesByCategory(activeCategory);
     return templates;
-  }, [search, activeCategory]);
+  }, [search, activeCategory, showFavorites, favorites]);
 
 
   return (
@@ -52,6 +59,7 @@ export function TemplateBrowser() {
 
       <div className="flex flex-wrap gap-2 mb-8">
         <button onClick={() => setActiveCategory(null)} className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${!activeCategory ? 'bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)] shadow-[0_0_12px_var(--color-bench-accent-glow)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}>{t('browser.all')} ({templates.length})</button>
+        <button onClick={() => { setShowFavorites(!showFavorites); if (!showFavorites) setActiveCategory(null); }} className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-1.5 ${showFavorites ? 'bg-[var(--color-bench-warn)]/15 text-[var(--color-bench-warn)] shadow-[0_0_12px_var(--color-bench-warn)]/20' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}><Star size={12} fill={showFavorites ? 'currentColor' : 'none'} />{t('browser.favorites')} ({favorites.length})</button>
         {categories.map((cat) => (
           <button key={cat.id} onClick={() => setActiveCategory(cat.id)} className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${activeCategory === cat.id ? 'bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)] shadow-[0_0_12px_var(--color-bench-accent-glow)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}>{t('category.' + cat.id)}</button>
         ))}

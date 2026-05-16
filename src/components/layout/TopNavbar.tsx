@@ -1,12 +1,14 @@
 ﻿import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Sparkles, Globe } from 'lucide-react';
+import { Sparkles, Globe, Sun, Moon } from 'lucide-react';
 import { useT } from '../../i18n/LanguageContext';
+import { useTheme } from '../../i18n/ThemeContext';
 
 export function TopNavbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { lang, setLang } = useT();
+  const { theme, toggle } = useTheme();
   const [switchAnim, setSwitchAnim] = useState(false);
   const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
 
@@ -48,6 +50,10 @@ export function TopNavbar() {
 
       <div className="flex-1" />
 
+
+      <button onClick={toggle} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 cursor-pointer" title={theme === 'dark' ? 'Switch to light' : 'Switch to dark'}>
+        {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+      </button>
 
       <button onClick={() => { setLang(lang === 'zh-CN' ? 'en' : 'zh-CN'); setSwitchAnim(true); setTimeout(() => setSwitchAnim(false), 300); }} className={"flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 cursor-pointer " + (switchAnim ? "scale-110" : "")}>
         <Globe size={14} />

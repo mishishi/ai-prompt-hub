@@ -1,6 +1,7 @@
 import { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { LanguageProvider } from './i18n/LanguageContext';
+import { ThemeProvider } from './i18n/ThemeContext';
 import { Layout } from './components/layout/Layout';
 import { PromptsPage } from './components/prompts/PromptsPage';
 import { HomePage } from './components/layout/HomePage';
@@ -9,6 +10,7 @@ import { TemplateDetail } from './components/templates/TemplateDetail';
 const GeneratePage = lazy(() => import('./components/workspace/GeneratePage').then(m => ({ default: m.GeneratePage })));
 const Dashboard = lazy(() => import('./components/dashboard/Dashboard').then(m => ({ default: m.Dashboard })));
 import { NotFound } from './components/layout/errors/NotFound';
+import { OnboardingGuide } from './components/layout/onboarding/OnboardingGuide';
 import { ErrorBoundary } from './components/layout/errors/ErrorBoundary';
 
 
@@ -17,9 +19,10 @@ const LoadingFallback = () => (
 );
 function App() {
   return (
-    <LanguageProvider>
+    <ThemeProvider><LanguageProvider>
       <BrowserRouter>
         <Layout>
+          <OnboardingGuide />
           <ErrorBoundary>
           <Routes>
             <Route path="/" element={<HomePage />} />
@@ -33,7 +36,7 @@ function App() {
           </ErrorBoundary>
         </Layout>
       </BrowserRouter>
-    </LanguageProvider>
+    </LanguageProvider></ThemeProvider>
   );
 }
 
