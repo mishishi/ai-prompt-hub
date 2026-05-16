@@ -1,6 +1,6 @@
 ﻿import { useState, useMemo, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Copy, Check, Sparkles, ChevronLeftIcon, Save, Link2 } from 'lucide-react';
+import { Copy, Check, Sparkles, ChevronLeftIcon, Save, Link2, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { templates } from '../../data/templates';
 import { tName, tShort, tTips, tLabel, tOptions } from '../../data/templates/helper';
 import { renderPrompt } from '../../utils/renderer';
@@ -21,6 +21,7 @@ export function TemplateDetail() {
   const [copied, setCopied] = useState(false);
   const [flash, setFlash] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [feedback, setFeedback] = useState<"up" | "down" | null>(null);
   const [ready, setReady] = useState(false);
   const [mobileTab, setMobileTab] = useState<'params' | 'preview'>('params');
   const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
@@ -45,7 +46,25 @@ export function TemplateDetail() {
   }, [template, lang, values]);
 
 
-  const handleShare = () => {
+  const handleFeedback = (value: 'up' | 'down') => {
+    setFeedback(value);
+    const fb = JSON.parse(localStorage.getItem('promptbench-tpl-feedback') || '[]');
+    const existing = fb.findIndex((f: any) => f.id === template!.id);
+    if (existing >= 0) fb[existing].value = value;
+    else fb.push({ id: template!.id, value, ts: Date.now() });
+    localStorage.setItem('promptbench-tpl-feedback', JSON.stringify(fb));
+    track({ type: 'ai_feedback', templateId: template!.id, lang });
+  };
+
+  useEffect(() => {
+    if (template) {
+      const fb = JSON.parse(localStorage.getItem('promptbench-tpl-feedback') || '[]');
+      const existing = fb.find((f: any) => f.id === template.id);
+      if (existing) setFeedback(existing.value);
+    }
+  }, [template]);
+
+const handleShare = () => {
     const url = window.location.href;
     navigator.clipboard.writeText(url).then(() => toast.show(tq('Link copied!', '链接已复制！')));
   };
@@ -217,6 +236,12 @@ const handleSave = () => {
             <div className="p-6">
               <pre className="prompt-preview overflow-x-auto max-h-[calc(100vh-200px)] md:max-h-[calc(100vh-280px)]">{rendered || <span className="text-[var(--color-bench-muted)] italic">{t('detail.setValues')}</span>}</pre>
             </div>
+          </div>
+
+          <div className="mt-4 flex items-center gap-2 px-1">
+            <span className="text-xs text-[var(--color-bench-muted)]">{tq('Was this helpful?', '这个模板有用吗？')}</span>
+            <button onClick={() => handleFeedback('up')} className={`p-1.5 rounded transition-colors cursor-pointer ${feedback === 'up' ? 'text-[var(--color-bench-success)] bg-[var(--color-bench-success)]/10' : 'text-[var(--color-bench-muted)] hover:text-[var(--color-bench-success)] hover:bg-[var(--color-bench-success)]/5'}`}><ThumbsUp size={14} /></button>
+            <button onClick={() => handleFeedback('down')} className={`p-1.5 rounded transition-colors cursor-pointer ${feedback === 'down' ? 'text-[var(--color-bench-error)] bg-[var(--color-bench-error)]/10' : 'text-[var(--color-bench-muted)] hover:text-[var(--color-bench-error)] hover:bg-[var(--color-bench-error)]/5'}`}><ThumbsDown size={14} /></button>
           </div>
         </div>
       </div>

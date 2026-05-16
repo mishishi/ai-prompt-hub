@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, Star, ArrowRight, Zap, Code2, Clock } from 'lucide-react';
+import { Sparkles, Star, ArrowRight, Zap, Code2, Clock, TrendingUp } from 'lucide-react';
 import { templates } from '../../data/templates';
 import { TemplateCard } from '../templates/TemplateCard';
 import { getRecentViews } from '../../utils/storage';
+import { getStats } from '../../utils/analytics';
 import { useT } from '../../i18n/LanguageContext';
 
 export function HomePage() {
@@ -11,8 +12,10 @@ export function HomePage() {
   const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
 
   const recommended = templates.slice(0, 8);
+  const stats = getStats();
   const recentIds = getRecentViews();
   const recentTemplates = recentIds.map(id => templates.find(t => t.id === id)).filter(Boolean).slice(0, 4) as typeof templates;
+  const topCopied = Object.entries(stats.copies).sort(([,a],[,b]) => b - a).slice(0, 4).map(([id]) => templates.find(t => t.id === id)).filter(Boolean) as typeof templates;
 
   return (
     <div className="page-enter">
@@ -95,6 +98,28 @@ export function HomePage() {
             </div></div>
         </div>
       </section>
+
+      {topCopied.length > 0 && (
+        <section className="max-w-6xl mx-auto px-6 pt-16 pb-4">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg border border-[var(--color-bench-success)]/20 flex items-center justify-center">
+                <TrendingUp size={16} className="text-[var(--color-bench-success)]" />
+              </div>
+              <h2 className="text-lg font-semibold text-[var(--color-bench-text)] font-[var(--font-display)]">
+                {tq('Most Copied', '最常复制')}
+              </h2>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {topCopied.map((tmpl, i) => (
+              <div key={tmpl.id} className={`card-enter stagger-${i + 1}`}>
+                <TemplateCard template={tmpl} onClick={() => navigate(`/template/${tmpl.id}`)} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="max-w-6xl mx-auto px-6 py-16">
         <div className="flex items-center justify-between mb-8">

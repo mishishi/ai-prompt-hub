@@ -31,6 +31,11 @@ export function useQuota(): boolean {
   return true;
 }
 
+export function getRemainingQuota(): number {
+  const q = loadQuota();
+  return Math.max(0, DAILY_QUOTA - q.used);
+}
+
 export async function aiGenerate(
   intent: string,
   lang: "en" | "zh-CN",
