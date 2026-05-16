@@ -2,6 +2,7 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Sparkles, Globe, Sun, Moon } from 'lucide-react';
 import { useT } from '../../i18n/LanguageContext';
+import { SignInButton, UserButton, useUser } from '@clerk/clerk-react';
 import { useTheme } from '../../i18n/ThemeContext';
 
 export function TopNavbar() {
@@ -9,6 +10,7 @@ export function TopNavbar() {
   const location = useLocation();
   const { lang, setLang } = useT();
   const { theme, toggle } = useTheme();
+  const { isSignedIn } = useUser();
   const [switchAnim, setSwitchAnim] = useState(false);
   const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
 
@@ -55,7 +57,17 @@ export function TopNavbar() {
         {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
       </button>
 
-      <button onClick={() => { setLang(lang === 'zh-CN' ? 'en' : 'zh-CN'); setSwitchAnim(true); setTimeout(() => setSwitchAnim(false), 300); }} className={"flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 cursor-pointer " + (switchAnim ? "scale-110" : "")}>
+      {isSignedIn ? (
+        <UserButton afterSignOutUrl="/" />
+      ) : (
+        <SignInButton mode="modal">
+          <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 cursor-pointer">
+            {tq("Sign In", "登录")}
+          </button>
+        </SignInButton>
+      )}
+
+<button onClick={() => { setLang(lang === 'zh-CN' ? 'en' : 'zh-CN'); setSwitchAnim(true); setTimeout(() => setSwitchAnim(false), 300); }} className={"flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 cursor-pointer " + (switchAnim ? "scale-110" : "")}>
         <Globe size={14} />
         <span className="text-xs font-bold px-1.5 py-0.5 rounded bg-[var(--color-bench-accent)]/25 text-[var(--color-bench-accent)]">{lang === 'zh-CN' ? '中文' : 'EN'}</span>
       </button>

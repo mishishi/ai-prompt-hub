@@ -1,4 +1,5 @@
 import { Suspense, lazy } from 'react';
+import { ClerkProvider } from '@clerk/clerk-react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { LanguageProvider } from './i18n/LanguageContext';
 import { ThemeProvider } from './i18n/ThemeContext';
@@ -21,7 +22,7 @@ const LoadingFallback = () => (
 );
 function App() {
   return (
-    <ToastProvider><ThemeProvider><LanguageProvider>
+    <ToastProvider><ClerkProvider publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}><ThemeProvider><LanguageProvider>
       <BrowserRouter>
         <Layout>
           <OnboardingGuide />
@@ -39,7 +40,7 @@ function App() {
           </ErrorBoundary>
         </Layout>
       </BrowserRouter>
-    </LanguageProvider></ThemeProvider></ToastProvider>
+    </LanguageProvider></ThemeProvider></ClerkProvider></ToastProvider>
   );
 }
 
