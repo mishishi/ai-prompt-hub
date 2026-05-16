@@ -56,3 +56,20 @@ export function toggleFavorite(id: string): boolean {
 export function isFavorite(id: string): boolean {
   return getFavorites().includes(id);
 }
+
+
+const RECENT_KEY = 'promptbench-recent';
+
+export function addRecentView(id: string): void {
+  const recents = getRecentViews();
+  const filtered = recents.filter(r => r !== id);
+  filtered.unshift(id);
+  localStorage.setItem(RECENT_KEY, JSON.stringify(filtered.slice(0, 5)));
+}
+
+export function getRecentViews(): string[] {
+  try {
+    const raw = localStorage.getItem(RECENT_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}

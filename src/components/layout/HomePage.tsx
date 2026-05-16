@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, Star, ArrowRight, Zap, Code2 } from 'lucide-react';
+import { Sparkles, Star, ArrowRight, Zap, Code2, Clock } from 'lucide-react';
 import { templates } from '../../data/templates';
 import { TemplateCard } from '../templates/TemplateCard';
+import { getRecentViews } from '../../utils/storage';
 import { useT } from '../../i18n/LanguageContext';
 
 export function HomePage() {
@@ -10,6 +11,8 @@ export function HomePage() {
   const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
 
   const recommended = templates.slice(0, 8);
+  const recentIds = getRecentViews();
+  const recentTemplates = recentIds.map(id => templates.find(t => t.id === id)).filter(Boolean).slice(0, 4) as typeof templates;
 
   return (
     <div className="page-enter">
@@ -116,6 +119,28 @@ export function HomePage() {
           ))}
         </div>
       </section>
+
+      {recentTemplates.length > 0 && (
+        <section className="max-w-6xl mx-auto px-6 py-12">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg border border-[var(--color-bench-border)] flex items-center justify-center">
+                <Clock size={16} className="text-[var(--color-bench-muted)]" />
+              </div>
+              <h2 className="text-lg font-semibold text-[var(--color-bench-text)] font-[var(--font-display)]">
+                {tq('Recently Viewed', '最近查看')}
+              </h2>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {recentTemplates.map((tmpl, i) => (
+              <div key={tmpl.id} className={`card-enter stagger-${i + 1}`}>
+                <TemplateCard template={tmpl} onClick={() => navigate(`/template/${tmpl.id}`)} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <footer className="border-t border-[var(--color-bench-border)] py-8 text-center bg-[var(--color-bench-elevated)]/50">
         <p className="text-sm text-[var(--color-bench-muted)]">

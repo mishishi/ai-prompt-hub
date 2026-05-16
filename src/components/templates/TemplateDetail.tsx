@@ -1,6 +1,6 @@
 ﻿import { useState, useMemo, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Copy, Check, Sparkles, ChevronLeftIcon, Save } from 'lucide-react';
+import { Copy, Check, Sparkles, ChevronLeftIcon, Save, Link2 } from 'lucide-react';
 import { templates } from '../../data/templates';
 import { TemplateCard } from './TemplateCard';
 import { tName, tShort, tTips, tLabel, tOptions } from '../../data/templates/helper';
@@ -8,12 +8,14 @@ import { renderPrompt } from '../../utils/renderer';
 import { copyToClipboard } from '../../utils/clipboard';
 import { track } from '../../utils/analytics';
 import { useT } from '../../i18n/LanguageContext';
-import { savePrompt, generateId } from '../../utils/storage';
+import { useToast } from '../ui/Toast';
+import { savePrompt, generateId, addRecentView } from '../../utils/storage';
 import type { Prompt } from '../../types';
 export function TemplateDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { t, lang } = useT();
+  const toast = useToast();
   const template = templates.find((tmpl) => tmpl.id === id);
   const tipsText = template ? tTips(template, lang) : '';
   const [values, setValues] = useState<Record<string, string | boolean | string[]>>({});
@@ -31,6 +33,7 @@ export function TemplateDetail() {
   useEffect(() => {
     if (template) {
       track({ type: 'template_view', templateId: template.id, lang });
+      addRecentView(template.id);
       const defaults: Record<string, string | boolean | string[]> = {};
       template.variables.forEach((v) => { if (v.default !== undefined) defaults[v.name] = v.default; });
       setValues(defaults);
@@ -49,7 +52,12 @@ export function TemplateDetail() {
       .slice(0, 3);
   }, [template]);
 
-  const handleSave = () => {
+  const handleShare = () => {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => toast.show(tq('Link copied!', '链接已复制！')));
+  };
+
+const handleSave = () => {
     if (!template) return;
     const id = generateId();
     const r = rendered;
@@ -199,6 +207,7 @@ export function TemplateDetail() {
             {copied ? <Check size={14} /> : <Copy size={14} />}
             {copied ? t('detail.copied') : t('detail.copy')}
           </button>
+          <button onClick={handleShare} className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)] hover:bg-[var(--color-bench-accent)]/10 transition-all"><Link2 size={14} />{tq("Share", "分享")}</button>
           <button onClick={handleSave} className={"flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all " + (saved ? "bg-[var(--color-bench-success)]/15 text-[var(--color-bench-success)]" : "bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)] hover:bg-[var(--color-bench-accent)]/20")}><Save size={14} />{t(saved ? "detail.saved" : "detail.save")}</button>
         </div>
         <div className="flex-1 overflow-y-auto p-6 bg-[var(--color-bench-bg)]">

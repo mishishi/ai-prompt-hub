@@ -2,6 +2,7 @@ import { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { LanguageProvider } from './i18n/LanguageContext';
 import { ThemeProvider } from './i18n/ThemeContext';
+import { ToastProvider } from './components/ui/Toast';
 import { Layout } from './components/layout/Layout';
 import { PromptsPage } from './components/prompts/PromptsPage';
 import { HomePage } from './components/layout/HomePage';
@@ -20,7 +21,7 @@ const LoadingFallback = () => (
 );
 function App() {
   return (
-    <ThemeProvider><LanguageProvider>
+    <ToastProvider><ThemeProvider><LanguageProvider>
       <BrowserRouter>
         <Layout>
           <OnboardingGuide />
@@ -38,7 +39,7 @@ function App() {
           </ErrorBoundary>
         </Layout>
       </BrowserRouter>
-    </LanguageProvider></ThemeProvider>
+    </LanguageProvider></ThemeProvider></ToastProvider>
   );
 }
 

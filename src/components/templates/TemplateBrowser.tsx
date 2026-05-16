@@ -67,10 +67,21 @@ export function TemplateBrowser() {
 
       {filtered.length === 0 ? (
         <div className="text-center py-20">
-          <div className="w-16 h-16 rounded-xl border border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] flex items-center justify-center mx-auto mb-4"><Search size={24} className="text-[var(--color-bench-muted)]" /></div>
-          <p className="text-sm text-[var(--color-bench-text-dim)] mb-1">{t('browser.empty')}</p>
-          <p className="text-sm text-[var(--color-bench-muted)] mb-6">{t('browser.emptyHint')}</p>
-          <button onClick={() => navigate('/generate')} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)] text-sm font-medium hover:bg-[var(--color-bench-accent)]/20 transition-colors cursor-pointer"><Zap size={14} />{lang === 'zh-CN' ? 'AI 生成一个同款' : 'Generate one with AI'}</button>
+          {showFavorites ? (
+            <>
+              <div className="w-16 h-16 rounded-xl border border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] flex items-center justify-center mx-auto mb-4"><Star size={24} className="text-[var(--color-bench-muted)]" /></div>
+              <p className="text-sm text-[var(--color-bench-text-dim)] mb-1">{t('browser.favoritesEmpty')}</p>
+              <p className="text-sm text-[var(--color-bench-muted)] mb-6">{lang === 'zh-CN' ? '浏览模板库，点击星标收藏你喜欢的模板' : 'Browse templates and star the ones you like'}</p>
+              <button onClick={() => setShowFavorites(false)} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)] text-sm font-medium hover:bg-[var(--color-bench-accent)]/20 transition-colors cursor-pointer">{lang === 'zh-CN' ? '浏览全部模板' : 'Browse all templates'}</button>
+            </>
+          ) : (
+            <>
+              <div className="w-16 h-16 rounded-xl border border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] flex items-center justify-center mx-auto mb-4"><Search size={24} className="text-[var(--color-bench-muted)]" /></div>
+              <p className="text-sm text-[var(--color-bench-text-dim)] mb-1">{t('browser.empty')}</p>
+              <p className="text-sm text-[var(--color-bench-muted)] mb-6">{t('browser.emptyHint')}</p>
+              <button onClick={() => navigate('/generate')} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)] text-sm font-medium hover:bg-[var(--color-bench-accent)]/20 transition-colors cursor-pointer"><Zap size={14} />{lang === 'zh-CN' ? 'AI 生成一个同款' : 'Generate one with AI'}</button>
+            </>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
