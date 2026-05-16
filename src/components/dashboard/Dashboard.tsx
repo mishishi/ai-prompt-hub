@@ -110,7 +110,7 @@ export function Dashboard() {
       }))
       .sort((a, b) => b.copies - a.copies || b.views - a.views)
       .slice(0, 8);
-  }, [filteredStats]);
+  }, [filteredStats, lang]);
 
   // Category distribution for chart
   const catDist = useMemo(() => {
