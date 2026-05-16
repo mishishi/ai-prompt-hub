@@ -11,6 +11,7 @@ export function TemplateBrowser() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { t, lang } = useT();
+  const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
   const [searchInput, setSearchInput] = useState(searchParams.get('search') || '');
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [activeCategory, setActiveCategory] = useState<string | null>(searchParams.get('category') || null);
@@ -98,7 +99,7 @@ export function TemplateBrowser() {
       <div className="flex gap-2 mb-8 overflow-x-auto pb-1 flex-nowrap md:flex-wrap">
         <button onClick={() => setActiveCategory(null)} className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${!activeCategory ? 'bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)] shadow-[0_0_12px_var(--color-bench-accent-glow)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}>{t('browser.all')} ({showCommunity ? communityTpls.length : templates.length})</button>
         <button onClick={() => { setShowFavorites(!showFavorites); if (!showFavorites) setActiveCategory(null); }} className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-1.5 ${showFavorites ? 'bg-[var(--color-bench-warn)]/15 text-[var(--color-bench-warn)] shadow-[0_0_12px_var(--color-bench-warn)]/20' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}><Star size={12} fill={showFavorites ? 'currentColor' : 'none'} />{t('browser.favorites')} ({favorites.length})</button>
-        <button onClick={() => { setShowCommunity(!showCommunity); if (!showCommunity) fetchCommunity(); setShowFavorites(false); setActiveCategory(null); }} className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-1.5 ${showCommunity ? 'bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)] shadow-[0_0_12px_var(--color-bench-accent-glow)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}><Globe size={12} />{lang === 'zh-CN' ? '社区' : 'Community'}</button>
+        <button onClick={() => { setShowCommunity(!showCommunity); if (!showCommunity) fetchCommunity(); setShowFavorites(false); setActiveCategory(null); }} className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-1.5 ${showCommunity ? 'bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)] shadow-[0_0_12px_var(--color-bench-accent-glow)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}><Globe size={12} />{tq('Community', '社区')}</button>
         {!showCommunity && categories.map((cat) => (
           <button key={cat.id} onClick={() => setActiveCategory(cat.id)} className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${activeCategory === cat.id ? 'bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)] shadow-[0_0_12px_var(--color-bench-accent-glow)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}>{t('category.' + cat.id)}</button>
         ))}
@@ -117,15 +118,15 @@ export function TemplateBrowser() {
             <>
               <div className="w-16 h-16 rounded-xl border border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] flex items-center justify-center mx-auto mb-4"><Star size={24} className="text-[var(--color-bench-muted)]" /></div>
               <p className="text-sm text-[var(--color-bench-text-dim)] mb-1">{t('browser.favoritesEmpty')}</p>
-              <p className="text-sm text-[var(--color-bench-muted)] mb-6">{lang === 'zh-CN' ? '浏览模板库，点击星标收藏你喜欢的模板' : 'Browse templates and star the ones you like'}</p>
-              <button onClick={() => setShowFavorites(false)} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)] text-sm font-medium hover:bg-[var(--color-bench-accent)]/20 transition-colors cursor-pointer">{lang === 'zh-CN' ? '浏览全部模板' : 'Browse all templates'}</button>
+              <p className="text-sm text-[var(--color-bench-muted)] mb-6">{tq('Browse templates and star the ones you like', '浏览模板库，点击星标收藏你喜欢的模板')}</p>
+              <button onClick={() => setShowFavorites(false)} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)] text-sm font-medium hover:bg-[var(--color-bench-accent)]/20 transition-colors cursor-pointer">{tq('Browse all templates', '浏览全部模板')}</button>
             </>
           ) : (
             <>
               <div className="w-16 h-16 rounded-xl border border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] flex items-center justify-center mx-auto mb-4"><Search size={24} className="text-[var(--color-bench-muted)]" /></div>
               <p className="text-sm text-[var(--color-bench-text-dim)] mb-1">{t('browser.empty')}</p>
               <p className="text-sm text-[var(--color-bench-muted)] mb-6">{t('browser.emptyHint')}</p>
-              <button onClick={() => navigate('/generate')} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)] text-sm font-medium hover:bg-[var(--color-bench-accent)]/20 transition-colors cursor-pointer"><Zap size={14} />{lang === 'zh-CN' ? 'AI 生成一个同款' : 'Generate one with AI'}</button>
+              <button onClick={() => navigate('/generate')} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)] text-sm font-medium hover:bg-[var(--color-bench-accent)]/20 transition-colors cursor-pointer"><Zap size={14} />{tq('Generate one with AI', 'AI 生成一个同款')}</button>
             </>
           )}
         </div>

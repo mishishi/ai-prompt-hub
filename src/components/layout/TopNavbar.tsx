@@ -71,7 +71,7 @@ export function TopNavbar() {
         <div className="flex-1" />
 
         {/* Theme toggle */}
-        <button onClick={toggle} className="flex items-center justify-center w-8 h-8 md:w-auto md:h-auto md:px-2.5 md:py-1.5 rounded-lg text-sm text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 cursor-pointer flex-shrink-0" title={theme === 'dark' ? 'Switch to light' : 'Switch to dark'}>
+        <button onClick={toggle} className="flex items-center justify-center w-8 h-8 md:w-auto md:h-auto md:px-2.5 md:py-1.5 rounded-lg text-sm text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 cursor-pointer flex-shrink-0" title={tq('Switch theme', '切换主题')}>
           {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
         </button>
 
