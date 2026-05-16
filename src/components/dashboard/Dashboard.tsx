@@ -125,6 +125,15 @@ export function Dashboard() {
 
   const activeToday = userStats.filter(u => u.lastSeen >= todayTs).length;
 
+  // Provider distribution
+  const providerDist = useMemo(() => {
+    const dist: Record<string, number> = {};
+    for (const e of mergedEvents) {
+      if (e.provider) dist[e.provider] = (dist[e.provider] || 0) + 1;
+    }
+    return Object.entries(dist).sort(([,a], [,b]) => b - a);
+  }, [mergedEvents]);
+
   // 7-day trend
   const trendData = useMemo(() => {
     if (kvData?.trend) return kvData.trend;
@@ -208,6 +217,18 @@ export function Dashboard() {
               <div className="text-2xl font-bold text-[var(--color-bench-success)] font-[var(--font-display)]">{activeToday}</div>
               <div className="text-xs text-[var(--color-bench-muted)]">{tq('Active Today', '今日活跃')}</div>
             </div>
+            {providerDist.length > 0 && (
+              <>
+                <div className="w-px h-8 bg-[var(--color-bench-border)]" />
+                {providerDist.map(([provider, count]) => (
+                  <div key={provider} className="flex items-center gap-1.5">
+                    <span className="text-sm">{provider === 'github' ? '🐙' : provider === 'google' ? '🅶' : '🔑'}</span>
+                    <span className="text-sm font-semibold text-[var(--color-bench-text)]">{count}</span>
+                    <span className="text-xs text-[var(--color-bench-muted)]">{provider === 'github' ? 'GitHub' : provider === 'google' ? 'Google' : provider}</span>
+                  </div>
+                ))}
+              </>
+            )}
           </div>
           <ResponsiveContainer width="100%" height={Math.max(150, userStats.length * 36)}>
             <BarChart data={userStats.slice(0, 8)} layout="vertical" barSize={16}>

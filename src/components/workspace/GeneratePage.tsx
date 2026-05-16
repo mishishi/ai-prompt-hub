@@ -39,12 +39,12 @@ export function GeneratePage() {
     setResult('');
     try {
       await aiGenerate(intent.trim(), lang, (chunk) => setResult(chunk));
-      track({ type: 'ai_generate', lang, userId: user?.id, userName: user?.fullName || user?.primaryEmailAddress?.emailAddress });
+      track({ type: 'ai_generate', lang, userId: user?.id, userName: user?.fullName || user?.primaryEmailAddress?.emailAddress, provider: user?.externalAccounts?.[0]?.provider });
     } catch (e: any) { setError(e.message || tq('API error. Please try again.', 'API 错误，请重试。')); }
     finally { setLoading(false); }
   };
 
-  const handleCopy = async () => { if (!result) return; track({ type: 'ai_copy', lang, userId: user?.id, userName: user?.fullName || user?.primaryEmailAddress?.emailAddress }); await copyToClipboard(result); setCopied(true); setTimeout(() => setCopied(false), 2000); };
+  const handleCopy = async () => { if (!result) return; track({ type: 'ai_copy', lang, userId: user?.id, userName: user?.fullName || user?.primaryEmailAddress?.emailAddress, provider: user?.externalAccounts?.[0]?.provider }); await copyToClipboard(result); setCopied(true); setTimeout(() => setCopied(false), 2000); };
   
 
 const handleSave = () => {

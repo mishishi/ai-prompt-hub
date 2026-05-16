@@ -5,6 +5,7 @@ export interface AnalyticsEvent {
   lang?: string;
   userId?: string;
   userName?: string;
+  provider?: string;
 }
 
 const KEY = 'pb_analytics';
