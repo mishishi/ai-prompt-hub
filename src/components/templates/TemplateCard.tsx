@@ -71,9 +71,10 @@ export function TemplateCard({ template, onClick }: { template: LibraryTemplate;
           <span className="text-sm font-medium text-[var(--color-bench-muted)] uppercase tracking-wider">
             {t('category.' + template.category[0])}
           </span>
-          <div className="flex items-center gap-1.5">
-            <button onClick={handleFavorite} className={`p-1 rounded transition-colors ${fav ? 'text-[var(--color-bench-warn)]' : 'text-[var(--color-bench-muted)] hover:text-[var(--color-bench-warn)]'}`}>
-              <Star size={13} fill={fav ? 'currentColor' : 'none'} />
+          <div className="flex items-center gap-3">
+            <button onClick={handleFavorite} className={`flex items-center gap-1 text-sm font-medium transition-colors ${fav ? 'text-[var(--color-bench-warn)]' : 'text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-warn)]'}`}>
+              <Star size={11} fill={fav ? 'currentColor' : 'none'} />
+              {t(fav ? 'card.favorited' : 'card.favorite')}
             </button>
             <button onClick={handleCopy} className={`flex items-center gap-1 text-sm font-medium transition-colors ${copied ? 'text-[var(--color-bench-success)]' : 'text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)]'}`}>
             {copied ? <Check size={11} /> : <Copy size={11} />}
