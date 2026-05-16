@@ -1,11 +1,16 @@
-import { useMemo, useState } from 'react';
-import { BarChart3, Eye, Copy, Zap, ThumbsUp, TrendingUp, RefreshCw, Star } from 'lucide-react';
+import { useMemo, useState, type ReactNode } from 'react';
+import { BarChart3, Eye, Copy, Zap, ThumbsUp, RefreshCw, Star, TrendingUp } from 'lucide-react';
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
+} from 'recharts';
 import { getEvents } from '../../utils/analytics';
 import { templates } from '../../data/templates';
 import { tName } from '../../data/templates/helper';
 import { getFavorites } from '../../utils/storage';
 import type { AnalyticsEvent } from '../../utils/analytics';
 import { useT } from '../../i18n/LanguageContext';
+
+const CHART_COLORS = ['#d4a843', '#7c8aa5', '#5aab7a', '#c47a5a', '#8b7aaf', '#5a9eaa', '#b8943b', '#6b8a6b'];
 
 export function Dashboard() {
   const { t, lang } = useT();
@@ -16,77 +21,99 @@ export function Dashboard() {
   const events: AnalyticsEvent[] = useMemo(() => getEvents(), [refreshKey]);
   const favorites = useMemo(() => getFavorites(), [refreshKey]);
 
-  // Filter by today if toggle is on
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0, 0);
   const todayTs = todayStart.getTime();
-
   const filteredEvents = today ? events.filter(e => e.timestamp >= todayTs) : events;
 
-  // Compute stats from filtered events
+  // Stats from filtered events
   const filteredStats = useMemo(() => {
     const views: Record<string, number> = {};
     const copies: Record<string, number> = {};
     let aiGen = 0;
+    let aiCopy = 0;
     for (const e of filteredEvents) {
       if (e.type === 'template_view' && e.templateId) views[e.templateId] = (views[e.templateId] || 0) + 1;
       if (e.type === 'template_copy' && e.templateId) copies[e.templateId] = (copies[e.templateId] || 0) + 1;
       if (e.type === 'ai_generate') aiGen++;
+      if (e.type === 'ai_copy') aiCopy++;
     }
-    return { views, copies, aiGen };
+    return { views, copies, aiGen, aiCopy };
   }, [filteredEvents]);
 
   // Template feedback
   const feedbackData = useMemo(() => {
-    try {
-      return JSON.parse(localStorage.getItem('promptbench-tpl-feedback') || '[]');
-    } catch { return []; }
+    try { return JSON.parse(localStorage.getItem('promptbench-tpl-feedback') || '[]'); }
+    catch { return []; }
   }, [refreshKey]);
   const thumbsUp = feedbackData.filter((f: any) => f.value === 'up').length;
   const feedbackTotal = feedbackData.length;
 
-  // Leaderboard: sort by copies, then views
+  // Leaderboard data for chart
   const leaderboard = useMemo(() => {
     const allIds = new Set([...Object.keys(filteredStats.copies), ...Object.keys(filteredStats.views)]);
     return Array.from(allIds)
       .map(id => ({
-        id,
+        name: templateName(id),
         views: filteredStats.views[id] || 0,
         copies: filteredStats.copies[id] || 0,
-        favs: favorites.includes(id) ? 1 : 0,
       }))
       .sort((a, b) => b.copies - a.copies || b.views - a.views)
       .slice(0, 8);
-  }, [filteredStats, favorites]);
+  }, [filteredStats]);
 
-  // Category distribution
+  // Category distribution for chart
   const catDist = useMemo(() => {
     const dist: Record<string, number> = {};
     for (const e of filteredEvents) {
       if (e.type !== 'template_view') continue;
-      const tmpl = templates.find(t => t.id === e.templateId);
-      if (tmpl) {
-        tmpl.category.forEach(c => { dist[c] = (dist[c] || 0) + 1; });
-      }
+      const tmpl = templates.find(tpl => tpl.id === e.templateId);
+      if (tmpl) tmpl.category.forEach(c => { dist[c] = (dist[c] || 0) + 1; });
     }
-    return Object.entries(dist).sort(([, a], [, b]) => b - a).slice(0, 6);
-  }, [filteredEvents]);
-  const maxCat = Math.max(1, ...catDist.map(([, n]) => n));
+    return Object.entries(dist)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 6)
+      .map(([cat, count]) => ({ name: t('category.' + cat), count }));
+  }, [filteredEvents, lang]);
+
+  // 7-day trend
+  const trendData = useMemo(() => {
+    const days: { date: string; views: number; copies: number; gens: number }[] = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      d.setHours(0, 0, 0, 0);
+      const dayStart = d.getTime();
+      const dayEnd = dayStart + 86400000;
+      const dayEvents = events.filter(e => e.timestamp >= dayStart && e.timestamp < dayEnd);
+      days.push({
+        date: d.toLocaleDateString(lang === 'zh-CN' ? 'zh-CN' : 'en-US', { month: 'short', day: 'numeric' }),
+        views: dayEvents.filter(e => e.type === 'template_view').length,
+        copies: dayEvents.filter(e => e.type === 'template_copy').length,
+        gens: dayEvents.filter(e => e.type === 'ai_generate').length,
+      });
+    }
+    return days;
+  }, [events, lang]);
 
   // Recent events
-  const recentEvents = useMemo(() => filteredEvents.slice(-10).reverse(), [filteredEvents]);
+  const recentEvents = useMemo(() => filteredEvents.slice(-8).reverse(), [filteredEvents]);
 
   const templateName = (id: string) => {
-    const tmpl = templates.find(t => t.id === id);
+    const tmpl = templates.find(tpl => tpl.id === id);
     return tmpl ? tName(tmpl, lang) : id;
   };
   const timeAgo = (ts: number) => {
     const s = Math.floor((Date.now() - ts) / 1000);
     if (s < 60) return tq(s + 's', s + '秒前');
     if (s < 3600) return tq(Math.floor(s / 60) + 'm', Math.floor(s / 60) + '分钟前');
-    return tq(Math.floor(s / 3600) + 'h', Math.floor(s / 3600) + '小时前');
+    if (s < 86400) return tq(Math.floor(s / 3600) + 'h', Math.floor(s / 3600) + '小时前');
+    return tq(Math.floor(s / 86400) + 'd', Math.floor(s / 86400) + '天前');
   };
-  const totalEvents = today ? events.filter(e => e.timestamp >= todayTs).length : events.length;
+
+  const totalViews = Object.values(filteredStats.views).reduce((a, b) => a + b, 0);
+  const totalCopies = Object.values(filteredStats.copies).reduce((a, b) => a + b, 0);
+  const hasData = filteredEvents.length > 0;
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-8 page-enter">
@@ -99,9 +126,6 @@ export function Dashboard() {
             <h2 className="text-2xl font-bold text-[var(--color-bench-text)] font-[var(--font-display)] tracking-tight">
               {tq('Analytics', '效果追踪')}
             </h2>
-            <p className="text-sm text-[var(--color-bench-text-dim)]">
-              {tq('Usage overview for your prompts', 'Prompt 使用情况概览')}
-            </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -114,7 +138,7 @@ export function Dashboard() {
         </div>
       </div>
 
-      {totalEvents === 0 ? (
+      {!hasData ? (
         <div className="text-center py-20">
           <div className="w-16 h-16 rounded-xl border border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] flex items-center justify-center mx-auto mb-4">
             <BarChart3 size={24} className="text-[var(--color-bench-muted)]" />
@@ -123,76 +147,67 @@ export function Dashboard() {
         </div>
       ) : (
         <>
-          {/* Stats Grid */}
+          {/* Stats Cards */}
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-            <div className="bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-xl p-4">
-              <Eye size={14} className="text-[var(--color-bench-accent)] mb-2" />
-              <div className="text-2xl font-bold text-[var(--color-bench-text)] font-[var(--font-display)]">{totalEvents}</div>
-              <div className="text-xs text-[var(--color-bench-muted)] mt-0.5">{tq('Views', '查看')}</div>
-            </div>
-            <div className="bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-xl p-4">
-              <Copy size={14} className="text-[var(--color-bench-success)] mb-2" />
-              <div className="text-2xl font-bold text-[var(--color-bench-text)] font-[var(--font-display)]">{Object.values(filteredStats.copies).reduce((a, b) => a + b, 0)}</div>
-              <div className="text-xs text-[var(--color-bench-muted)] mt-0.5">{tq('Copies', '复制')}</div>
-            </div>
-            <div className="bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-xl p-4">
-              <Zap size={14} className="text-[var(--color-bench-warn)] mb-2" />
-              <div className="text-2xl font-bold text-[var(--color-bench-text)] font-[var(--font-display)]">{filteredStats.aiGen}</div>
-              <div className="text-xs text-[var(--color-bench-muted)] mt-0.5">{tq('Generated', '生成')}</div>
-            </div>
-            <div className="bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-xl p-4">
-              <Star size={14} className="text-[var(--color-bench-warn)] mb-2" />
-              <div className="text-2xl font-bold text-[var(--color-bench-text)] font-[var(--font-display)]">{favorites.length}</div>
-              <div className="text-xs text-[var(--color-bench-muted)] mt-0.5">{tq('Favorites', '收藏')}</div>
-            </div>
-            <div className="bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-xl p-4">
-              <ThumbsUp size={14} className="text-[var(--color-bench-success)] mb-2" />
-              <div className="text-2xl font-bold text-[var(--color-bench-text)] font-[var(--font-display)]">{feedbackTotal > 0 ? Math.round((thumbsUp / feedbackTotal) * 100) + '%' : '--'}</div>
-              <div className="text-xs text-[var(--color-bench-muted)] mt-0.5">{tq('Helpful', '好评率')}</div>
-            </div>
+            <StatCard icon={Eye} color="accent" value={totalViews} label={tq('Views', '查看')} />
+            <StatCard icon={Copy} color="success" value={totalCopies} label={tq('Copies', '复制')} />
+            <StatCard icon={Zap} color="warn" value={filteredStats.aiGen} label={tq('Generated', '生成')} />
+            <StatCard icon={Star} color="warn" value={favorites.length} label={tq('Favorites', '收藏')} />
+            <StatCard icon={ThumbsUp} color="success" value={feedbackTotal > 0 ? Math.round((thumbsUp / feedbackTotal) * 100) + '%' : '--'} label={tq('Helpful', '好评率')} />
           </div>
 
-          {/* Template Leaderboard */}
-          {leaderboard.length > 0 && (
-            <div className="mb-8 bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-xl overflow-hidden">
-              <div className="px-5 py-3.5 border-b border-[var(--color-bench-border)] flex items-center gap-2">
-                <TrendingUp size={14} className="text-[var(--color-bench-accent)]" />
-                <h3 className="text-sm font-semibold text-[var(--color-bench-text)]">{tq('Template Leaderboard', '模板排行榜')}</h3>
-                <span className="text-xs text-[var(--color-bench-muted)] ml-1">{tq('by copies', '按复制量')}</span>
-              </div>
-              <div className="divide-y divide-[var(--color-bench-border)]/50">
-                {leaderboard.map((item, i) => (
-                  <div key={item.id} className="flex items-center px-5 py-3 gap-4">
-                    <span className="text-sm font-bold text-[var(--color-bench-muted)] w-5">{i + 1}</span>
-                    <span className="flex-1 text-sm text-[var(--color-bench-text)] truncate">{templateName(item.id)}</span>
-                    <span className="flex items-center gap-1 text-xs text-[var(--color-bench-muted)]"><Eye size={11} />{item.views}</span>
-                    <span className="flex items-center gap-1 text-xs text-[var(--color-bench-success)]"><Copy size={11} />{item.copies}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            {/* 7-Day Trend Chart */}
+            <ChartCard title={tq('7-Day Trend', '7 天趋势')} icon={TrendingUp}>
+              <ResponsiveContainer width="100%" height={220}>
+                <BarChart data={trendData} barGap={2}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--color-bench-border)" />
+                  <XAxis dataKey="date" tick={{ fontSize: 11, fill: 'var(--color-bench-muted)' }} axisLine={{ stroke: 'var(--color-bench-border)' }} tickLine={false} />
+                  <YAxis tick={{ fontSize: 11, fill: 'var(--color-bench-muted)' }} axisLine={false} tickLine={false} />
+                  <Tooltip contentStyle={{ background: 'var(--color-bench-surface-solid)', border: '1px solid var(--color-bench-border)', borderRadius: '0.75rem', fontSize: '0.75rem', color: 'var(--color-bench-text)' }} />
+                  <Bar dataKey="views" fill="#d4a843" radius={[4, 4, 0, 0]} name={tq('Views', '查看')} />
+                  <Bar dataKey="copies" fill="#5aab7a" radius={[4, 4, 0, 0]} name={tq('Copies', '复制')} />
+                  <Bar dataKey="gens" fill="#7c8aa5" radius={[4, 4, 0, 0]} name={tq('Generated', '生成')} />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartCard>
 
-          {/* Category Distribution */}
-          {catDist.length > 0 && (
-            <div className="mb-8 bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-xl overflow-hidden">
-              <div className="px-5 py-3.5 border-b border-[var(--color-bench-border)]">
-                <h3 className="text-sm font-semibold text-[var(--color-bench-text)]">{tq('Category Distribution', '分类分布')}</h3>
-              </div>
-              <div className="p-5 space-y-3">
-                {catDist.map(([cat, count]) => (
-                  <div key={cat}>
-                    <div className="flex items-center justify-between text-xs mb-1">
-                      <span className="text-[var(--color-bench-text)]">{t('category.' + cat)}</span>
-                      <span className="text-[var(--color-bench-muted)]">{Math.round((count / maxCat) * 100)}%</span>
-                    </div>
-                    <div className="w-full h-2 rounded-full bg-[var(--color-bench-bg)] overflow-hidden">
-                      <div className="h-full rounded-full bg-[var(--color-bench-accent)] transition-all" style={{ width: Math.round((count / maxCat) * 100) + '%' }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            {/* Category Distribution Chart */}
+            <ChartCard title={tq('Category Distribution', '分类分布')} icon={BarChart3}>
+              {catDist.length > 0 ? (
+                <ResponsiveContainer width="100%" height={220}>
+                  <BarChart data={catDist} layout="vertical" barSize={20}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--color-bench-border)" horizontal={false} />
+                    <XAxis type="number" tick={{ fontSize: 11, fill: 'var(--color-bench-muted)' }} axisLine={false} tickLine={false} />
+                    <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: 'var(--color-bench-text-dim)' }} axisLine={false} tickLine={false} width={80} />
+                    <Tooltip contentStyle={{ background: 'var(--color-bench-surface-solid)', border: '1px solid var(--color-bench-border)', borderRadius: '0.75rem', fontSize: '0.75rem', color: 'var(--color-bench-text)' }} />
+                    <Bar dataKey="count" radius={[0, 4, 4, 0]}>
+                      {catDist.map((_, i) => (
+                        <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <p className="text-sm text-[var(--color-bench-muted)] text-center py-10">{tq('No data', '暂无数据')}</p>
+              )}
+            </ChartCard>
+          </div>
+
+          {/* Template Leaderboard Chart */}
+          {leaderboard.length > 0 && (
+            <ChartCard title={tq('Template Leaderboard', '模板排行榜')} icon={TrendingUp} className="mb-8">
+              <ResponsiveContainer width="100%" height={Math.max(200, leaderboard.length * 32)}>
+                <BarChart data={leaderboard} layout="vertical" barSize={18}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--color-bench-border)" horizontal={false} />
+                  <XAxis type="number" tick={{ fontSize: 11, fill: 'var(--color-bench-muted)' }} axisLine={false} tickLine={false} />
+                  <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: 'var(--color-bench-text-dim)' }} axisLine={false} tickLine={false} width={130} />
+                  <Tooltip contentStyle={{ background: 'var(--color-bench-surface-solid)', border: '1px solid var(--color-bench-border)', borderRadius: '0.75rem', fontSize: '0.75rem', color: 'var(--color-bench-text)' }} />
+                  <Bar dataKey="views" stackId="a" fill="#d4a843" radius={[0, 0, 0, 0]} name={tq('Views', '查看')} />
+                  <Bar dataKey="copies" stackId="a" fill="#5aab7a" radius={[0, 4, 4, 0]} name={tq('Copies', '复制')} />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartCard>
           )}
 
           {/* Recent Activity */}
@@ -206,16 +221,15 @@ export function Dashboard() {
                   <div key={i} className="flex items-center gap-3 text-sm">
                     {e.type === 'template_view' ? <Eye size={12} className="text-[var(--color-bench-accent)] flex-shrink-0" />
                      : e.type === 'template_copy' ? <Copy size={12} className="text-[var(--color-bench-success)] flex-shrink-0" />
-                     : e.type === 'ai_generate' ? <Zap size={12} className="text-[var(--color-bench-accent)] flex-shrink-0" />
+                     : e.type === 'ai_generate' ? <Zap size={12} className="text-[var(--color-bench-warn)] flex-shrink-0" />
                      : <Copy size={12} className="text-[var(--color-bench-success)] flex-shrink-0" />}
-                    <span className="text-[var(--color-bench-muted)]">
+                    <span className="text-[var(--color-bench-muted)] truncate">
                       {e.type === 'template_view' && tq('Viewed', '查看了') + ' ' + templateName(e.templateId || '')}
                       {e.type === 'template_copy' && tq('Copied', '复制了') + ' ' + templateName(e.templateId || '')}
                       {e.type === 'ai_generate' && tq('Generated a prompt', '生成了一个 Prompt')}
                       {e.type === 'ai_copy' && tq('Copied AI result', '复制了 AI 结果')}
-                      {e.type === 'ai_feedback' && tq('Left feedback', '留下了反馈')}
                     </span>
-                    <span className="text-[var(--color-bench-muted)]/50 text-xs">{timeAgo(e.timestamp)}</span>
+                    <span className="text-[var(--color-bench-muted)]/50 text-xs ml-auto flex-shrink-0">{timeAgo(e.timestamp)}</span>
                   </div>
                 ))}
               </div>
@@ -223,6 +237,38 @@ export function Dashboard() {
           )}
         </>
       )}
+    </div>
+  );
+}
+
+function StatCard({ icon: Icon, color, value, label }: {
+  icon: any; color: string; value: number | string; label: string;
+}) {
+  const colorMap: Record<string, string> = {
+    accent: 'text-[var(--color-bench-accent)]',
+    success: 'text-[var(--color-bench-success)]',
+    warn: 'text-[var(--color-bench-warn)]',
+    error: 'text-[var(--color-bench-error)]',
+  };
+  return (
+    <div className="bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-xl p-4">
+      <Icon size={14} className={(colorMap[color] || '') + ' mb-2'} />
+      <div className="text-2xl font-bold text-[var(--color-bench-text)] font-[var(--font-display)]">{value}</div>
+      <div className="text-xs text-[var(--color-bench-muted)] mt-0.5">{label}</div>
+    </div>
+  );
+}
+
+function ChartCard({ title, icon: Icon, children, className = '' }: {
+  title: string; icon: any; children: ReactNode; className?: string;
+}) {
+  return (
+    <div className={`bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-xl overflow-hidden ${className}`}>
+      <div className="px-5 py-3.5 border-b border-[var(--color-bench-border)] flex items-center gap-2">
+        <Icon size={14} className="text-[var(--color-bench-accent)]" />
+        <h3 className="text-sm font-semibold text-[var(--color-bench-text)]">{title}</h3>
+      </div>
+      <div className="p-4">{children}</div>
     </div>
   );
 }
