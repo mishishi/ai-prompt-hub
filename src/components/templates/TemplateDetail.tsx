@@ -2,6 +2,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { Copy, Check, Sparkles, ChevronLeftIcon, Save } from 'lucide-react';
 import { templates } from '../../data/templates';
+import { TemplateCard } from './TemplateCard';
 import { tName, tShort, tTips, tLabel, tOptions } from '../../data/templates/helper';
 import { renderPrompt } from '../../utils/renderer';
 import { copyToClipboard } from '../../utils/clipboard';
@@ -40,6 +41,13 @@ export function TemplateDetail() {
     if (!template) return '';
     return renderPrompt(template, lang, values);
   }, [template, lang, values]);
+
+  const related = useMemo(() => {
+    if (!template) return [];
+    return templates
+      .filter(t => t.id !== template.id && t.category.some(c => template.category.includes(c)))
+      .slice(0, 3);
+  }, [template]);
 
   const handleSave = () => {
     if (!template) return;
@@ -105,6 +113,7 @@ export function TemplateDetail() {
     );
   }
   return (
+    <>
     <div className="flex flex-col lg:flex-row h-full page-enter">
       {/* Mobile tab switcher */}
       <div className="flex lg:hidden border-b border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] shrink-0">
@@ -209,5 +218,19 @@ export function TemplateDetail() {
         </div>
       </div>
     </div>
+
+      {related.length > 0 && (
+        <div className="max-w-6xl mx-auto px-6 pb-8 mt-2">
+          <h3 className="text-sm font-semibold text-[var(--color-bench-muted)] uppercase tracking-wider mb-4">
+            {tq('Related Templates', '相关推荐')}
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {related.map((tmpl) => (
+              <TemplateCard key={tmpl.id} template={tmpl} onClick={() => navigate('/template/' + tmpl.id)} />
+            ))}
+          </div>
+        </div>
+      )}
+    </>
   );
 }
