@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect, type ReactNode } from 'react';
-import { BarChart3, Eye, Copy, Zap, ThumbsUp, RefreshCw, Star, TrendingUp, User } from 'lucide-react';
+import { BarChart3, Eye, Copy, Zap, ThumbsUp, RefreshCw, Star, TrendingUp, User, Users } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
 } from 'recharts';
@@ -106,6 +106,25 @@ export function Dashboard() {
       .map(([cat, count]) => ({ name: t('category.' + cat), count }));
   }, [filteredEvents, lang]);
 
+  // User activity stats
+  const userStats = useMemo(() => {
+    const users: Record<string, { name: string; views: number; copies: number; gens: number; lastSeen: number }> = {};
+    for (const e of mergedEvents) {
+      if (!e.userId) continue;
+      const u = e.userId;
+      if (!users[u]) users[u] = { name: e.userName || 'Unknown', views: 0, copies: 0, gens: 0, lastSeen: 0 };
+      if (e.type === 'template_view') users[u].views++;
+      if (e.type === 'template_copy') users[u].copies++;
+      if (e.type === 'ai_generate') users[u].gens++;
+      if (e.timestamp > users[u].lastSeen) users[u].lastSeen = e.timestamp;
+    }
+    return Object.entries(users)
+      .map(([id, data]) => ({ id, ...data }))
+      .sort((a, b) => (b.views + b.copies + b.gens) - (a.views + a.copies + a.gens));
+  }, [mergedEvents]);
+
+  const activeToday = userStats.filter(u => u.lastSeen >= todayTs).length;
+
   // 7-day trend
   const trendData = useMemo(() => {
     if (kvData?.trend) return kvData.trend;
@@ -177,7 +196,34 @@ export function Dashboard() {
             <StatCard icon={ThumbsUp} color="success" value={feedbackTotal > 0 ? Math.round((thumbsUp / feedbackTotal) * 100) + '%' : '--'} label={tq('Helpful', '好评率')} />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          {userStats.length > 0 && (
+        <ChartCard title={tq('User Activity', '用户活跃度')} icon={Users} className="mb-8">
+          <div className="flex items-center gap-6 mb-4">
+            <div>
+              <div className="text-2xl font-bold text-[var(--color-bench-text)] font-[var(--font-display)]">{userStats.length}</div>
+              <div className="text-xs text-[var(--color-bench-muted)]">{tq('Total Users', '总用户数')}</div>
+            </div>
+            <div className="w-px h-8 bg-[var(--color-bench-border)]" />
+            <div>
+              <div className="text-2xl font-bold text-[var(--color-bench-success)] font-[var(--font-display)]">{activeToday}</div>
+              <div className="text-xs text-[var(--color-bench-muted)]">{tq('Active Today', '今日活跃')}</div>
+            </div>
+          </div>
+          <ResponsiveContainer width="100%" height={Math.max(150, userStats.length * 36)}>
+            <BarChart data={userStats.slice(0, 8)} layout="vertical" barSize={16}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--color-bench-border)" horizontal={false} />
+              <XAxis type="number" tick={{ fontSize: 11, fill: 'var(--color-bench-muted)' }} axisLine={false} tickLine={false} />
+              <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: 'var(--color-bench-text-dim)' }} axisLine={false} tickLine={false} width={100} />
+              <Tooltip contentStyle={{ background: 'var(--color-bench-surface-solid)', border: '1px solid var(--color-bench-border)', borderRadius: '0.75rem', fontSize: '0.75rem', color: 'var(--color-bench-text)' }} />
+              <Bar dataKey="views" stackId="a" fill="#d4a843" radius={[0, 0, 0, 0]} name={tq('Views', '查看')} />
+              <Bar dataKey="copies" stackId="a" fill="#5aab7a" radius={[0, 0, 0, 0]} name={tq('Copies', '复制')} />
+              <Bar dataKey="gens" stackId="a" fill="#7c8aa5" radius={[0, 4, 4, 0]} name={tq('Generated', '生成')} />
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartCard>
+      )}
+
+<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             {/* 7-Day Trend Chart */}
             <ChartCard title={tq('7-Day Trend', '7 天趋势')} icon={TrendingUp}>
               <ResponsiveContainer width="100%" height={220}>
