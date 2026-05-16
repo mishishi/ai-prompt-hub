@@ -11,6 +11,7 @@ const GeneratePage = lazy(() => import('./components/workspace/GeneratePage').th
 const Dashboard = lazy(() => import('./components/dashboard/Dashboard').then(m => ({ default: m.Dashboard })));
 import { NotFound } from './components/layout/errors/NotFound';
 import { OnboardingGuide } from './components/layout/onboarding/OnboardingGuide';
+import { ShortcutPanel } from './components/layout/onboarding/ShortcutPanel';
 import { ErrorBoundary } from './components/layout/errors/ErrorBoundary';
 
 
@@ -23,6 +24,7 @@ function App() {
       <BrowserRouter>
         <Layout>
           <OnboardingGuide />
+          <ShortcutPanel />
           <ErrorBoundary>
           <Routes>
             <Route path="/" element={<HomePage />} />
