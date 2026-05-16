@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect, type ReactNode } from 'react';
-import { BarChart3, Eye, Copy, Zap, ThumbsUp, RefreshCw, Star, TrendingUp } from 'lucide-react';
+import { BarChart3, Eye, Copy, Zap, ThumbsUp, RefreshCw, Star, TrendingUp, User } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
 } from 'recharts';
@@ -249,6 +249,8 @@ export function Dashboard() {
                       {e.type === 'template_copy' && tq('Copied', '复制了') + ' ' + templateName(e.templateId || '')}
                       {e.type === 'ai_generate' && tq('Generated a prompt', '生成了一个 Prompt')}
                       {e.type === 'ai_copy' && tq('Copied AI result', '复制了 AI 结果')}
+                      {e.type === 'ai_feedback' && tq('Left feedback', '留下了反馈')}
+                      {e.userName && <span className="text-[var(--color-bench-muted)]/70 text-xs flex items-center gap-0.5"><User size={10} />{e.userName}</span>}
                     </span>
                     <span className="text-[var(--color-bench-muted)]/50 text-xs ml-auto flex-shrink-0">{timeAgo(e.timestamp)}</span>
                   </div>

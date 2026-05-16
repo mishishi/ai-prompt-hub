@@ -3,6 +3,8 @@ export interface AnalyticsEvent {
   templateId?: string;
   timestamp: number;
   lang?: string;
+  userId?: string;
+  userName?: string;
 }
 
 const KEY = 'pb_analytics';

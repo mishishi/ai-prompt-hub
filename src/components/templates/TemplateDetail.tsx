@@ -7,6 +7,7 @@ import { renderPrompt } from '../../utils/renderer';
 import { copyToClipboard } from '../../utils/clipboard';
 import { track } from '../../utils/analytics';
 import { useT } from '../../i18n/LanguageContext';
+import { useUser } from '@clerk/clerk-react';
 import { useToast } from '../ui/Toast';
 import { savePrompt, generateId, addRecentView } from '../../utils/storage';
 import type { Prompt } from '../../types';
@@ -15,6 +16,7 @@ export function TemplateDetail() {
   const navigate = useNavigate();
   const { t, lang } = useT();
   const toast = useToast();
+  const { user } = useUser();
   const template = templates.find((tmpl) => tmpl.id === id);
   const tipsText = template ? tTips(template, lang) : '';
   const [values, setValues] = useState<Record<string, string | boolean | string[]>>({});
@@ -32,7 +34,7 @@ export function TemplateDetail() {
   }, [navigate]);
   useEffect(() => {
     if (template) {
-      track({ type: 'template_view', templateId: template.id, lang });
+      track({ type: 'template_view', templateId: template.id, lang, userId: user?.id, userName: user?.fullName || user?.primaryEmailAddress?.emailAddress });
       addRecentView(template.id);
       const defaults: Record<string, string | boolean | string[]> = {};
       template.variables.forEach((v) => { if (v.default !== undefined) defaults[v.name] = v.default; });
@@ -53,7 +55,7 @@ export function TemplateDetail() {
     if (existing >= 0) fb[existing].value = value;
     else fb.push({ id: template!.id, value, ts: Date.now() });
     localStorage.setItem('promptbench-tpl-feedback', JSON.stringify(fb));
-    track({ type: 'ai_feedback', templateId: template!.id, lang });
+    track({ type: 'ai_feedback', templateId: template!.id, lang, userId: user?.id, userName: user?.fullName || user?.primaryEmailAddress?.emailAddress });
   };
 
   useEffect(() => {
@@ -100,7 +102,7 @@ const handleSave = () => {
     track({ type: "template_save", templateId: template.id, lang });
   };
   const handleCopy = async () => {
-    track({ type: 'template_copy', templateId: template!.id, lang });
+    track({ type: 'template_copy', templateId: template!.id, lang, userId: user?.id, userName: user?.fullName || user?.primaryEmailAddress?.emailAddress });
     await copyToClipboard(rendered);
     setCopied(true);
     setFlash(true);

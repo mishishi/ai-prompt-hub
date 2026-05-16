@@ -6,8 +6,10 @@ import { track } from '../../utils/analytics';
 import { savePrompt, generateId } from '../../utils/storage';
 import type { Prompt } from '../../types';
 import { useT } from '../../i18n/LanguageContext';
+import { useUser } from '@clerk/clerk-react';
 
 export function GeneratePage() {
+  const { user } = useUser();
   const { lang } = useT();
   const [intent, setIntent] = useState('');
   const [loading, setLoading] = useState(false);
@@ -37,12 +39,12 @@ export function GeneratePage() {
     setResult('');
     try {
       await aiGenerate(intent.trim(), lang, (chunk) => setResult(chunk));
-      track({ type: 'ai_generate', lang });
+      track({ type: 'ai_generate', lang, userId: user?.id, userName: user?.fullName || user?.primaryEmailAddress?.emailAddress });
     } catch (e: any) { setError(e.message || tq('API error. Please try again.', 'API 错误，请重试。')); }
     finally { setLoading(false); }
   };
 
-  const handleCopy = async () => { if (!result) return; track({ type: 'ai_copy', lang }); await copyToClipboard(result); setCopied(true); setTimeout(() => setCopied(false), 2000); };
+  const handleCopy = async () => { if (!result) return; track({ type: 'ai_copy', lang, userId: user?.id, userName: user?.fullName || user?.primaryEmailAddress?.emailAddress }); await copyToClipboard(result); setCopied(true); setTimeout(() => setCopied(false), 2000); };
   
 
 const handleSave = () => {
