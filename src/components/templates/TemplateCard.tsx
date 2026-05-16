@@ -46,12 +46,13 @@ export function TemplateCard({ template, onClick }: { template: LibraryTemplate;
       {/* Hover glow */}
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none bg-gradient-to-br from-[var(--color-bench-accent)]/5 via-transparent to-[var(--color-bench-accent-secondary)]/5" />
 
+      <button onClick={handleFavorite} className={`absolute top-3 right-3 z-20 p-1.5 rounded-lg transition-all duration-200 ${fav ? 'text-[var(--color-bench-warn)] bg-[var(--color-bench-warn)]/10' : 'text-[var(--color-bench-muted)] hover:text-[var(--color-bench-warn)] hover:bg-[var(--color-bench-warn)]/10 opacity-0 group-hover:opacity-100'}`} title={fav ? 'Unfavorite' : 'Favorite'}>
+        <Star size={14} fill={fav ? 'currentColor' : 'none'} />
+      </button>
+
       <div className="relative z-10 flex flex-col h-full">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
-          <button onClick={handleFavorite} className={`absolute top-3 right-3 z-20 p-1.5 rounded-lg transition-all duration-200 ${fav ? 'text-[var(--color-bench-warn)] bg-[var(--color-bench-warn)]/10' : 'text-[var(--color-bench-muted)] hover:text-[var(--color-bench-warn)] hover:bg-[var(--color-bench-warn)]/10 opacity-0 group-hover:opacity-100'}`} title={fav ? 'Unfavorite' : 'Favorite'}>
-            <Star size={14} fill={fav ? 'currentColor' : 'none'} />
-          </button>
           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-sm font-semibold uppercase tracking-wider bg-[var(--color-bench-accent-secondary)]/10 text-[var(--color-bench-accent-secondary)]">
             {getPlatformLabel(platform, lang)}
           </span>
