@@ -22,6 +22,18 @@ function save(events: AnalyticsEvent[]) {
   localStorage.setItem(KEY, JSON.stringify(events.slice(-MAX)));
 }
 
+
+/** Extract a short display name from a Clerk-like user object */
+export function getDisplayName(user?: { fullName?: string | null; username?: string | null; firstName?: string | null; primaryEmailAddress?: { emailAddress: string } | null } | null): string {
+  if (!user) return 'Unknown';
+  if (user.fullName && !user.fullName.includes('@')) return user.fullName;
+  if (user.username) return user.username;
+  if (user.firstName) return user.firstName;
+  const email = user.primaryEmailAddress?.emailAddress;
+  if (email) return email.split('@')[0];
+  return 'Unknown';
+}
+
 export function track(event: Omit<AnalyticsEvent, 'timestamp'>) {
   const fullEvent = { ...event, timestamp: Date.now() };
 

@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Sparkles, Globe, Sun, Moon } from 'lucide-react';
 import { useT } from '../../i18n/LanguageContext';
@@ -10,9 +10,19 @@ export function TopNavbar() {
   const location = useLocation();
   const { lang, setLang } = useT();
   const { theme, toggle } = useTheme();
-  const { isSignedIn } = useUser();
+  const { isLoaded, isSignedIn } = useUser();
+  const [showAuth, setShowAuth] = useState(false);
   const [switchAnim, setSwitchAnim] = useState(false);
   const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
+
+  useEffect(() => {
+    if (isLoaded) {
+      const timer = setTimeout(() => setShowAuth(true), 400);
+      return () => clearTimeout(timer);
+    } else {
+      setShowAuth(false);
+    }
+  }, [isLoaded]);
 
   const navLinks = [
     { path: '/', label: tq('Home', '首页') },
@@ -57,15 +67,23 @@ export function TopNavbar() {
         {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
       </button>
 
-      {isSignedIn ? (
-        <UserButton afterSignOutUrl="/" />
-      ) : (
-        <SignInButton mode="modal">
-          <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 cursor-pointer">
-            {tq("Sign In", "登录")}
-          </button>
-        </SignInButton>
-      )}
+{/* Auth crossfade */}
+      <div className="relative w-7 h-7">
+        <div className={`absolute inset-0 transition-opacity duration-500 ${!showAuth ? "opacity-100 animate-pulse" : "opacity-0 pointer-events-none"}`}>
+          <div className="w-7 h-7 rounded-full bg-[var(--color-bench-accent)]/25" />
+        </div>
+        <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${showAuth ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+          {isSignedIn ? (
+            <UserButton afterSignOutUrl="/" />
+          ) : (
+            <SignInButton mode="modal">
+              <button className="flex items-center gap-1.5 px-3 py-1.5 -ml-1 rounded-lg text-sm font-medium text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 cursor-pointer whitespace-nowrap">
+                {tq("Sign In", "登录")}
+              </button>
+            </SignInButton>
+          )}
+        </div>
+      </div>
 
 <button onClick={() => { setLang(lang === 'zh-CN' ? 'en' : 'zh-CN'); setSwitchAnim(true); setTimeout(() => setSwitchAnim(false), 300); }} className={"flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 cursor-pointer " + (switchAnim ? "scale-110" : "")}>
         <Globe size={14} />

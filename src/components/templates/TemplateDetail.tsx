@@ -5,7 +5,7 @@ import { templates } from '../../data/templates';
 import { tName, tShort, tTips, tLabel, tOptions } from '../../data/templates/helper';
 import { renderPrompt } from '../../utils/renderer';
 import { copyToClipboard } from '../../utils/clipboard';
-import { track } from '../../utils/analytics';
+import { track, getDisplayName } from '../../utils/analytics';
 import { useT } from '../../i18n/LanguageContext';
 import { useUser } from '@clerk/clerk-react';
 import { useToast } from '../ui/Toast';
@@ -34,7 +34,7 @@ export function TemplateDetail() {
   }, [navigate]);
   useEffect(() => {
     if (template) {
-      track({ type: 'template_view', templateId: template.id, lang, userId: user?.id, userName: user?.fullName || user?.primaryEmailAddress?.emailAddress, provider: user?.externalAccounts?.[0]?.provider });
+      track({ type: 'template_view', templateId: template.id, lang, userId: user?.id, userName: getDisplayName(user), provider: user?.externalAccounts?.[0]?.provider });
       addRecentView(template.id);
       const defaults: Record<string, string | boolean | string[]> = {};
       template.variables.forEach((v) => { if (v.default !== undefined) defaults[v.name] = v.default; });
@@ -55,7 +55,7 @@ export function TemplateDetail() {
     if (existing >= 0) fb[existing].value = value;
     else fb.push({ id: template!.id, value, ts: Date.now() });
     localStorage.setItem('promptbench-tpl-feedback', JSON.stringify(fb));
-    track({ type: 'ai_feedback', templateId: template!.id, lang, userId: user?.id, userName: user?.fullName || user?.primaryEmailAddress?.emailAddress, provider: user?.externalAccounts?.[0]?.provider });
+    track({ type: 'ai_feedback', templateId: template!.id, lang, userId: user?.id, userName: getDisplayName(user), provider: user?.externalAccounts?.[0]?.provider });
   };
 
   useEffect(() => {
@@ -102,7 +102,7 @@ const handleSave = () => {
     track({ type: "template_save", templateId: template.id, lang });
   };
   const handleCopy = async () => {
-    track({ type: 'template_copy', templateId: template!.id, lang, userId: user?.id, userName: user?.fullName || user?.primaryEmailAddress?.emailAddress, provider: user?.externalAccounts?.[0]?.provider });
+    track({ type: 'template_copy', templateId: template!.id, lang, userId: user?.id, userName: getDisplayName(user), provider: user?.externalAccounts?.[0]?.provider });
     await copyToClipboard(rendered);
     setCopied(true);
     setFlash(true);
