@@ -77,8 +77,7 @@ export function TemplateBrowser() {
     if (showFavorites) results = results.filter(t => favorites.includes(t.id));
     if (difficulty) results = results.filter(t => t.difficulty === difficulty);
     return results;
-    if (showCommunity) return communityTpls as any;
-  }, [search, activeCategory, showFavorites, favorites, difficulty]);
+  }, [search, activeCategory, showFavorites, favorites, difficulty, showCommunity, communityTpls]);
 
 
   return (

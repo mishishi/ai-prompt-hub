@@ -2,6 +2,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { Copy, Check, Sparkles, ChevronLeftIcon, Save, Link2, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { templates } from '../../data/templates';
+import type { LibraryTemplate } from '../../types';
 import { tName, tShort, tTips, tLabel, tOptions } from '../../data/templates/helper';
 import { renderPrompt } from '../../utils/renderer';
 import { copyToClipboard } from '../../utils/clipboard';
@@ -17,8 +18,42 @@ export function TemplateDetail() {
   const { t, lang } = useT();
   const toast = useToast();
   const { user } = useUser();
-  const template = templates.find((tmpl) => tmpl.id === id);
-  const tipsText = template ? tTips(template, lang) : '';
+  const localTemplate = templates.find((tmpl) => tmpl.id === id);
+
+  // Community template — fetch from API when not found locally
+  const [communityTemplate, setCommunityTemplate] = useState<LibraryTemplate | null>(null);
+  const [communityLoading, setCommunityLoading] = useState(false);
+  useEffect(() => {
+    if (localTemplate || communityTemplate) return;
+    setCommunityLoading(true);
+    fetch('/api/community/' + id)
+      .then(r => r.json())
+      .then(data => {
+        if (data.ok && data.template) {
+          setCommunityTemplate({
+            id: data.template.id,
+            meta: {
+              name: data.template.name,
+              nameZh: data.template.name,
+              description: data.template.description || '',
+              descriptionZh: data.template.description || '',
+              tags: data.template.tags || [],
+              platform: 'claude' as const,
+            },
+            variables: [],
+            system: { role: '' },
+            user: data.template.prompt,
+            category: [data.template.category],
+            difficulty: data.template.difficulty || 'Beginner',
+          } as any);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setCommunityLoading(false));
+  }, [id, localTemplate, communityTemplate]);
+
+  const template = localTemplate || communityTemplate;
+  const tipsText = template ? tTips(template as any, lang) : '';
   const [values, setValues] = useState<Record<string, string | boolean | string[]>>({});
   const [copied, setCopied] = useState(false);
   const [flash, setFlash] = useState(false);
@@ -108,6 +143,25 @@ const handleSave = () => {
     setFlash(true);
     setTimeout(() => { setCopied(false); setFlash(false); }, 2000);
   };
+  if (communityLoading) {
+    return (
+      <div className="flex flex-col lg:flex-row h-full">
+        <div className="w-full lg:w-80 lg:border-r border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] p-4 md:p-5 space-y-4">
+          <div className="skeleton h-3 w-20" />
+          <div className="skeleton h-6 w-48" />
+          <div className="skeleton h-4 w-64" />
+        </div>
+        <div className="flex-1 flex flex-col">
+          <div className="px-4 md:px-5 py-3 border-b border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)]">
+            <div className="skeleton h-4 w-32" />
+          </div>
+          <div className="flex-1 p-4 md:p-6">
+            <div className="skeleton w-full h-full rounded-xl" />
+          </div>
+        </div>
+      </div>
+    );
+  }
   if (!template) {
     return <div className="flex items-center justify-center h-full text-[var(--color-bench-muted)]">{t('detail.notFound')}</div>;
   }

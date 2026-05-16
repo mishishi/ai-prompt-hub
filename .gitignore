@@ -34,3 +34,5 @@ f.endsWith('.ts')
 
 # Audit
 .audit/test-results/
+.vercel
+.env*.local

@@ -21,6 +21,7 @@ export function Dashboard() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [kvData, setKvData] = useState<any>(null);
   const [kvLoading, setKvLoading] = useState(false);
+  const [communityNames, setCommunityNames] = useState<Record<string, string>>({});
 
   useEffect(() => {
     setKvLoading(true);
@@ -46,6 +47,22 @@ export function Dashboard() {
     return [...filteredEvents, ...kvEvents].sort((a: any, b: any) => a.timestamp - b.timestamp);
   }, [filteredEvents, kvData]);
 
+  // Fetch community template names for Dashboard display
+  useEffect(() => {
+    const ids = mergedEvents
+      .filter((e: any) => e.templateId && !templates.find(t => t.id === e.templateId) && !communityNames[e.templateId])
+      .map((e: any) => e.templateId);
+    const unique = [...new Set(ids)].slice(0, 10);
+    if (!unique.length) return;
+    Promise.all(unique.map(id =>
+      fetch('/api/community/' + id).then(r => r.json()).then(d => ({ id, name: d?.template?.name })).catch(() => ({ id, name: null }))
+    )).then(results => {
+      const map: Record<string, string> = { ...communityNames };
+      results.forEach((r: any) => { if (r.name) map[r.id] = r.name; });
+      setCommunityNames(map);
+    });
+  }, [mergedEvents]);
+
   // Stats from filtered events
   const filteredStats = useMemo(() => {
     const views: Record<string, number> = {};
@@ -70,6 +87,7 @@ export function Dashboard() {
   const feedbackTotal = feedbackData.length;
 
   const templateName = (id: string) => {
+    if (id.length > 30) return communityNames[id] || (lang === 'zh-CN' ? '社区模板' : 'Community');
     const tmpl = templates.find(tpl => tpl.id === id);
     return tmpl ? tName(tmpl, lang) : id;
   };

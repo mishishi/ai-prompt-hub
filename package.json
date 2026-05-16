@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently -n server,app -c blue,green \"node --import tsx --env-file=.env.local --env-file=.env server/index.ts\" \"vite --port 3006\"",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -12,14 +12,18 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "dev:server": "node --import tsx --env-file=.env.local --env-file=.env server/index.ts"
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.61.6",
+    "@fastify/cors": "^11.2.0",
     "@neondatabase/serverless": "^1.1.0",
     "@tailwindcss/vite": "^4.3.0",
     "@vercel/kv": "^2.0.0",
+    "concurrently": "^9.2.1",
     "drizzle-orm": "^0.45.2",
+    "fastify": "^5.8.5",
     "js-yaml": "^4.1.1",
     "lucide-react": "^1.14.0",
     "react": "^19.2.6",
