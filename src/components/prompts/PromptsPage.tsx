@@ -1,7 +1,7 @@
 ﻿import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FileText, Trash2, Copy, Check, Clock, Sparkles, Eye, Search, X } from 'lucide-react';
-import { getSavedPrompts, deletePrompt } from '../../utils/storage';
+import { FileText, Trash2, Copy, Check, Clock, Sparkles, Eye, Search, X, Download, Upload } from 'lucide-react';
+import { getSavedPrompts, deletePrompt, savePrompt, generateId } from '../../utils/storage';
 import type { Prompt } from '../../types';
 import { copyToClipboard } from '../../utils/clipboard';
 import { useT } from '../../i18n/LanguageContext';
@@ -16,6 +16,35 @@ export function PromptsPage() {
   const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
 
   useEffect(() => { setPrompts(getSavedPrompts()); }, []);
+
+  const handleExport = () => {
+    const data = JSON.stringify(prompts, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `prompts-${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const imported = JSON.parse(reader.result as string);
+        if (Array.isArray(imported)) {
+          imported.forEach((p: any) => {
+            savePrompt({ ...p, id: generateId(), createdAt: Date.now(), updatedAt: Date.now() });
+          });
+          setPrompts(getSavedPrompts());
+        }
+      } catch { /* ignore */ }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
 
   const filtered = search.trim() ? prompts.filter(p => p.meta.name.toLowerCase().includes(search.toLowerCase()) || p.user.toLowerCase().includes(search.toLowerCase())) : prompts;
 
@@ -49,6 +78,10 @@ export function PromptsPage() {
           </div>
         </div>
         <button onClick={() => navigate('/generate')} className="btn-glow inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium"><Sparkles size={14} />{tq('New Prompt', '新建 Prompt')}</button>
+        <div className="flex items-center gap-1">
+          <button onClick={handleExport} disabled={prompts.length === 0} className="p-2 rounded-lg text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)] hover:bg-[var(--color-bench-accent)]/10 transition-all disabled:opacity-30 disabled:cursor-not-allowed" title={tq('Export', '导出')}><Download size={14} /></button>
+          <label className="p-2 rounded-lg text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)] hover:bg-[var(--color-bench-accent)]/10 transition-all cursor-pointer"><Upload size={14} /><input type="file" accept=".json" onChange={handleImport} className="hidden" /></label>
+        </div>
       </div>
 
       {prompts.length > 0 && (

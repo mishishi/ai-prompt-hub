@@ -76,6 +76,7 @@ const handleSave = () => {
     };
     savePrompt(p);
     setSaved(true);
+    toast.show(t('detail.saved'));
     setTimeout(() => setSaved(false), 2000);
     track({ type: "template_save", templateId: template.id, lang });
   };
@@ -131,7 +132,7 @@ const handleSave = () => {
           <h2 className="text-lg font-bold text-[var(--color-bench-text)] font-[var(--font-display)] tracking-tight">{tName(template, lang)}</h2>
           <p className="text-sm text-[var(--color-bench-text-dim)] mt-1.5 leading-relaxed">{tShort(template, lang)}</p>
           <div className="flex items-center gap-2 mt-3 flex-wrap">
-            {template.meta.tags.slice(0, 4).map((tag) => (<span key={tag} className="text-xs px-2 py-1 rounded-md bg-white/5 text-[var(--color-bench-muted)]">{tag}</span>))}
+            {template.meta.tags.slice(0, 4).map((tag) => (<span key={tag} onClick={(e) => { e.stopPropagation(); navigate(`/library?search=${encodeURIComponent(tag)}`); }} className="text-xs px-2 py-1 rounded-md bg-white/5 text-[var(--color-bench-muted)] hover:text-[var(--color-bench-accent)] hover:bg-[var(--color-bench-accent)]/10 cursor-pointer transition-colors">{tag}</span>))}
           </div>
         </div>
         {template.variables.length > 0 && (

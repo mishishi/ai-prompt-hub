@@ -5,10 +5,12 @@ import { useT } from '../../i18n/LanguageContext';
 import { tName, tShort } from '../../data/templates/helper';
 import { copyToClipboard } from '../../utils/clipboard';
 import { toggleFavorite, isFavorite } from '../../utils/storage';
+import { useToast } from '../ui/Toast';
 import { getPlatformLabel } from '../../utils/platform';
 
 export function TemplateCard({ template, onClick }: { template: LibraryTemplate; onClick: () => void }) {
   const { t, lang } = useT();
+  const toast = useToast();
   const [copied, setCopied] = useState(false);
   const [fav, setFav] = useState(() => isFavorite(template.id));
   const platform = template.meta.platform;
@@ -26,6 +28,7 @@ export function TemplateCard({ template, onClick }: { template: LibraryTemplate;
     await copyToClipboard(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+    toast.show(t('card.copied'));
   };
 
   const handleFavorite = (e: React.MouseEvent) => {
@@ -33,6 +36,7 @@ export function TemplateCard({ template, onClick }: { template: LibraryTemplate;
     e.stopPropagation();
     const now = toggleFavorite(template.id);
     setFav(now);
+    toast.show(t(now ? 'card.favorited' : 'card.favorite'));
   };
 
   const diffColors: Record<string, string> = {

@@ -10,9 +10,11 @@ export function TemplateBrowser() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { t, lang } = useT();
+  const [searchInput, setSearchInput] = useState(searchParams.get('search') || '');
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [activeCategory, setActiveCategory] = useState<string | null>(searchParams.get('category') || null);
   const [showFavorites, setShowFavorites] = useState(false);
+  const [difficulty, setDifficulty] = useState<string | null>(null);
   const favorites = useMemo(() => getFavorites(), []);
 
   useEffect(() => {
@@ -24,6 +26,11 @@ export function TemplateBrowser() {
   const searchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    const t = setTimeout(() => setSearch(searchInput), 250);
+    return () => clearTimeout(t);
+  }, [searchInput]);
+
+  useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') { e.preventDefault(); searchRef.current?.focus(); }
     };
@@ -32,14 +39,13 @@ export function TemplateBrowser() {
   }, []);
 
   const filtered = useMemo(() => {
-    if (search.trim()) {
-      const results = searchTemplates(search);
-      return showFavorites ? results.filter(t => favorites.includes(t.id)) : results;
-    }
-    if (showFavorites) return templates.filter(t => favorites.includes(t.id));
-    if (activeCategory) return getTemplatesByCategory(activeCategory);
-    return templates;
-  }, [search, activeCategory, showFavorites, favorites]);
+    let results = templates;
+    if (search.trim()) results = searchTemplates(search);
+    else if (activeCategory) results = getTemplatesByCategory(activeCategory);
+    if (showFavorites) results = results.filter(t => favorites.includes(t.id));
+    if (difficulty) results = results.filter(t => t.difficulty === difficulty);
+    return results;
+  }, [search, activeCategory, showFavorites, favorites, difficulty]);
 
 
   return (
@@ -54,7 +60,7 @@ export function TemplateBrowser() {
 
       <div className="relative mb-6">
         <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-bench-muted)]" />
-        <input ref={searchRef} type="text" placeholder={`${t('browser.search')} (${t('browser.searchHint')})`} value={search} onChange={(e) => setSearch(e.target.value)} className="w-full pl-10 pr-16 py-3 bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-lg text-sm text-[var(--color-bench-text)] placeholder:text-[var(--color-bench-muted)] focus:outline-none focus:border-[var(--color-bench-accent)] transition-colors" /><kbd className="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-0.5 rounded text-xs font-medium bg-white/5 border border-white/10 text-[var(--color-bench-muted)]">{t("browser.shortcut")}</kbd>
+        <input ref={searchRef} type="text" placeholder={`${t('browser.search')} (${t('browser.searchHint')})`} value={searchInput} onChange={(e) => setSearchInput(e.target.value)} className="w-full pl-10 pr-16 py-3 bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-lg text-sm text-[var(--color-bench-text)] placeholder:text-[var(--color-bench-muted)] focus:outline-none focus:border-[var(--color-bench-accent)] transition-colors" /><kbd className="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-0.5 rounded text-xs font-medium bg-white/5 border border-white/10 text-[var(--color-bench-muted)]">{t("browser.shortcut")}</kbd>
       </div>
 
       <div className="flex flex-wrap gap-2 mb-8">
@@ -63,7 +69,12 @@ export function TemplateBrowser() {
         {categories.map((cat) => (
           <button key={cat.id} onClick={() => setActiveCategory(cat.id)} className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${activeCategory === cat.id ? 'bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)] shadow-[0_0_12px_var(--color-bench-accent-glow)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}>{t('category.' + cat.id)}</button>
         ))}
-      </div>
+      
+        <span className="text-[var(--color-bench-border)] mx-1">|</span>
+        {['Beginner','Intermediate','Advanced'].map(d => (
+          <button key={d} onClick={() => setDifficulty(difficulty === d ? null : d)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${difficulty === d ? 'bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}>{t('difficulty.' + d)}</button>
+        ))}
+</div>
 
       {filtered.length === 0 ? (
         <div className="text-center py-20">
