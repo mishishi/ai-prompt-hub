@@ -1,6 +1,6 @@
 ﻿import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FileText, Trash2, Copy, Check, Clock, Sparkles, Eye } from 'lucide-react';
+import { FileText, Trash2, Copy, Check, Clock, Sparkles, Eye, Search, X } from 'lucide-react';
 import { getSavedPrompts, deletePrompt } from '../../utils/storage';
 import type { Prompt } from '../../types';
 import { copyToClipboard } from '../../utils/clipboard';
@@ -12,9 +12,12 @@ export function PromptsPage() {
   const [prompts, setPrompts] = useState<Prompt[]>([]);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
   const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
 
   useEffect(() => { setPrompts(getSavedPrompts()); }, []);
+
+  const filtered = search.trim() ? prompts.filter(p => p.meta.name.toLowerCase().includes(search.toLowerCase()) || p.user.toLowerCase().includes(search.toLowerCase())) : prompts;
 
   const handleDelete = (id: string) => { deletePrompt(id); setPrompts(prev => prev.filter(p => p.id !== id)); };
 
@@ -48,6 +51,14 @@ export function PromptsPage() {
         <button onClick={() => navigate('/generate')} className="btn-glow inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium"><Sparkles size={14} />{tq('New Prompt', '新建 Prompt')}</button>
       </div>
 
+      {prompts.length > 0 && (
+        <div className="relative mb-6">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-bench-muted)]" />
+          <input type="text" placeholder={tq("Search your prompts...", "搜索你的 Prompt...")} value={search} onChange={(e) => setSearch(e.target.value)} className="w-full pl-10 pr-10 py-2.5 bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-lg text-sm text-[var(--color-bench-text)] placeholder:text-[var(--color-bench-muted)] focus:outline-none focus:border-[var(--color-bench-accent)] transition-colors" />
+          {search && <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 rounded text-[var(--color-bench-muted)] hover:text-[var(--color-bench-text)] cursor-pointer"><X size={14} /></button>}
+        </div>
+      )}
+
       {prompts.length === 0 ? (
         <div className="text-center py-20">
           <div className="w-16 h-16 rounded-xl border border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] flex items-center justify-center mx-auto mb-4"><FileText size={24} className="text-[var(--color-bench-muted)]" /></div>
@@ -60,7 +71,7 @@ export function PromptsPage() {
         </div>
       ) : (
         <div className="space-y-3">
-          {prompts.map((p) => (
+          {filtered.map((p) => (
             <div key={p.id} onClick={() => setExpandedId(expandedId === p.id ? null : p.id)} className="glass-card group p-5 cursor-pointer">
               <div className="flex items-start gap-4">
                 <div className="flex-1 min-w-0">
