@@ -224,22 +224,24 @@ const handleSave = () => {
               <pre className="prompt-preview overflow-x-auto max-h-[calc(100vh-200px)] md:max-h-[calc(100vh-280px)]">{rendered || <span className="text-[var(--color-bench-muted)] italic">{t('detail.setValues')}</span>}</pre>
             </div>
           </div>
+
+          {related.length > 0 && (
+            <div className="mt-5">
+              <h3 className="text-xs font-semibold text-[var(--color-bench-muted)] uppercase tracking-wider mb-2.5">
+                {tq('Related', '相关推荐')}
+              </h3>
+              <div className="flex gap-2 overflow-x-auto pb-1">
+                {related.map((tmpl) => (
+                  <div key={tmpl.id} className="flex-shrink-0 w-48" onClick={() => navigate('/template/' + tmpl.id)}>
+                    <TemplateCard template={tmpl} onClick={() => navigate('/template/' + tmpl.id)} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
-
-      {related.length > 0 && (
-        <div className="max-w-6xl mx-auto px-6 pb-8 mt-2">
-          <h3 className="text-sm font-semibold text-[var(--color-bench-muted)] uppercase tracking-wider mb-4">
-            {tq('Related Templates', '相关推荐')}
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {related.map((tmpl) => (
-              <TemplateCard key={tmpl.id} template={tmpl} onClick={() => navigate('/template/' + tmpl.id)} />
-            ))}
-          </div>
-        </div>
-      )}
     </>
   );
 }
