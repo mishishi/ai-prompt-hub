@@ -49,6 +49,18 @@ export function Dashboard() {
   const thumbsUp = feedbackData.filter((f: any) => f.value === 'up').length;
   const feedbackTotal = feedbackData.length;
 
+  const templateName = (id: string) => {
+    const tmpl = templates.find(tpl => tpl.id === id);
+    return tmpl ? tName(tmpl, lang) : id;
+  };
+  const timeAgo = (ts: number) => {
+    const s = Math.floor((Date.now() - ts) / 1000);
+    if (s < 60) return tq(s + 's', s + '秒前');
+    if (s < 3600) return tq(Math.floor(s / 60) + 'm', Math.floor(s / 60) + '分钟前');
+    if (s < 86400) return tq(Math.floor(s / 3600) + 'h', Math.floor(s / 3600) + '小时前');
+    return tq(Math.floor(s / 86400) + 'd', Math.floor(s / 86400) + '天前');
+  };
+
   // Leaderboard data for chart
   const leaderboard = useMemo(() => {
     const allIds = new Set([...Object.keys(filteredStats.copies), ...Object.keys(filteredStats.views)]);
@@ -99,17 +111,7 @@ export function Dashboard() {
   // Recent events
   const recentEvents = useMemo(() => filteredEvents.slice(-8).reverse(), [filteredEvents]);
 
-  const templateName = (id: string) => {
-    const tmpl = templates.find(tpl => tpl.id === id);
-    return tmpl ? tName(tmpl, lang) : id;
-  };
-  const timeAgo = (ts: number) => {
-    const s = Math.floor((Date.now() - ts) / 1000);
-    if (s < 60) return tq(s + 's', s + '秒前');
-    if (s < 3600) return tq(Math.floor(s / 60) + 'm', Math.floor(s / 60) + '分钟前');
-    if (s < 86400) return tq(Math.floor(s / 3600) + 'h', Math.floor(s / 3600) + '小时前');
-    return tq(Math.floor(s / 86400) + 'd', Math.floor(s / 86400) + '天前');
-  };
+
 
   const totalViews = Object.values(filteredStats.views).reduce((a, b) => a + b, 0);
   const totalCopies = Object.values(filteredStats.copies).reduce((a, b) => a + b, 0);
