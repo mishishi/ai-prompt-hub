@@ -25,20 +25,20 @@ export function HomePage() {
           <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-[var(--color-bench-accent)]/3 rounded-full blur-3xl" />
         </div>
 
-        <div className="relative max-w-5xl mx-auto px-6 py-20 lg:py-28">
+        <div className="relative max-w-5xl mx-auto px-4 md:px-6 py-12 md:py-20 lg:py-28">
           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
             <div className="flex-1 text-center lg:text-left space-y-6">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md border border-[var(--color-bench-accent)]/20 bg-[var(--color-bench-accent)]/5 text-xs font-medium text-[var(--color-bench-accent)] mb-2">
                 <Sparkles size={12} />
                 {tq('Free & Open Source', '开源 · 免费使用')}
               </div>
-              <h1 className="text-4xl lg:text-5xl font-extrabold text-[var(--color-bench-text)] font-[var(--font-display)] leading-tight tracking-tight">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[var(--color-bench-text)] font-[var(--font-display)] leading-tight tracking-tight">
                 {lang === 'zh-CN'
                   ? <><span className="text-[var(--color-bench-accent)]">像写代码一样</span>写 Prompt</>
                   : <><span className="text-[var(--color-bench-accent)]">Craft</span> prompts like code</>
                 }
               </h1>
-              <p className="text-lg text-[var(--color-bench-text-dim)] max-w-md leading-relaxed">
+              <p className="text-base md:text-lg text-[var(--color-bench-text-dim)] max-w-md leading-relaxed">
                 {tq(
                   'Structured prompt templates for the full development lifecycle. AI-assisted generation, one-click copy. Free & open source.',
                   '覆盖全开发周期的结构化 Prompt 模板。AI 辅助生成，一键复制使用。免费开源。'
@@ -100,7 +100,7 @@ export function HomePage() {
       </section>
 
       {topCopied.length > 0 && (
-        <section className="max-w-6xl mx-auto px-6 pt-16 pb-4">
+        <section className="max-w-6xl mx-auto px-4 md:px-6 pt-16 pb-4">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg border border-[var(--color-bench-success)]/20 flex items-center justify-center">
@@ -121,7 +121,7 @@ export function HomePage() {
         </section>
       )}
 
-      <section className="max-w-6xl mx-auto px-6 py-16">
+      <section className="max-w-6xl mx-auto px-4 md:px-6 py-16">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg border border-[var(--color-bench-accent)]/20 flex items-center justify-center">
@@ -146,7 +146,7 @@ export function HomePage() {
       </section>
 
       {recentTemplates.length > 0 && (
-        <section className="max-w-6xl mx-auto px-6 py-12">
+        <section className="max-w-6xl mx-auto px-4 md:px-6 py-12">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg border border-[var(--color-bench-border)] flex items-center justify-center">
@@ -167,7 +167,7 @@ export function HomePage() {
         </section>
       )}
 
-      <footer className="border-t border-[var(--color-bench-border)] py-8 text-center bg-[var(--color-bench-elevated)]/50">
+      <footer className="border-t border-[var(--color-bench-border)] px-4 py-8 text-center bg-[var(--color-bench-elevated)]/50">
         <p className="text-sm text-[var(--color-bench-muted)]">
           PromptBench · {tq('Free & Open Source', '开源 · 免费使用')}
         </p>

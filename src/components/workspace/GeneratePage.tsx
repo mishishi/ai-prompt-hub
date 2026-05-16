@@ -84,7 +84,7 @@ const handleSave = () => {
     <div className="flex flex-col lg:flex-row h-full page-enter">
       {/* Input Panel */}
       <div className="w-full lg:w-[420px] flex-shrink-0 border-b lg:border-b-0 lg:border-r border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] flex flex-col">
-        <div className="px-6 pt-6 lg:pt-8 pb-4">
+        <div className="px-4 md:px-6 pt-6 lg:pt-8 pb-4">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 rounded-lg bg-[var(--color-bench-accent)] flex items-center justify-center">
               <Sparkles size={18} className="text-[var(--color-bench-bg)]" />
@@ -96,7 +96,7 @@ const handleSave = () => {
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col px-6 space-y-4 overflow-y-auto pb-4">
+        <div className="flex-1 flex flex-col px-4 md:px-6 space-y-4 overflow-y-auto pb-4">
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--color-bench-muted)] mb-2.5">{tq('Task Description', '任务描述')}</label>
                           <div className="flex flex-wrap gap-2 justify-start mb-3">
@@ -117,7 +117,7 @@ const handleSave = () => {
             </div>
           </div>
         </div>
-        <div className="px-6 py-3 border-t border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)]"><p className="text-xs text-[var(--color-bench-muted)] text-center uppercase tracking-wider">{tq('Press Enter to generate · 10 free / day', '回车生成 · 每日免费 10 次')}</p></div>
+        <div className="px-4 md:px-6 py-3 border-t border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)]"><p className="text-xs text-[var(--color-bench-muted)] text-center uppercase tracking-wider">{tq('Press Enter to generate · 10 free / day', '回车生成 · 每日免费 10 次')}</p></div>
       </div>
 
       {/* Output Panel */}
@@ -158,7 +158,7 @@ const handleSave = () => {
               </div>
             </div>
             {!editing ? (
-            <div className="flex-1 overflow-y-auto bg-[var(--color-bench-bg)]"><pre className="p-6 text-sm text-[var(--color-bench-text)] leading-relaxed whitespace-pre-wrap font-mono">{result}{loading && <span className="ai-cursor" />}</pre></div>
+            <div className="flex-1 overflow-y-auto bg-[var(--color-bench-bg)]"><pre className="p-4 md:p-6 text-sm text-[var(--color-bench-text)] leading-relaxed whitespace-pre-wrap font-mono">{result}{loading && <span className="ai-cursor" />}</pre></div>
             ) : (
             <div className="flex-1 flex flex-col">
               <div className="px-5 py-2 border-b border-[var(--color-bench-border)] flex items-center justify-between bg-[var(--color-bench-elevated)]">
@@ -168,7 +168,7 @@ const handleSave = () => {
                   <button onClick={() => setEditing(false)} className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-sm font-medium text-[var(--color-bench-muted)] hover:text-[var(--color-bench-text)] transition-colors"><X size={12} /></button>
                 </div>
               </div>
-              <textarea value={editText} onChange={(e) => setEditText(e.target.value)} className="flex-1 p-6 text-sm text-[var(--color-bench-text)] leading-relaxed font-mono bg-[var(--color-bench-bg)] border-0 resize-none focus:outline-none focus:ring-2 focus:ring-[var(--color-bench-accent)]/30 rounded-b-lg" />
+              <textarea value={editText} onChange={(e) => setEditText(e.target.value)} className="flex-1 p-4 md:p-6 text-sm text-[var(--color-bench-text)] leading-relaxed font-mono bg-[var(--color-bench-bg)] border-0 resize-none focus:outline-none focus:ring-2 focus:ring-[var(--color-bench-accent)]/30 rounded-b-lg" />
             </div>
             )}
             <div className="px-5 py-3 border-t border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] flex items-center justify-center gap-3">

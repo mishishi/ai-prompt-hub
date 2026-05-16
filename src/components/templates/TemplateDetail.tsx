@@ -114,7 +114,7 @@ const handleSave = () => {
   if (!ready) {
     return (
       <div className="flex flex-col lg:flex-row h-full">
-        <div className="w-full lg:w-80 lg:border-r border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] p-5 space-y-4">
+        <div className="w-full lg:w-80 lg:border-r border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] p-4 md:p-5 space-y-4">
           <div className="skeleton h-3 w-20" />
           <div className="skeleton h-6 w-48" />
           <div className="skeleton h-4 w-64" />
@@ -125,10 +125,10 @@ const handleSave = () => {
           </div>
         </div>
         <div className="flex-1 flex flex-col">
-          <div className="px-5 py-3 border-b border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)]">
+          <div className="px-4 md:px-5 py-3 border-b border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)]">
             <div className="skeleton h-4 w-32" />
           </div>
-          <div className="flex-1 p-6">
+          <div className="flex-1 p-4 md:p-6">
             <div className="skeleton w-full h-full rounded-xl" />
           </div>
         </div>
@@ -145,7 +145,7 @@ const handleSave = () => {
       </div>
       {/* Left panel */}
       <div className={"w-full lg:w-80 lg:border-r border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] overflow-y-auto flex flex-col lg:max-h-full max-h-[50vh] lg:max-h-full border-b lg:border-b-0 " + (mobileTab === 'params' ? "flex" : "hidden") + " lg:flex"}>
-        <div className="p-5 border-b border-[var(--color-bench-border)]">
+        <div className="p-4 md:p-5 border-b border-[var(--color-bench-border)]">
           <button onClick={() => navigate('/library')} className="flex items-center gap-1.5 text-xs text-[var(--color-bench-muted)] hover:text-[var(--color-bench-accent)] transition-colors mb-3">
             <ChevronLeftIcon size={12} className="" />
             {t('detail.back')}
@@ -157,7 +157,7 @@ const handleSave = () => {
           </div>
         </div>
         {template.variables.length > 0 && (
-          <div className="p-5 border-b border-[var(--color-bench-border)]">
+          <div className="p-4 md:p-5 border-b border-[var(--color-bench-border)]">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--color-bench-muted)]">{t('detail.variables')}</h3>
               <span className="text-xs text-[var(--color-bench-muted)]/60">
@@ -206,7 +206,7 @@ const handleSave = () => {
           </div>
         )}
         {tipsText && (
-          <div className="px-5 py-3.5">
+          <div className="px-4 md:px-5 py-3.5">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--color-bench-muted)] mb-2 flex items-center gap-1">
               <Sparkles size={12} />{t('detail.tips')}
             </h3>
@@ -216,7 +216,7 @@ const handleSave = () => {
       </div>
       {/* Right panel: preview */}
       <div className="flex-1 flex flex-col min-h-0">
-        <div className="px-5 py-3 border-b border-[var(--color-bench-border)] flex items-center justify-between bg-[var(--color-bench-elevated)]">
+        <div className="px-4 md:px-5 py-3 border-b border-[var(--color-bench-border)] flex items-center justify-between bg-[var(--color-bench-elevated)]">
           <span className="text-sm uppercase tracking-wider text-[var(--color-bench-muted)]">{tq('Prompt Output', 'Prompt 输出')}</span>
           <button onClick={handleCopy} className={'flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ' + (copied ? 'bg-[var(--color-bench-success)]/15 text-[var(--color-bench-success)]' : 'bg-[var(--color-bench-accent)] text-[var(--color-bench-bg)] hover:brightness-110')}>
             {copied ? <Check size={14} /> : <Copy size={14} />}
@@ -225,9 +225,9 @@ const handleSave = () => {
           <button onClick={handleShare} className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)] hover:bg-[var(--color-bench-accent)]/10 transition-all"><Link2 size={14} />{tq("Share", "分享")}</button>
           <button onClick={handleSave} className={"flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all " + (saved ? "bg-[var(--color-bench-success)]/15 text-[var(--color-bench-success)]" : "bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)] hover:bg-[var(--color-bench-accent)]/20")}><Save size={14} />{t(saved ? "detail.saved" : "detail.save")}</button>
         </div>
-        <div className="flex-1 overflow-y-auto p-6 bg-[var(--color-bench-bg)]">
+        <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-[var(--color-bench-bg)]">
           <div className={'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-xl overflow-hidden shadow-lg ' + (flash ? 'preview-flash' : '')}>
-            <div className="px-5 py-3 border-b border-[var(--color-bench-border)] flex items-center gap-3 bg-[var(--color-bench-surface-solid)]">
+            <div className="px-4 md:px-5 py-3 border-b border-[var(--color-bench-border)] flex items-center gap-3 bg-[var(--color-bench-surface-solid)]">
               <div className="flex items-center gap-1.5">
                 <div className="w-2.5 h-2.5 rounded-full bg-[var(--color-bench-accent)]" />
                 <div className="w-2.5 h-2.5 rounded-full bg-[var(--color-bench-accent)]/40" />
@@ -235,7 +235,7 @@ const handleSave = () => {
               </div>
               <span className="text-xs text-[var(--color-bench-muted)] uppercase tracking-wider">{t('detail.preview')}</span>
             </div>
-            <div className="p-6">
+            <div className="p-4 md:p-6">
               <pre className="prompt-preview overflow-x-auto max-h-[calc(100vh-200px)] md:max-h-[calc(100vh-280px)]">{rendered || <span className="text-[var(--color-bench-muted)] italic">{t('detail.setValues')}</span>}</pre>
             </div>
           </div>

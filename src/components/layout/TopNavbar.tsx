@@ -1,6 +1,6 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Sparkles, Globe, Sun, Moon } from 'lucide-react';
+import { Sparkles, Globe, Sun, Moon, Menu, X } from 'lucide-react';
 import { useT } from '../../i18n/LanguageContext';
 import { SignInButton, UserButton, useUser } from '@clerk/clerk-react';
 import { useTheme } from '../../i18n/ThemeContext';
@@ -13,6 +13,7 @@ export function TopNavbar() {
   const { isLoaded, isSignedIn } = useUser();
   const [showAuth, setShowAuth] = useState(false);
   const [switchAnim, setSwitchAnim] = useState(false);
+  const [mobileMenu, setMobileMenu] = useState(false);
   const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
 
   useEffect(() => {
@@ -24,6 +25,8 @@ export function TopNavbar() {
     }
   }, [isLoaded]);
 
+  useEffect(() => { setMobileMenu(false); }, [location.pathname]);
+
   const navLinks = [
     { path: '/', label: tq('Home', '首页') },
     { path: '/library', label: tq('Templates', '模板') },
@@ -32,63 +35,96 @@ export function TopNavbar() {
     { path: '/dashboard', label: tq('Track', '效果') },
   ];
 
-  return (
-    <header className="h-14 border-b border-[var(--color-bench-border)] bg-[var(--color-bench-surface-solid)] flex items-center px-5 gap-4 flex-shrink-0 z-10">
-      <div onClick={() => navigate('/')} className="flex items-center gap-2.5 cursor-pointer flex-shrink-0 group">
-        <div className="w-8 h-8 rounded-lg bg-[var(--color-bench-accent)] flex items-center justify-center shadow-lg shadow-[var(--color-bench-accent)]/20 group-hover:shadow-[var(--color-bench-accent)]/40 transition-shadow">
-          <Sparkles size={16} className="text-white" />
-        </div>
-        <span className="text-sm font-bold text-[var(--color-bench-text)] font-[var(--font-display)] tracking-tight">PromptBench</span>
-      </div>
+  const isActive = (path: string) =>
+    path === '/' ? location.pathname === '/' :
+    path === '/library' ? (location.pathname.startsWith(path) || location.pathname.startsWith('/template/')) :
+    location.pathname.startsWith(path);
 
-      <nav className="flex items-center gap-0.5 overflow-x-auto">
-        {navLinks.map((link) => {
-          const active = link.path === '/' ? location.pathname === '/' : link.path === '/library' ? (location.pathname.startsWith(link.path) || location.pathname.startsWith('/template/')) : location.pathname.startsWith(link.path);
-          return (
+  return (
+    <>
+      <header className="h-14 border-b border-[var(--color-bench-border)] bg-[var(--color-bench-surface-solid)] flex items-center px-4 md:px-5 gap-2 md:gap-4 flex-shrink-0 z-20 relative">
+        {/* Logo */}
+        <div onClick={() => navigate('/')} className="flex items-center gap-2 md:gap-2.5 cursor-pointer flex-shrink-0 group">
+          <div className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-[var(--color-bench-accent)] flex items-center justify-center shadow-lg shadow-[var(--color-bench-accent)]/20 group-hover:shadow-[var(--color-bench-accent)]/40 transition-shadow">
+            <Sparkles size={14} className="md:size-[16px] text-white" />
+          </div>
+          <span className="text-sm font-bold text-[var(--color-bench-text)] font-[var(--font-display)] tracking-tight hidden sm:inline">PromptBench</span>
+        </div>
+
+        {/* Desktop nav */}
+        <nav className="hidden md:flex items-center gap-0.5">
+          {navLinks.map((link) => (
             <button
               key={link.path}
               onClick={() => navigate(link.path)}
               className={`px-2.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 sm:px-3.5 ${
-                active
+                isActive(link.path)
                   ? 'bg-[var(--color-bench-accent)]/20 text-[var(--color-bench-accent)] font-semibold shadow-[0_0_12px_var(--color-bench-accent-glow)]'
                   : 'text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)]'
               }`}
             >
               {link.label}
             </button>
-          );
-        })}
-      </nav>
+          ))}
+        </nav>
 
-      <div className="flex-1" />
+        <div className="flex-1" />
 
+        {/* Theme toggle */}
+        <button onClick={toggle} className="flex items-center justify-center w-8 h-8 md:w-auto md:h-auto md:px-2.5 md:py-1.5 rounded-lg text-sm text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 cursor-pointer flex-shrink-0" title={theme === 'dark' ? 'Switch to light' : 'Switch to dark'}>
+          {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+        </button>
 
-      <button onClick={toggle} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 cursor-pointer" title={theme === 'dark' ? 'Switch to light' : 'Switch to dark'}>
-        {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
-      </button>
-
-{/* Auth crossfade */}
-      <div className="relative w-7 h-7">
-        <div className={`absolute inset-0 transition-opacity duration-500 ${!showAuth ? "opacity-100 animate-pulse" : "opacity-0 pointer-events-none"}`}>
-          <div className="w-7 h-7 rounded-full bg-[var(--color-bench-accent)]/25" />
+        {/* Auth crossfade */}
+        <div className="relative w-7 h-7 flex-shrink-0">
+          <div className={`absolute inset-0 transition-opacity duration-500 ${!showAuth ? "opacity-100 animate-pulse" : "opacity-0 pointer-events-none"}`}>
+            <div className="w-7 h-7 rounded-full bg-[var(--color-bench-accent)]/25" />
+          </div>
+          <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${showAuth ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
+            {isSignedIn ? (
+              <UserButton afterSignOutUrl="/" />
+            ) : (
+              <SignInButton mode="modal">
+                <button className="flex items-center gap-1.5 px-2 md:px-3 py-1.5 -ml-1 rounded-lg text-sm font-medium text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 cursor-pointer whitespace-nowrap">
+                  <span className="hidden sm:inline">{tq("Sign In", "登录")}</span>
+                </button>
+              </SignInButton>
+            )}
+          </div>
         </div>
-        <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${showAuth ? "opacity-100" : "opacity-0 pointer-events-none"}`}>
-          {isSignedIn ? (
-            <UserButton afterSignOutUrl="/" />
-          ) : (
-            <SignInButton mode="modal">
-              <button className="flex items-center gap-1.5 px-3 py-1.5 -ml-1 rounded-lg text-sm font-medium text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 cursor-pointer whitespace-nowrap">
-                {tq("Sign In", "登录")}
+
+        {/* Language toggle */}
+        <button onClick={() => { setLang(lang === 'zh-CN' ? 'en' : 'zh-CN'); setSwitchAnim(true); setTimeout(() => setSwitchAnim(false), 300); }} className={"flex items-center justify-center w-8 h-8 md:w-auto md:h-auto md:px-2.5 md:py-1.5 rounded-lg text-sm text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 cursor-pointer flex-shrink-0 " + (switchAnim ? "scale-110" : "")}>
+          <Globe size={14} />
+          <span className="hidden md:inline text-xs font-bold px-1.5 py-0.5 rounded bg-[var(--color-bench-accent)]/25 text-[var(--color-bench-accent)] ml-1.5">{lang === 'zh-CN' ? '中文' : 'EN'}</span>
+        </button>
+
+        {/* Mobile hamburger */}
+        <button onClick={() => setMobileMenu(!mobileMenu)} className="md:hidden flex items-center justify-center w-8 h-8 rounded-lg text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 flex-shrink-0">
+          {mobileMenu ? <X size={18} /> : <Menu size={18} />}
+        </button>
+      </header>
+
+      {/* Mobile menu overlay */}
+      {mobileMenu && (
+        <div className="md:hidden fixed inset-0 top-14 z-10 bg-[var(--color-bench-bg)]/95 backdrop-blur-sm">
+          <nav className="flex flex-col p-4 gap-1">
+            {navLinks.map((link) => (
+              <button
+                key={link.path}
+                onClick={() => { navigate(link.path); setMobileMenu(false); }}
+                className={`px-4 py-3 rounded-xl text-sm font-medium text-left transition-all duration-200 ${
+                  isActive(link.path)
+                    ? 'bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)] font-semibold'
+                    : 'text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)]'
+                }`}
+              >
+                {link.label}
               </button>
-            </SignInButton>
-          )}
+            ))}
+          </nav>
         </div>
-      </div>
-
-<button onClick={() => { setLang(lang === 'zh-CN' ? 'en' : 'zh-CN'); setSwitchAnim(true); setTimeout(() => setSwitchAnim(false), 300); }} className={"flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 cursor-pointer " + (switchAnim ? "scale-110" : "")}>
-        <Globe size={14} />
-        <span className="text-xs font-bold px-1.5 py-0.5 rounded bg-[var(--color-bench-accent)]/25 text-[var(--color-bench-accent)]">{lang === 'zh-CN' ? '中文' : 'EN'}</span>
-      </button>
-    </header>
+      )}
+    </>
   );
 }

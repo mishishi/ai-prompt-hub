@@ -1,18 +1,24 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FileText, Trash2, Copy, Check, Clock, Sparkles, Eye, Search, X, Download, Upload } from 'lucide-react';
+import { FileText, Trash2, Copy, Check, Clock, Sparkles, Eye, Search, X, Download, Upload, Globe } from 'lucide-react';
 import { getSavedPrompts, deletePrompt, savePrompt, generateId } from '../../utils/storage';
 import type { Prompt } from '../../types';
 import { copyToClipboard } from '../../utils/clipboard';
 import { useT } from '../../i18n/LanguageContext';
+import { useUser } from '@clerk/clerk-react';
+import { getDisplayName } from '../../utils/analytics';
+import { PublishModal } from './PublishModal';
 
 export function PromptsPage() {
   const navigate = useNavigate();
   const { lang } = useT();
+  const { user } = useUser();
   const [prompts, setPrompts] = useState<Prompt[]>([]);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [publishTarget, setPublishTarget] = useState<Prompt | null>(null);
+  const [publishSuccess, setPublishSuccess] = useState(false);
   const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
 
   useEffect(() => { setPrompts(getSavedPrompts()); }, []);
@@ -62,18 +68,20 @@ export function PromptsPage() {
     handleDelete(id);
   };
 
+  const handlePublished = () => { setPublishTarget(null); setPublishSuccess(true); setTimeout(() => setPublishSuccess(false), 3000); };
+
   const formatDate = (ts: number) => {
     const d = new Date(ts);
     return d.toLocaleDateString(lang === 'zh-CN' ? 'zh-CN' : 'en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-8 page-enter">
+    <div className="max-w-4xl mx-auto px-4 md:px-6 py-6 md:py-8 page-enter">
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-[var(--color-bench-accent)]/10 flex items-center justify-center"><FileText size={20} className="text-[var(--color-bench-accent)]" /></div>
           <div>
-            <h2 className="text-2xl font-bold text-[var(--color-bench-text)] font-[var(--font-display)] tracking-tight">{tq('My Prompts', '我的 Prompt')}</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-[var(--color-bench-text)] font-[var(--font-display)] tracking-tight">{tq('My Prompts', '我的 Prompt')}</h2>
             <p className="text-sm text-[var(--color-bench-text-dim)]">{tq('Your saved and generated prompts', '你保存和生成的 Prompt')}</p>
           </div>
         </div>
@@ -120,6 +128,7 @@ export function PromptsPage() {
                 </div>
                 <div className="flex items-center gap-1 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
                   <button onClick={(e) => handleCopy(e, p)} className={"flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-sm font-medium transition-all " + (copiedId === p.id ? 'bg-[var(--color-bench-success)]/10 text-[var(--color-bench-success)]' : 'text-[var(--color-bench-text-dim)] hover:bg-[var(--color-bench-accent)]/10 hover:text-[var(--color-bench-accent)]')}>{copiedId === p.id ? <Check size={12} /> : <Copy size={12} />}{copiedId === p.id ? tq('Copied!', '已复制') : tq('Copy', '复制')}</button>
+                  <button onClick={(e) => { e.stopPropagation(); setPublishTarget(p); }} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-sm font-medium text-[var(--color-bench-accent)] hover:bg-[var(--color-bench-accent)]/10 transition-all"><Globe size={12} />{tq('Publish', '发布')}</button>
                   <button onClick={(e) => handleDeleteClick(e, p.id)} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-sm font-medium text-[var(--color-bench-text-dim)] hover:bg-[var(--color-bench-error)]/10 hover:text-[var(--color-bench-error)] transition-all"><Trash2 size={12} /></button>
                 </div>
               </div>
@@ -132,6 +141,12 @@ export function PromptsPage() {
             </div>
           ))}
         </div>
+      )}
+      {publishSuccess && (
+        <div className="fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl bg-[var(--color-bench-success)]/15 border border-[var(--color-bench-success)]/30 text-sm text-[var(--color-bench-success)] shadow-lg">{tq('Published to community!', '已发布到社区！')}</div>
+      )}
+      {publishTarget && user && (
+        <PublishModal prompt={publishTarget} authorId={user.id} authorName={getDisplayName(user)} onClose={() => setPublishTarget(null)} onPublished={handlePublished} />
       )}
     </div>
   );

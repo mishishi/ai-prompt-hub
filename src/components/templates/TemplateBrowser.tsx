@@ -1,7 +1,8 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Search, Sparkles, Zap, Star } from 'lucide-react';
+import { Search, Sparkles, Zap, Star, Globe } from 'lucide-react';
 import { templates, categories, getTemplatesByCategory, searchTemplates } from '../../data/templates';
+import type { LibraryTemplate } from '../../types';
 import { getFavorites } from '../../utils/storage';
 import { TemplateCard } from './TemplateCard';
 import { useT } from '../../i18n/LanguageContext';
@@ -15,6 +16,9 @@ export function TemplateBrowser() {
   const [activeCategory, setActiveCategory] = useState<string | null>(searchParams.get('category') || null);
   const [showFavorites, setShowFavorites] = useState(false);
   const [difficulty, setDifficulty] = useState<string | null>(null);
+  const [showCommunity, setShowCommunity] = useState(false);
+  const [communityTpls, setCommunityTpls] = useState<LibraryTemplate[]>([]);
+  const [communityLoading, setCommunityLoading] = useState(false);
   const favorites = useMemo(() => getFavorites(), []);
 
   useEffect(() => {
@@ -24,6 +28,33 @@ export function TemplateBrowser() {
     }
   }, []);
   const searchRef = useRef<HTMLInputElement>(null);
+
+  const fetchCommunity = () => {
+    if (communityTpls.length > 0 && showCommunity) return;
+    setCommunityLoading(true);
+    fetch('/api/community?sort=popular&limit=30')
+      .then(r => r.json())
+      .then(data => {
+        if (data.ok) {
+          const mapped: LibraryTemplate[] = data.templates.map((t: any) => ({
+            id: t.id,
+            meta: { name: t.name, description: t.description, tags: t.tags, platform: 'claude' as const },
+            variables: [],
+            system: { role: '' },
+            user: t.prompt,
+            category: [t.category],
+            difficulty: t.difficulty,
+            _community: true,
+            _authorName: t.authorName,
+            _likes: t.likes,
+            _copies: t.copies,
+          } as any));
+          setCommunityTpls(mapped);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setCommunityLoading(false));
+  };
 
   useEffect(() => {
     const t = setTimeout(() => setSearch(searchInput), 250);
@@ -39,21 +70,23 @@ export function TemplateBrowser() {
   }, []);
 
   const filtered = useMemo(() => {
+    if (showCommunity) return communityTpls as any;
     let results = templates;
     if (search.trim()) results = searchTemplates(search);
     else if (activeCategory) results = getTemplatesByCategory(activeCategory);
     if (showFavorites) results = results.filter(t => favorites.includes(t.id));
     if (difficulty) results = results.filter(t => t.difficulty === difficulty);
     return results;
+    if (showCommunity) return communityTpls as any;
   }, [search, activeCategory, showFavorites, favorites, difficulty]);
 
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-8 page-enter">
+    <div className="max-w-6xl mx-auto px-4 md:px-6 py-6 md:py-8 page-enter">
       <div className="flex items-center gap-3 mb-8">
         <div className="w-10 h-10 rounded-xl bg-[var(--color-bench-accent)]/10 flex items-center justify-center"><Sparkles size={20} className="text-[var(--color-bench-accent)]" /></div>
         <div>
-          <h2 className="text-2xl font-bold text-[var(--color-bench-text)] font-[var(--font-display)] tracking-tight">{t('browser.title')}</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-[var(--color-bench-text)] font-[var(--font-display)] tracking-tight">{t('browser.title')}</h2>
           <p className="text-sm text-[var(--color-bench-text-dim)]">{t('browser.subtitle')}</p>
         </div>
       </div>
@@ -63,20 +96,23 @@ export function TemplateBrowser() {
         <input ref={searchRef} type="text" placeholder={`${t('browser.search')} (${t('browser.searchHint')})`} value={searchInput} onChange={(e) => setSearchInput(e.target.value)} className="w-full pl-10 pr-16 py-3 bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-lg text-sm text-[var(--color-bench-text)] placeholder:text-[var(--color-bench-muted)] focus:outline-none focus:border-[var(--color-bench-accent)] transition-colors" /><kbd className="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-0.5 rounded text-xs font-medium bg-white/5 border border-white/10 text-[var(--color-bench-muted)]">{t("browser.shortcut")}</kbd>
       </div>
 
-      <div className="flex flex-wrap gap-2 mb-8">
-        <button onClick={() => setActiveCategory(null)} className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${!activeCategory ? 'bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)] shadow-[0_0_12px_var(--color-bench-accent-glow)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}>{t('browser.all')} ({templates.length})</button>
+      <div className="flex gap-2 mb-8 overflow-x-auto pb-1 flex-nowrap md:flex-wrap">
+        <button onClick={() => setActiveCategory(null)} className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${!activeCategory ? 'bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)] shadow-[0_0_12px_var(--color-bench-accent-glow)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}>{t('browser.all')} ({showCommunity ? communityTpls.length : templates.length})</button>
         <button onClick={() => { setShowFavorites(!showFavorites); if (!showFavorites) setActiveCategory(null); }} className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-1.5 ${showFavorites ? 'bg-[var(--color-bench-warn)]/15 text-[var(--color-bench-warn)] shadow-[0_0_12px_var(--color-bench-warn)]/20' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}><Star size={12} fill={showFavorites ? 'currentColor' : 'none'} />{t('browser.favorites')} ({favorites.length})</button>
-        {categories.map((cat) => (
+        <button onClick={() => { setShowCommunity(!showCommunity); if (!showCommunity) fetchCommunity(); setShowFavorites(false); setActiveCategory(null); }} className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-1.5 ${showCommunity ? 'bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)] shadow-[0_0_12px_var(--color-bench-accent-glow)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}><Globe size={12} />{lang === 'zh-CN' ? '社区' : 'Community'}</button>
+        {!showCommunity && categories.map((cat) => (
           <button key={cat.id} onClick={() => setActiveCategory(cat.id)} className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${activeCategory === cat.id ? 'bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)] shadow-[0_0_12px_var(--color-bench-accent-glow)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}>{t('category.' + cat.id)}</button>
         ))}
       
-        <span className="text-[var(--color-bench-border)] mx-1">|</span>
-        {['Beginner','Intermediate','Advanced'].map(d => (
+        {!showCommunity && <span className="text-[var(--color-bench-border)] mx-1">|</span>}
+        {!showCommunity && ['Beginner','Intermediate','Advanced'].map(d => (
           <button key={d} onClick={() => setDifficulty(difficulty === d ? null : d)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${difficulty === d ? 'bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}>{t('difficulty.' + d)}</button>
         ))}
 </div>
 
-      {filtered.length === 0 ? (
+      {communityLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{[1,2,3,4,5,6].map(i => <div key={i} className="h-40 rounded-xl bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] animate-pulse" />)}</div>
+      ) : filtered.length === 0 ? (
         <div className="text-center py-20">
           {showFavorites ? (
             <>
@@ -96,7 +132,7 @@ export function TemplateBrowser() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map((tmpl, i) => (<div key={tmpl.id} className={`card-enter stagger-${(i % 4) + 1}`}><TemplateCard template={tmpl} onClick={() => navigate('/template/' + tmpl.id)} /></div>))}
+          {filtered.map((tmpl: any, i: number) => (<div key={tmpl.id} className={`card-enter stagger-${(i % 4) + 1}`}><TemplateCard template={tmpl} onClick={() => navigate('/template/' + tmpl.id)} /></div>))}
         </div>
       )}
     </div>
