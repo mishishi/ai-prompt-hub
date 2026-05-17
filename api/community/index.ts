@@ -33,6 +33,7 @@ export async function GET(request: Request) {
   try {
     const url = new URL(request.url);
     const category = url.searchParams.get('category');
+    const author = url.searchParams.get('author');
     const search = url.searchParams.get('search');
     const sort = url.searchParams.get('sort') || 'recent';
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '50'), 100);
@@ -40,6 +41,7 @@ export async function GET(request: Request) {
     let query = db.select().from(communityTemplates);
 
     if (category) query = query.where(eq(communityTemplates.category, category));
+    if (author) query = query.where(eq(communityTemplates.authorId, author));
     if (sort === 'popular') query = query.orderBy(desc(communityTemplates.likes));
     else if (sort === 'copied') query = query.orderBy(desc(communityTemplates.copies));
     else query = query.orderBy(desc(communityTemplates.createdAt));

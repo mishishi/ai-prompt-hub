@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Copy, Check, Star, BadgeCheck } from 'lucide-react';
 import type { LibraryTemplate } from '../../types';
 import { useT } from '../../i18n/LanguageContext';
@@ -14,6 +15,7 @@ export function TemplateCard({ template, onClick, score = 0, copyCount = 0, onCo
   const { t, lang } = useT();
   const { user } = useUser();
   const toast = useToast();
+  const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
   const [fav, setFav] = useState(() => isFavorite(template.id));
   const platform = template.meta.platform;
@@ -59,6 +61,11 @@ export function TemplateCard({ template, onClick, score = 0, copyCount = 0, onCo
           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-sm font-semibold uppercase tracking-wider bg-[var(--color-bench-accent-secondary)]/10 text-[var(--color-bench-accent-secondary)]">
             {getPlatformLabel(platform, lang)}
           </span>
+            {(template as any)._verified ? (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-sm font-semibold bg-[var(--color-bench-success)]/10 text-[var(--color-bench-success)]">
+                <BadgeCheck size={12} />{t("card.verified")}
+              </span>
+            ) : null}
           {template.verified && (
             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold bg-[var(--color-bench-success)]/10 text-[var(--color-bench-success)]">
               <BadgeCheck size={11} />
@@ -85,6 +92,14 @@ export function TemplateCard({ template, onClick, score = 0, copyCount = 0, onCo
         </p>
 
         <span className={"text-sm font-semibold px-1.5 py-0.5 rounded bg-[var(--color-bench-accent-secondary)]/10 text-[var(--color-bench-accent-secondary)]"}>{template.mode && t('mode.' + template.mode)}</span>
+        {(template as any)._authorName && (
+          <div className="flex items-center gap-1.5 mt-2 text-sm text-[var(--color-bench-muted)]">
+            <span className="w-5 h-5 rounded-full bg-[var(--color-bench-accent)]/20 flex items-center justify-center text-sm font-medium text-[var(--color-bench-accent)]">
+              {(template as any)._authorName.charAt(0)}
+            </span>
+            {(template as any)._authorName}
+          </div>
+        )}
         
         <div className="flex items-center justify-between pt-4 mt-4 border-t border-[var(--color-bench-border)] group-hover:border-[var(--color-bench-accent)]/30 transition-colors">
           <button onClick={handleFavorite} className={"flex items-center gap-1 text-sm font-medium transition-colors " + (fav ? 'text-[var(--color-bench-warn)]' : 'text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-warn)]')}>

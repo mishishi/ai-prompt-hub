@@ -11,6 +11,7 @@ import { track, getDisplayName } from '../../utils/analytics';
 import { useT } from '../../i18n/LanguageContext';
 import { useUser } from '@clerk/clerk-react';
 import { useToast } from '../ui/Toast';
+import { CommentsSection } from './CommentsSection';
 import { savePrompt, generateId, addRecentView } from '../../utils/storage';
 import type { Prompt } from '../../types';
 export function TemplateDetail() {
@@ -33,6 +34,7 @@ export function TemplateDetail() {
         if (data.ok && data.template) {
           setCommunityTemplate({
             _community: true as any,
+            _verified: data.template.verified ?? 0,
             id: data.template.id,
             meta: {
               name: data.template.name,
@@ -190,60 +192,29 @@ export function TemplateDetail() {
 
 
 
-  const handleFeedback = (value: 'up' | 'down') => {
+    const handleFeedback = async (value: 'up' | 'down') => {
     setFeedback(value);
-    const fb = JSON.parse(localStorage.getItem('promptbench-tpl-feedback') || '[]');
-    const existing = fb.findIndex((f: any) => f.id === template!.id);
-    if (existing >= 0) fb[existing].value = value;
-    else fb.push({ id: template!.id, value, ts: Date.now() });
-    localStorage.setItem('promptbench-tpl-feedback', JSON.stringify(fb));
     track({ type: 'ai_feedback', templateId: template!.id, lang, userId: user?.id, userName: getDisplayName(user), provider: user?.externalAccounts?.[0]?.provider });
-  };
-
-  useEffect(() => {
-    if (template) {
+    if (template?._community && user?.id) {
+      try {
+        const res = await fetch('/api/community/' + template.id + '/feedback', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: user.id, value }),
+        });
+        const data = await res.json();
+        if (!data.ok) console.warn('feedback failed')
+      } catch {}
+    } else {
       const fb = JSON.parse(localStorage.getItem('promptbench-tpl-feedback') || '[]');
-      const existing = fb.find((f: any) => f.id === template.id);
-      if (existing) setFeedback(existing.value);
+      const existing = fb.findIndex((f: any) => f.id === template!.id);
+      if (existing >= 0) fb[existing].value = value;
+      else fb.push({ id: template!.id, value, ts: Date.now() });
+      localStorage.setItem('promptbench-tpl-feedback', JSON.stringify(fb));
     }
-  }, [template]);
-
-const handleShare = () => {
-    const url = window.location.href;
-    navigator.clipboard.writeText(url).then(() => toast.show(tq('Link copied!', '链接已复制！')));
   };
 
-const handleSave = () => {
-    if (!template) return;
-    const id = generateId();
-    const r = rendered;
-    const p: Prompt = {
-      id,
-      yaml: "",
-      meta: { name: template.meta.name, nameZh: template.meta.nameZh, description: template.meta.description, descriptionZh: template.meta.descriptionZh, tags: [...template.meta.tags], platform: template.meta.platform },
-      variables: template.variables.map(v => ({ ...v })),
-      system: {
-        role: template.system.role || "", roleZh: template.system.roleZh,
-        personality: template.system.personality, personalityZh: template.system.personalityZh,
-        rules: [...(template.system.rules || [])], rulesZh: [...(template.system.rulesZh || [])],
-        stop_rules: [...(template.system.stop_rules || [])], stop_rulesZh: [...(template.system.stop_rulesZh || [])]
-      },
-      user: r,
-      userZh: lang === "zh-CN" ? r : undefined,
-      source: "library",
-      forkedFrom: template.id,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-      version: 1,
-      versions: [],
-    };
-    savePrompt(p);
-    setSaved(true);
-    toast.show(t('detail.saved'));
-    setTimeout(() => setSaved(false), 2000);
-    track({ type: "template_save", templateId: template.id, lang });
-  };
-  const handleCopy = async () => {
+const handleCopy = async () => {
     track({ type: 'template_copy', templateId: template!.id, lang, userId: user?.id, userName: getDisplayName(user), provider: user?.externalAccounts?.[0]?.provider });
     await copyToClipboard(rendered);
     setCopied(true);
@@ -311,7 +282,7 @@ const handleSave = () => {
             <ChevronLeftIcon size={12} className="" />
             {t('detail.back')}
           </button>
-          <h2 className="text-lg font-bold text-[var(--color-bench-text)] font-[var(--font-display)] tracking-tight">{tName(template, lang)}</h2>
+          <h2 className="text-lg font-bold text-[var(--color-bench-text)] font-[var(--font-display)] tracking-tight">{tName(template, lang)}{(template as any)._authorName && (<span className="text-sm text-[var(--color-bench-muted)] ml-3">by {(template as any)._authorName}</span>)}</h2>
           <p className="text-sm text-[var(--color-bench-text-dim)] mt-1.5 leading-relaxed">{tShort(template, lang)}</p>
           <div className="flex items-center gap-2 mt-3 flex-wrap">
             {template.meta.tags.slice(0, 4).map((tag) => (<span key={tag} onClick={(e) => { e.stopPropagation(); navigate(`/library?search=${encodeURIComponent(tag)}`); }} className="text-xs px-2 py-1 rounded-md bg-white/5 text-[var(--color-bench-muted)] hover:text-[var(--color-bench-accent)] hover:bg-[var(--color-bench-accent)]/10 cursor-pointer transition-colors">{(() => { const translated = t(`tag.${tag}`); return translated === `tag.${tag}` ? tag : translated; })()}</span>))}
@@ -520,6 +491,16 @@ const handleSave = () => {
                               <pre className="prompt-preview overflow-x-auto max-h-[calc(100vh-200px)] md:max-h-[calc(100vh-280px)]">{rendered || <span className="text-[var(--color-bench-muted)] italic">{t('detail.setValues')}</span>}</pre>
               )}            </div>
           </div>
+
+          
+
+          {/* Comments Section */}
+          {template?._community && (
+            <div className="mt-8 border-t border-[var(--color-bench-border)] pt-6">
+              <h3 className="text-lg font-semibold text-[var(--color-bench-text)] mb-4">{tq('Comments', '评论')}</h3>
+              <CommentsSection templateId={template.id} />
+            </div>
+          )}
 
           <div className="mt-4 flex items-center gap-2 px-1">
             <span className="text-xs text-[var(--color-bench-muted)]">{tq('Was this helpful?', '这个模板有用吗？')}</span>

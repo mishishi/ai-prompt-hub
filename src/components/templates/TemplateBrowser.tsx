@@ -24,6 +24,8 @@ export function TemplateBrowser() {
   const [communityLoading, setCommunityLoading] = useState(false);
   const [sortBy, setSortBy] = useState<'default' | 'score'>('default');
   const [copyTicker, setCopyTicker] = useState(0);
+  const [leaderboard, setLeaderboard] = useState<any[]>([]);
+  const [lbPeriod, setLbPeriod] = useState<'week' | 'month'>('week');
   const favorites = useMemo(() => getFavorites(), []);
 
   useEffect(() => {
@@ -176,6 +178,27 @@ export function TemplateBrowser() {
       )}
 
       {/* Community info */}
+      {activeTab === 'community' && leaderboard.length > 0 && (
+        <div className="mb-6 p-4 rounded-xl border border-[var(--color-bench-accent)]/20 bg-[var(--color-bench-accent)]/5">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-[var(--color-bench-accent)] flex items-center gap-1.5"><Trophy size={14} />{tq('Leaderboard', '排行榜')}</h3>
+            <div className="flex gap-1">
+              <button onClick={() => setLbPeriod('week')} className={'px-2 py-1 rounded text-xs font-medium transition-colors cursor-pointer ' + (lbPeriod === 'week' ? 'bg-[var(--color-bench-accent)]/20 text-[var(--color-bench-accent)]' : 'text-[var(--color-bench-muted)] hover:text-[var(--color-bench-text)]')}>{tq('Week', '周榜')}</button>
+              <button onClick={() => setLbPeriod('month')} className={'px-2 py-1 rounded text-xs font-medium transition-colors cursor-pointer ' + (lbPeriod === 'month' ? 'bg-[var(--color-bench-accent)]/20 text-[var(--color-bench-accent)]' : 'text-[var(--color-bench-muted)] hover:text-[var(--color-bench-text)]')}>{tq('Month', '月榜')}</button>
+            </div>
+          </div>
+          <div className="space-y-1.5">
+            {leaderboard.map((t: any, i: number) => (
+              <div key={t.id} onClick={() => navigate('/template/' + t.id)} className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[var(--color-bench-accent)]/10 transition-colors cursor-pointer">
+                <span className={'text-sm font-bold w-6 text-center ' + (i < 3 ? 'text-[var(--color-bench-accent)]' : 'text-[var(--color-bench-muted)]')}>{i + 1}</span>
+                <span className="text-sm text-[var(--color-bench-text)] flex-1 truncate">{t.name}</span>
+                <span className="text-xs text-[var(--color-bench-muted)]">{t.copies} copies</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {activeTab === 'community' && (
       <div className="flex items-center gap-2 text-xs text-[var(--color-bench-muted)]">
         <Globe size={12} />

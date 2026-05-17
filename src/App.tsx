@@ -12,6 +12,7 @@ import { TemplateDetail } from './components/templates/TemplateDetail';
 const GeneratePage = lazy(() => import('./components/workspace/GeneratePage').then(m => ({ default: m.GeneratePage })));
 const Dashboard = lazy(() => import('./components/dashboard/Dashboard').then(m => ({ default: m.Dashboard })));
 import { NotFound } from './components/layout/errors/NotFound';
+import { AuthorPage } from './components/templates/AuthorPage';
 import { OnboardingGuide } from './components/layout/onboarding/OnboardingGuide';
 import { ShortcutPanel } from './components/layout/onboarding/ShortcutPanel';
 import { ErrorBoundary } from './components/layout/errors/ErrorBoundary';
@@ -59,6 +60,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/library" element={<TemplateBrowser />} />
             <Route path="/template/:id" element={<TemplateDetail />} />
+            <Route path="/author/:authorId" element={<AuthorPage />} />
             <Route path="/generate" element={<Suspense fallback={<LoadingFallback />}><GeneratePage /></Suspense>} />
             <Route path="/prompts" element={<PromptsPage />} />
             <Route path="/dashboard" element={<Suspense fallback={<LoadingFallback />}><Dashboard /></Suspense>} />

@@ -13,6 +13,7 @@ export const communityTemplates = pgTable('community_templates', {
   prompt: text('prompt').notNull(),
   likes: integer('likes').notNull().default(0),
   copies: integer('copies').notNull().default(0),
+  verified: integer('verified').notNull().default(0),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 });
@@ -48,6 +49,17 @@ export const templateFeedback = pgTable('template_feedback', {
   templateId: text('template_id').notNull(),
   userId: text('user_id').notNull(),
   value: text('value').notNull(), // 'up' | 'down'
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+
+// ---- Template Comments ----
+export const templateComments = pgTable('template_comments', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  templateId: text('template_id').notNull(),
+  userId: text('user_id').notNull(),
+  userName: text('user_name').notNull(),
+  content: text('content').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });
 
