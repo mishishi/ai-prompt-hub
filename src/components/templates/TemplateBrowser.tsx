@@ -34,6 +34,8 @@ export function TemplateBrowser() {
   }, []);
   const searchRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => { fetchCommunity(); }, []);
+
   const fetchCommunity = () => {
     if (communityTpls.length > 0 && activeTab === "community") return;
     setCommunityLoading(true);
