@@ -583,19 +583,37 @@ body {
   }
 }
 
-/* Skeleton shimmer for loading states */
-@keyframes skeleton-shimmer {
-  0% { opacity: 0.5; }
-  50% { opacity: 0.8; }
-  100% { opacity: 0.5; }
+
+/* Terminal loading animations */
+@keyframes term-glow {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(255,255,255,0.02) inset, 0 0 40px rgba(212,168,67,0.04); }
+  50% { box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset, 0 0 60px rgba(212,168,67,0.08); }
 }
-@keyframes skeleton-sweep {
+@keyframes bar-grow {
+  0% { width: 0; }
+  60% { width: var(--bar-w); }
+  100% { width: var(--bar-w); }
+}
+@keyframes term-sweep {
   0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  100% { transform: translateX(250%); }
 }
-.skeleton-shimmer {
-  animation: skeleton-shimmer 1.6s ease-in-out infinite;
+@keyframes progress-fill {
+  0% { width: 0; }
+  50% { width: 45%; }
+  80% { width: 72%; }
+  100% { width: 88%; }
 }
-.skeleton-sweep {
-  animation: skeleton-sweep 1.8s ease-in-out infinite;
+@keyframes terminal-scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
 }
+@keyframes term-section-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.term-glow { animation: term-glow 3s ease-in-out infinite; }
+.term-bar-grow { animation: bar-grow 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.term-bar-shimmer { animation: term-sweep 2.2s ease-in-out infinite; }
+.term-progress-fill { animation: progress-fill 3s ease-out forwards; }
+.term-section-in { opacity: 0; animation: term-section-in 0.5s ease-out forwards; }

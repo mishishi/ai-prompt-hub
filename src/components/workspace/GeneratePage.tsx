@@ -267,31 +267,77 @@ const handleSave = () => {
       {/* Output Panel */}
       <div className="flex-1 flex flex-col min-h-0 bg-[var(--color-bench-bg)] min-h-[250px] sm:min-h-[400px]">
         {loading && !result ? (
-          <div className="flex-1 flex items-center justify-center p-8">
-            <div className="flex flex-col items-center gap-6 max-w-md w-full">
-              {/* Skeleton card with shimmer */}
-              <div className="w-full space-y-4">
-                {/* Shimmer header */}
-                <div className="h-6 w-2/3 rounded-lg overflow-hidden relative skeleton-shimmer" style={{background: 'var(--color-bench-elevated)', border: '1px solid var(--color-bench-border)'}}>
-                  <div className="absolute inset-0 skeleton-sweep" style={{background: 'linear-gradient(90deg, transparent, var(--color-bench-accent)10, transparent)'}} />
-                </div>
-                {/* Shimmer lines */}
-                <div className="space-y-2.5">
-                  {[100, 85, 92, 60, 78].map((w, i) => (
-                    <div key={i} className="h-4 rounded-lg overflow-hidden relative skeleton-shimmer" style={{width: w+'%', background: 'var(--color-bench-elevated)', border: '1px solid var(--color-bench-border)', animationDelay: (i*100)+'ms'}}>
-                      <div className="absolute inset-0 skeleton-sweep" style={{background: 'linear-gradient(90deg, transparent, var(--color-bench-accent)10, transparent)', animationDelay: (i*120)+'ms'}} />
-                    </div>
-                  ))}
-                </div>
+          <div className="flex-1 flex items-center justify-center p-6">
+            <div className="w-full max-w-lg rounded-xl overflow-hidden term-glow" style={{border: '1px solid var(--color-bench-border)', background: '#0b0b19'}}>
+              <div className="h-[38px] flex items-center px-4 gap-[10px]" style={{background: '#0f0f20', borderBottom: '1px solid var(--color-bench-border)'}}>
+                <span className="w-[11px] h-[11px] rounded-full" style={{background: '#EF4444'}} />
+                <span className="w-[11px] h-[11px] rounded-full" style={{background: '#F59E0B'}} />
+                <span className="w-[11px] h-[11px] rounded-full" style={{background: '#22C55E'}} />
+                <span className="text-xs tracking-tight ml-2" style={{fontFamily:'JetBrains Mono, monospace', color:'var(--color-bench-muted)'}}>
+                  <span style={{color:'var(--color-bench-accent)'}}>prompt-bench</span> ~ generating
+                </span>
               </div>
-              {/* Status text */}
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-bench-accent)] animate-pulse" style={{animationDelay: '0ms'}} />
-                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-bench-accent)] animate-pulse" style={{animationDelay: '150ms'}} />
-                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-bench-accent)] animate-pulse" style={{animationDelay: '300ms'}} />
+              <div className="p-5 space-y-1.5 relative overflow-hidden" style={{fontFamily:'JetBrains Mono, monospace', fontSize:'12px', minHeight: 220}}>
+                <div className="absolute inset-0 pointer-events-none opacity-[0.03]" style={{background: 'linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.05) 50%)', backgroundSize: '100% 4px'}} />
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-[var(--color-bench-accent)] font-semibold">$</span>
+                  <span className="text-[var(--color-bench-muted)] truncate">
+                    bench generate "{intent.trim().slice(0,50) || tq('your prompt','\u4F60\u7684\u63D0\u793A\u8BCD')}{intent.trim().length > 50 ? '...' : ''}"
+                  </span>
                 </div>
-                <p className="text-sm text-[var(--color-bench-muted)] font-medium">{tq('Generating your prompt...', '正在生成你的 Prompt...')}</p>
+                <div className="h-2" />
+                <div className="term-section-in" style={{animationDelay:'0.2s'}}>
+                  <span style={{color:'var(--color-bench-accent)'}} className="text-xs"># Role</span>
+                  <div className="mt-1.5 ml-2 pl-2" style={{borderLeft:'1px solid var(--color-bench-border)'}}>
+                    <div className="h-[7px] rounded-sm overflow-hidden term-bar-grow relative" style={{"--bar-w":'70%', background:'var(--color-bench-border)'} as React.CSSProperties}>
+                      <div className="absolute inset-0 term-bar-shimmer rounded-sm" style={{background:'linear-gradient(90deg, transparent, var(--color-bench-accent)12, transparent)'}} />
+                    </div>
+                    <div className="h-[7px] mt-[7px] rounded-sm overflow-hidden term-bar-grow relative" style={{"--bar-w":'50%', background:'var(--color-bench-border)', animationDelay:'0.15s'} as React.CSSProperties}>
+                      <div className="absolute inset-0 term-bar-shimmer rounded-sm" style={{background:'linear-gradient(90deg, transparent, var(--color-bench-accent)12, transparent)', animationDelay:'0.2s'}} />
+                    </div>
+                  </div>
+                </div>
+                <div className="term-section-in" style={{animationDelay:'0.5s'}}>
+                  <span style={{color:'var(--color-bench-accent)'}} className="text-xs"># Goal</span>
+                  <div className="mt-1.5 ml-2 pl-2" style={{borderLeft:'1px solid var(--color-bench-border)'}}>
+                    <div className="h-[7px] rounded-sm overflow-hidden term-bar-grow relative" style={{"--bar-w":'82%', background:'var(--color-bench-border)'} as React.CSSProperties}>
+                      <div className="absolute inset-0 term-bar-shimmer rounded-sm" style={{background:'linear-gradient(90deg, transparent, var(--color-bench-accent)12, transparent)'}} />
+                    </div>
+                    <div className="h-[7px] mt-[7px] rounded-sm overflow-hidden term-bar-grow relative" style={{"--bar-w":'45%', background:'var(--color-bench-border)', animationDelay:'0.12s'} as React.CSSProperties}>
+                      <div className="absolute inset-0 term-bar-shimmer rounded-sm" style={{background:'linear-gradient(90deg, transparent, var(--color-bench-accent)12, transparent)', animationDelay:'0.18s'}} />
+                    </div>
+                  </div>
+                </div>
+                <div className="term-section-in" style={{animationDelay:'0.8s'}}>
+                  <span style={{color:'var(--color-bench-accent)'}} className="text-xs"># Constraints</span>
+                  <div className="mt-1.5 ml-2 pl-2" style={{borderLeft:'1px solid var(--color-bench-border)'}}>
+                    <div className="h-[7px] rounded-sm overflow-hidden term-bar-grow relative" style={{"--bar-w":'60%', background:'var(--color-bench-border)'} as React.CSSProperties}>
+                      <div className="absolute inset-0 term-bar-shimmer rounded-sm" style={{background:'linear-gradient(90deg, transparent, var(--color-bench-accent)12, transparent)'}} />
+                    </div>
+                    <div className="h-[7px] mt-[7px] rounded-sm overflow-hidden term-bar-grow relative" style={{"--bar-w":'78%', background:'var(--color-bench-border)', animationDelay:'0.2s'} as React.CSSProperties}>
+                      <div className="absolute inset-0 term-bar-shimmer rounded-sm" style={{background:'linear-gradient(90deg, transparent, var(--color-bench-accent)12, transparent)', animationDelay:'0.25s'}} />
+                    </div>
+                  </div>
+                </div>
+                <div className="term-section-in" style={{animationDelay:'1.1s'}}>
+                  <span style={{color:'var(--color-bench-accent)'}} className="text-xs"># Output</span>
+                  <div className="mt-1.5 ml-2 pl-2" style={{borderLeft:'1px solid var(--color-bench-border)'}}>
+                    <div className="h-[7px] rounded-sm overflow-hidden term-bar-grow relative" style={{"--bar-w":'55%', background:'var(--color-bench-border)'} as React.CSSProperties}>
+                      <div className="absolute inset-0 term-bar-shimmer rounded-sm" style={{background:'linear-gradient(90deg, transparent, var(--color-bench-accent)12, transparent)'}} />
+                    </div>
+                  </div>
+                </div>
+                <div className="term-section-in flex items-center gap-3 mt-4 pt-2" style={{animationDelay:'1.6s'}}>
+                  <span className="text-xs" style={{color:'var(--color-bench-muted)'}}>{(() => { const labels = [tq('parsing intent','解析意图'), tq('extracting entities','提取实体'), tq('matching templates','匹配模板'), tq('structuring output','构建结构'), tq('optimizing prompt','优化提示词')]; const [li, setLi] = useState(0); useEffect(() => { const t = setInterval(() => setLi(i => (i+1)%labels.length), 1800); return () => clearInterval(t); }, []); return labels[li]; })()}</span>
+                  <div className="flex-1 h-[3px] rounded-sm overflow-hidden" style={{background:'var(--color-bench-border)'}}>
+                    <div className="h-full term-progress-fill rounded-sm" style={{background:'var(--color-bench-accent)'}} />
+                  </div>
+                  <span className="text-xs" style={{color:'var(--color-bench-accent)'}}>88%</span>
+                </div>
+                <div className="term-section-in flex items-center gap-2 mt-2" style={{animationDelay:'2.0s'}}>
+                  <span className="w-[4px] h-[4px] rounded-full animate-pulse" style={{background:'var(--color-bench-accent)'}} />
+                  <span className="text-xs" style={{color:'var(--color-bench-muted)', opacity:0.5}}>{tq('streaming to output panel...','\u6D41\u5F0F\u8F93\u51FA\u5230\u53F3\u4FA7\u9762\u677F...')}</span>
+                </div>
               </div>
             </div>
           </div>
