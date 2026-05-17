@@ -146,7 +146,7 @@ export function TemplateBrowser() {
       {/* Tab bar */}
       <div className="flex items-center gap-1 mb-4 w-full">
         <button onClick={() => { setActiveTab('library'); setShowFavorites(false); }} className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${activeTab === 'library' ? 'bg-[var(--color-bench-accent)]/12 text-[var(--color-bench-accent)] shadow-[0_0_16px_var(--color-bench-accent-glow)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}>
-          <Library size={15} />
+          <BookMarked size={15} />
           {tq('Library', '\u6A21\u677F\u5E93')}
         </button>
         <button onClick={() => { setActiveTab('community'); fetchCommunity(); setShowFavorites(false); setActiveCategory(null); }} className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${activeTab === 'community' ? 'bg-[var(--color-bench-accent)]/12 text-[var(--color-bench-accent)] shadow-[0_0_16px_var(--color-bench-accent-glow)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}>
