@@ -295,6 +295,7 @@ const handleSave = () => {
               </div>
             </div>
           </div>
+        ) : !result ? (
           <div className="flex-1 flex items-center justify-center p-8">
             <div className="text-center space-y-4">
               <div className="w-16 h-16 rounded-xl border border-[var(--color-bench-border)] flex items-center justify-center mx-auto bg-[var(--color-bench-elevated)]"><Sparkles size={24} className="text-[var(--color-bench-muted)]/30" /></div>
