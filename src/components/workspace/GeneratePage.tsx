@@ -116,7 +116,7 @@ const SparkleBurst = ({ color }: { color: string }) => {
 const ResultView = ({ result, loading }: { result: string; loading: boolean }) => {
   const sections = parseSections(result);
   if (sections.length === 0) {
-    return <ResultView result={result || ""} loading={loading} />;
+    return <div className="flex-1 overflow-y-auto bg-[var(--color-bench-bg)]"><pre className="p-4 md:p-6 text-sm text-[var(--color-bench-text)] leading-relaxed whitespace-pre-wrap font-mono">{result}{loading && <span className="ai-cursor" />}</pre></div>;
   }
   return (
     <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-3 bg-[var(--color-bench-bg)]">
@@ -360,7 +360,7 @@ const handleSave = () => {
             </div>
             {/* AI Self-Evaluation */}
             {evaluating && !evaluation && (
-              <EvalProgress lang={lang} tq={tq} />
+              <>{!evaluationOpen && setEvaluationOpen(true)}</>
             )}
             {evaluation && (() => {
               const ev = parseEval(evaluation);
@@ -388,7 +388,18 @@ const handleSave = () => {
                       <span className="relative z-10">{tq('AI Score', 'AI 评分')} {score != null ? score : '?'}/100</span>
                     </button>
                   </div>
-                  {evaluationOpen && (
+                  {evaluationOpen && !evaluation && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                      <div className="absolute inset-0 bg-black/40" style={{ animation: 'eval-fade-in 250ms ease-out both' }} />
+                      <div className="relative w-full max-w-sm bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-2xl shadow-2xl overflow-hidden"
+                        onClick={(e) => e.stopPropagation()} style={{ animation: 'eval-scale-in 400ms cubic-bezier(0.34, 1.56, 0.64, 1) both' }}>
+                        <div className="p-6">
+                          <EvalProgress lang={lang} tq={tq} />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {evaluationOpen && evaluation && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setEvaluationOpen(false)}>
                       <div className="absolute inset-0 bg-black/60" style={{ animation: 'eval-fade-in 250ms ease-out both' }} />
                       <div
