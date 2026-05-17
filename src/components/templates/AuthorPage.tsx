@@ -7,7 +7,7 @@ import { ArrowLeft } from 'lucide-react';
 
 export function AuthorPage() {
   const { t, lang } = useT();
-  const tq = (en, zh) => lang === 'zh-CN' ? zh : en;
+  const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
   const { authorId } = useParams<{ authorId: string }>();
   const navigate = useNavigate();
   const [templates, setTemplates] = useState<LibraryTemplate[]>([]);
@@ -20,22 +20,26 @@ export function AuthorPage() {
     fetch('/api/community?author=' + encodeURIComponent(authorId) + '&limit=50')
       .then(r => r.json())
       .then(data => {
-        if (data.ok && data.templates.length > 0) {
-          setAuthorName(data.templates[0].authorName || authorId);
-          setTemplates(data.templates.map((t: any) => ({
-            id: t.id,
-            meta: { name: t.name, description: t.description, tags: t.tags, platform: 'claude' as const },
-            variables: [],
-            system: { role: '' },
-            user: t.prompt,
-            category: [t.category],
-            difficulty: t.difficulty,
-            _community: true,
-            _authorName: t.authorName,
-            _likes: t.likes,
-            _copies: t.copies,
-            _verified: t.verified ?? 0,
-          } as any)));
+        if (data.ok) {
+          if (data.templates.length > 0) {
+            setAuthorName(data.templates[0].authorName || authorId);
+            setTemplates(data.templates.map((t: any) => ({
+              id: t.id,
+              meta: { name: t.name, description: t.description, tags: t.tags, platform: 'claude' as const },
+              variables: [],
+              system: { role: '' },
+              user: t.prompt,
+              category: [t.category],
+              difficulty: t.difficulty,
+              _community: true,
+              _authorName: t.authorName,
+              _likes: t.likes,
+              _copies: t.copies,
+              _verified: t.verified ?? 0,
+            } as any)));
+          } else {
+            setTemplates([]);
+          }
         }
       })
       .catch(() => {})
