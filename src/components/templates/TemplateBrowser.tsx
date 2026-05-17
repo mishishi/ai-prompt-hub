@@ -23,6 +23,7 @@ export function TemplateBrowser() {
   const [communityTpls, setCommunityTpls] = useState<LibraryTemplate[]>([]);
   const [communityLoading, setCommunityLoading] = useState(false);
   const [sortBy, setSortBy] = useState<'default' | 'score'>('default');
+  const [copyTicker, setCopyTicker] = useState(0);
   const favorites = useMemo(() => getFavorites(), []);
 
   useEffect(() => {
@@ -91,7 +92,7 @@ export function TemplateBrowser() {
       counts[tmpl.id] = agg.copies;
     }
     return counts;
-  }, [events]);
+  }, [events, copyTicker]);
 
   const filtered = useMemo(() => {
     if (showCommunity) return communityTpls as any;
@@ -179,7 +180,7 @@ export function TemplateBrowser() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map((tmpl: any, i: number) => (<div key={tmpl.id} className={`card-enter stagger-${(i % 4) + 1}`}><TemplateCard template={tmpl} score={templateScores[tmpl.id]} copyCount={copyCounts[tmpl.id]} onClick={() => navigate('/template/' + tmpl.id)} /></div>))}
+          {filtered.map((tmpl: any, i: number) => (<div key={tmpl.id} className={`card-enter stagger-${(i % 4) + 1}`}><TemplateCard template={tmpl} score={templateScores[tmpl.id]} copyCount={copyCounts[tmpl.id]} onClick={() => navigate('/template/' + tmpl.id)} onCopy={() => setCopyTicker(t => t + 1)} /></div>))}
         </div>
       )}
     </div>

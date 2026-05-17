@@ -9,7 +9,7 @@ import { toggleFavorite, isFavorite } from '../../utils/storage';
 import { useToast } from '../ui/Toast';
 import { getPlatformLabel } from '../../utils/platform';
 
-export function TemplateCard({ template, onClick, score = 0, copyCount = 0 }: { template: LibraryTemplate; onClick: () => void; score?: number; copyCount?: number }) {
+export function TemplateCard({ template, onClick, score = 0, copyCount = 0, onCopy }: { template: LibraryTemplate; onClick: () => void; score?: number; copyCount?: number; onCopy?: () => void }) {
   const { t, lang } = useT();
   const toast = useToast();
   const [copied, setCopied] = useState(false);
@@ -31,6 +31,7 @@ export function TemplateCard({ template, onClick, score = 0, copyCount = 0 }: { 
     setTimeout(() => setCopied(false), 2000);
     toast.show(t('card.copied'));
     track({ type: 'template_copy', templateId: template.id, lang });
+    onCopy?.();
   };
 
   const handleFavorite = (e: React.MouseEvent) => {
@@ -97,8 +98,11 @@ export function TemplateCard({ template, onClick, score = 0, copyCount = 0 }: { 
             </button>
           </div>
           {copyCount > 0 && (
-            <div className="flex justify-end mt-1">
-              <span className="text-xs text-[var(--color-bench-muted)]/50">{t('card.copies').replace('{n}', String(copyCount))}</span>
+            <div className="flex justify-end mt-2">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium bg-[var(--color-bench-accent)]/8 text-[var(--color-bench-accent)]">
+                <Copy size={10} />
+                {t('card.copies').replace('{n}', String(copyCount))}
+              </span>
             </div>
           )}
         </div>
