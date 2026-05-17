@@ -68,5 +68,10 @@ export const conventionalCommits: LibraryTemplate = {
     "efficiency"
   ],
   "difficulty": "Beginner",
-  "mode": "single-turn"
+  "mode": "single-turn",
+  "examples": "Input: Fixed the login redirect loop and added session timeout\nOutput: fix(auth): resolve redirect loop after login\n\nAdded session timeout handling with 30min default.\n\nCloses #456",
+  "examplesZh": "输入：修复了登录重定向循环并添加了会话超时\n输出：fix(auth): resolve redirect loop after login\n\nAdded session timeout handling with 30min default.\n\nCloses #456",
+  "contextChecklist": ["List of changes to commit", "Issue/ticket numbers (if any)", "Scope preferences (module names)"],
+  "contextChecklistZh": ["变更列表", "Issue/Ticket 编号（如有）", "Scope 命名偏好（模块名）"]
+
 };

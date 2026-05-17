@@ -1,4 +1,4 @@
-﻿import type { LibraryTemplate } from "../../types";
+import type { LibraryTemplate } from "../../types";
 
 export const techTutorialWriter: LibraryTemplate = {
   "id": "tech-tutorial-writer",
@@ -33,5 +33,10 @@ export const techTutorialWriter: LibraryTemplate = {
   "difficulty": "Intermediate",
   "mode": "single-turn",
   "usage_tips": "Mention the target audience and required tools.",
-  "usage_tipsZh": "注明目标读者水平和所需工具。"
+  "usage_tipsZh": "注明目标读者水平和所需工具。",
+  "examples": "Input: Write a technical blog post about Rust async programming.\nOutput: 1500-word article with introduction, 3 main sections with code examples, comparison table, and conclusion.",
+  "examplesZh": "输入：写一篇关于 Rust 异步编程的技术博客。\n输出：1500 字文章，含引言、3 个带代码示例的主要章节、对比表格和结论。",
+  "contextChecklist": ["Topic and target audience", "Word count target", "Any SEO keywords or style guide"],
+  "contextChecklistZh": ["主题和目标受众", "字数目标", "SEO 关键词或风格指南"]
+
 };

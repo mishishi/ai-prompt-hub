@@ -73,5 +73,10 @@ export const frontendScreenshotToPage: LibraryTemplate = {
     "frontend"
   ],
   "difficulty": "Intermediate",
-  "mode": "single-turn"
+  "mode": "single-turn",
+  "examples": "Input: [Screenshot of a dashboard with sidebar, KPI cards, and a chart]\nOutput: Complete React + Tailwind component with responsive sidebar, 4 stat cards, and a recharts line chart. Pixel-accurate to screenshot.",
+  "examplesZh": "输入：[一个带侧边栏、KPI 卡片和图表的仪表盘截图]\n输出：完整的 React + Tailwind 组件，包含响应式侧边栏、4 个统计卡片和 recharts 折线图，像素级还原截图。",
+  "contextChecklist": ["Screenshot/image file ready", "Preferred CSS framework (Tailwind, styled-components, etc.)", "Any animation/interaction preferences"],
+  "contextChecklistZh": ["准备好截图/图片文件", "CSS 框架偏好（Tailwind、styled-components 等）", "动画/交互偏好"]
+
 };

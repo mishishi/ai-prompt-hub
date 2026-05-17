@@ -96,5 +96,10 @@ export const unitTestGen: LibraryTemplate = {
   "difficulty": "Intermediate",
   "mode": "single-turn",
   "usage_tips": "Paste the function or class to test. Include type definitions for better test generation.",
-  "usage_tipsZh": "粘贴待测试的函数或类，附上类型定义可获得更完善的测试。"
+  "usage_tipsZh": "粘贴待测试的函数或类，附上类型定义可获得更完善的测试。",
+  "examples": "Input: function calculateDiscount(price, user) { ... }\nOutput: 8 test cases covering happy path, edge cases (0, negative, max), error states, and user tiers. Uses Jest + describe/it blocks.",
+  "examplesZh": "输入：function calculateDiscount(price, user) { ... }\n输出：8 个测试用例，覆盖正常路径、边界值（0、负数、最大值）、错误状态和用户等级。使用 Jest + describe/it 块。",
+  "contextChecklist": ["Function/code to test", "Test framework (Jest, Vitest, Mocha, etc.)", "Any mocking requirements"],
+  "contextChecklistZh": ["待测试的函数/代码", "测试框架（Jest、Vitest、Mocha 等）", "Mock 需求"]
+
 };

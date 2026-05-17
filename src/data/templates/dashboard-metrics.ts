@@ -92,5 +92,10 @@ export const dashboardMetrics: LibraryTemplate = {
   "difficulty": "Intermediate",
   "mode": "single-turn",
   "usage_tips": "Describe user segments and data sources for richer metrics.",
-  "usage_tipsZh": "描述用户分层和数据源可获得更丰富的指标。"
+  "usage_tipsZh": "描述用户分层和数据源可获得更丰富的指标。",
+  "examples": "Input: Optimize this slow SQL query joining 5 tables.\nOutput: Rewritten query with proper indexes, EXPLAIN analysis, and 10x performance improvement.",
+  "examplesZh": "输入：优化这个联表 5 张的慢 SQL 查询。\n输出：重写查询，含正确索引、EXPLAIN 分析和 10 倍性能提升。",
+  "contextChecklist": ["Query or schema to optimize", "Database engine and version", "Current performance metrics"],
+  "contextChecklistZh": ["待优化的查询或 Schema", "数据库引擎和版本", "当前性能指标"]
+
 };

@@ -62,5 +62,13 @@ export const apiDesign: LibraryTemplate = {
     "architecture"
   ],
   "difficulty": "Intermediate",
-  "mode": "single-turn"
+  "mode": "single-turn",
+  "examples": "Input: Design a REST API for a blog platform with posts, comments, and users.\nOutput: OpenAPI 3.0 spec with 6 resource endpoints, request/response schemas, error codes, pagination, and authentication flow.",
+  "examplesZh": "输入：为一个含文章、评论和用户的博客平台设计 REST API。\n输出：OpenAPI 3.0 规范，包含 6 个资源端点、请求/响应 Schema、错误码、分页和认证流程。",
+  "contextChecklist": ["Domain entities identified", "Authentication method (JWT, OAuth, API key)", "Pagination and rate limiting preferences"],
+  "contextChecklistZh": ["已识别领域实体", "认证方式（JWT、OAuth、API Key）", "分页和速率限制偏好"]
+,
+  "expectedOutput": "A complete OpenAPI 3.0 specification YAML file with all endpoints, request/response schemas, authentication, error codes, and pagination configured.",
+  "expectedOutputZh": "一份完整的 OpenAPI 3.0 规范 YAML 文件，包含所有端点、请求/响应 Schema、认证、错误码和分页配置。"
+
 };

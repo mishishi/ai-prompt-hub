@@ -72,5 +72,10 @@ export const pythonBestPractices: LibraryTemplate = {
     "language"
   ],
   "difficulty": "Intermediate",
-  "mode": "single-turn"
+  "mode": "single-turn",
+  "examples": "Input: Optimize this TypeScript type for better inference.\nOutput: Refined generic types with proper constraints, discriminated unions, and improved IDE autocomplete.",
+  "examplesZh": "输入：优化此 TypeScript 类型以获得更好的类型推断。\n输出：精炼的泛型类型，含适当约束、可辨识联合类型和改进的 IDE 自动补全。",
+  "contextChecklist": ["Code to optimize", "Language version", "Performance or readability priority"],
+  "contextChecklistZh": ["待优化代码", "语言版本", "性能或可读性优先级"]
+
 };

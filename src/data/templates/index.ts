@@ -84,6 +84,45 @@ export const categories = [
   { id: 'product', name: 'Product', icon: 'Lightbulb' },
 ];
 
+
+
+export interface TemplateMatch {
+  template: LibraryTemplate;
+  score: number;
+}
+
+export function findBestMatch(query: string, topN = 3): TemplateMatch[] {
+  const q = query.toLowerCase();
+  const tokens = q.split(/[s,，。！？]+/).filter(t => t.length > 1);
+  if (tokens.length === 0) return [];
+
+  const results: TemplateMatch[] = [];
+  for (const t of templates) {
+    const name = t.meta.name.toLowerCase();
+    const nameZh = (t.meta.nameZh || '').toLowerCase();
+    const desc = t.meta.description.toLowerCase();
+    const descZh = (t.meta.descriptionZh || '').toLowerCase();
+
+    let score = 0;
+    for (const token of tokens) {
+      let tokenScore = 0;
+      if (name.includes(token)) tokenScore += 30;
+      if (nameZh.includes(token)) tokenScore += 30;
+      if (t.meta.name === token || t.meta.nameZh === token) tokenScore += 40;
+      for (const tag of t.meta.tags) {
+        if (tag.toLowerCase().includes(token)) tokenScore += 25;
+        if (tag.toLowerCase() === token) tokenScore += 15;
+      }
+      if (desc.includes(token)) tokenScore += 10;
+      if (descZh.includes(token)) tokenScore += 10;
+      score += tokenScore;
+    }
+    if (score > 0) results.push({ template: t, score: Math.min(score, 100) });
+  }
+  results.sort((a, b) => b.score - a.score);
+  return results.slice(0, topN);
+}
+
 export function getTemplatesByCategory(cat: string): LibraryTemplate[] {
   return templates.filter((t) => t.category.includes(cat));
 }

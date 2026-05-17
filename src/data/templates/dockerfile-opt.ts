@@ -73,5 +73,13 @@ export const dockerfileOpt: LibraryTemplate = {
     "devops"
   ],
   "difficulty": "Intermediate",
-  "mode": "single-turn"
+  "mode": "single-turn",
+  "examples": "Input: Dockerfile for a Node.js Express app (multi-stage)\nOutput: Optimized Dockerfile with pinned base images, layer caching improvements, security scanning, reduced image size from 450MB to 98MB.",
+  "examplesZh": "输入：Node.js Express 应用的 Dockerfile（多阶段）\n输出：优化后的 Dockerfile，固定基础镜像版本、改进层缓存、安全扫描、镜像从 450MB 缩减至 98MB。",
+  "contextChecklist": ["Original Dockerfile", "Application type and runtime", "Target environment (production, staging)"],
+  "contextChecklistZh": ["原始 Dockerfile", "应用类型和运行时", "目标环境（生产、预发布）"]
+,
+  "expectedOutput": "Optimized Dockerfile with multi-stage builds, pinned base images, security scan integration, and image size comparison (before/after).",
+  "expectedOutputZh": "优化后的 Dockerfile，含多阶段构建、固定基础镜像版本、安全扫描集成及镜像大小对比（优化前/后）。"
+
 };

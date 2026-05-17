@@ -86,5 +86,10 @@ export const agentFeatureDev: LibraryTemplate = {
   "difficulty": "Advanced",
   "mode": "multi-turn",
   "usage_tips": "Be specific about the feature requirements. Include acceptance criteria if available.",
-  "usage_tipsZh": "详细描述功能需求，附上验收标准效果更佳。"
+  "usage_tipsZh": "详细描述功能需求，附上验收标准效果更佳。",
+  "examples": "Input: Build a user authentication system with JWT, refresh tokens, and email verification.\nOutput: Complete PRD + architecture diagram + 10 user stories + API contract + database schema + 6-sprint plan.",
+  "examplesZh": "输入：构建一个带 JWT、刷新令牌和邮箱验证的用户认证系统。\n输出：完整 PRD + 架构图 + 10 个用户故事 + API 契约 + 数据库 Schema + 6 个 Sprint 计划。",
+  "contextChecklist": ["Feature requirements clearly defined", "Tech stack preferences known", "Team size and sprint duration"],
+  "contextChecklistZh": ["功能需求已明确定义", "明确技术栈偏好", "团队规模和 Sprint 周期"]
+
 };

@@ -273,3 +273,64 @@ Please regenerate the improved prompt based on the feedback above.`)
 
   return fullText;
 }
+
+export async function evaluatePrompt(
+  promptText: string,
+  lang: "en" | "zh-CN",
+  onChunk: (text: string) => void
+): Promise<string> {
+  const system = lang === "zh-CN"
+    ? "你是一位 Prompt 质量评审专家。请对以下 Prompt 进行评分和改进建议。用以下格式回复：Score: <0-100>\n✅ <优点1>\n✅ <优点2>\n⚠️ <可改进1>\n⚠️ <可改进2>\n💡 <建议1>\n💡 <建议2>"
+    : "You are a prompt quality reviewer. Score the following prompt and provide improvement suggestions. Reply in this format: Score: <0-100>\n✅ <strength1>\n✅ <strength2>\n⚠️ <improvement1>\n⚠️ <improvement2>\n💡 <suggestion1>\n💡 <suggestion2>";
+
+  const userMsg = lang === "zh-CN" ? `请评审以下 Prompt：\n\n${promptText}` : `Please evaluate this prompt:\n\n${promptText}`;
+
+  const res = await fetch("/api/generate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "MiniMax-M2.7-highspeed",
+      stream: true,
+      messages: [
+        { role: "system", content: system },
+        { role: "user", content: userMsg },
+      ],
+    }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as any).error?.message || `API error ${res.status}`);
+  }
+
+  const reader = res.body?.getReader();
+  if (!reader) throw new Error("No response body");
+
+  const decoder = new TextDecoder();
+  let full = "";
+  const buffer: string[] = [];
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    const chunk = decoder.decode(value, { stream: true });
+    buffer.push(chunk);
+    const text = buffer.join("");
+    const lines = text.split("\n");
+    for (let i = 0; i < lines.length - 1; i++) {
+      const line = lines[i].trim();
+      if (!line.startsWith("data: ")) continue;
+      const data = line.slice(6);
+      if (data === "[DONE]") continue;
+      try {
+        const j = JSON.parse(data);
+        const content = j.choices?.[0]?.delta?.content || "";
+        full += content;
+      } catch {}
+    }
+    buffer.length = 0;
+    buffer.push(lines[lines.length - 1]);
+    onChunk(full);
+  }
+  return full;
+}

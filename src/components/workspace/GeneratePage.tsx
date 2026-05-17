@@ -1,6 +1,9 @@
-﻿import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Sparkles, Copy, Check, Loader, ThumbsUp, ThumbsDown, Zap, Lightbulb, RefreshCw, Edit3, X, Save } from 'lucide-react';
-import { aiGenerate, useQuota, getRemainingQuota } from '../../utils/ai';
+import { aiGenerate, useQuota, getRemainingQuota, evaluatePrompt } from '../../utils/ai';
+import { findBestMatch, type TemplateMatch } from '../../data/templates';
+import { tName } from '../../data/templates/helper';
 import { copyToClipboard } from '../../utils/clipboard';
 import { track, getDisplayName } from '../../utils/analytics';
 import { savePrompt, generateId } from '../../utils/storage';
@@ -11,6 +14,7 @@ import { useUser } from '@clerk/clerk-react';
 export function GeneratePage() {
   const { user } = useUser();
   const { lang } = useT();
+  const navigate = useNavigate();
   const [intent, setIntent] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
@@ -22,10 +26,23 @@ export function GeneratePage() {
   const [saved, setSaved] = useState(false);
   const [quotaLeft, setQuotaLeft] = useState(() => getRemainingQuota());
   const [refineInput, setRefineInput] = useState('');
+  const [templateMatches, setTemplateMatches] = useState<TemplateMatch[]>([]);
+  const [evaluating, setEvaluating] = useState(false);
+  const [evaluation, setEvaluation] = useState<string | null>(null);
   const [refining, setRefining] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => { inputRef.current?.focus(); }, []);
+
+  useEffect(() => {
+    const q = intent.trim();
+    if (q.length < 4) { setTemplateMatches([]); return; }
+    const timer = setTimeout(() => {
+      const matches = findBestMatch(q, 3);
+      setTemplateMatches(matches.filter(m => m.score >= 50));
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [intent]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') { setResult(null); setError(''); } };
@@ -42,7 +59,14 @@ export function GeneratePage() {
     setResult('');
     setQuotaLeft(getRemainingQuota());
     try {
-      await aiGenerate(intent.trim(), lang, (chunk) => setResult(chunk));
+      const fullPrompt = await aiGenerate(intent.trim(), lang, (chunk) => setResult(chunk));
+      setResult(fullPrompt);
+      setEvaluating(true);
+      setEvaluation(null);
+      evaluatePrompt(fullPrompt, lang, (chunk) => setEvaluation(chunk)).then((evalText) => {
+        setEvaluation(evalText);
+        setEvaluating(false);
+      }).catch(() => setEvaluating(false));
       track({ type: 'ai_generate', lang, userId: user?.id, userName: getDisplayName(user), provider: user?.externalAccounts?.[0]?.provider });
     } catch (e: any) { setError(e.message || tq('API error. Please try again.', 'API 错误，请重试。')); }
     finally { setLoading(false); }
@@ -124,6 +148,34 @@ const handleSave = () => {
             <textarea ref={inputRef} value={intent} onChange={(e) => setIntent(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleGenerate(); } }} placeholder={tq('E.g., Review my React code for security, design a REST API, write tests...', '例如：审查 React 代码安全、设计 REST API、写单元测试...')} rows={5} className="w-full px-4 py-3.5 bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-lg text-sm text-[var(--color-bench-text)] placeholder:text-[var(--color-bench-muted)]/40 resize-none focus:outline-none focus:border-[var(--color-bench-accent)]/40 focus:ring-1 focus:ring-[var(--color-bench-accent)]/20 transition-all font-[var(--font-body)]" />
           </div>
           {error && <div className="p-3 rounded-xl bg-[var(--color-bench-error)]/10 border border-[var(--color-bench-error)]/20"><p className="text-xs text-[var(--color-bench-error)]">{error}</p></div>}
+                      {templateMatches.length > 0 && (
+
+            <div className="p-3 rounded-xl bg-[var(--color-bench-accent)]/5 border border-[var(--color-bench-accent)]/20">
+
+              <p className="text-xs font-semibold text-[var(--color-bench-accent)] mb-2">{tq('Matching templates found. Click to use instead:', '发现匹配的模板，点击直接使用：')}</p>
+
+              <div className="space-y-1">
+
+                {templateMatches.map((m) => (
+
+                  <button key={m.template.id} onClick={() => navigate(`/template/${m.template.id}`)} className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-left bg-[var(--color-bench-bg)] hover:bg-[var(--color-bench-accent)]/10 border border-[var(--color-bench-border)] hover:border-[var(--color-bench-accent)]/30 transition-all">
+
+                    <Sparkles size={12} className="text-[var(--color-bench-accent)] flex-shrink-0" />
+
+                    <span className="text-[var(--color-bench-text)] text-sm flex-1">{tName(m.template, lang)}</span>
+
+                    <span className="text-xs px-1.5 py-0.5 rounded-full bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)] font-medium">{m.score}%</span>
+
+                  </button>
+
+                ))}
+
+              </div>
+
+            </div>
+
+            )}
+
           <button onClick={handleGenerate} disabled={loading || !intent.trim()} className="btn-glow w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold">
             {loading ? <><Loader size={16} className="animate-spin" />{tq('Generating...', '生成中...')}</> : <><Zap size={16} />{tq('Generate Prompt', '生成 Prompt')}</>}
           </button>
@@ -174,6 +226,64 @@ const handleSave = () => {
                 <button onClick={handleCopy} className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${copied ? 'bg-[var(--color-bench-success)]/10 text-[var(--color-bench-success)]' : 'bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)] hover:bg-[var(--color-bench-accent)]/20'}`}>{copied ? <Check size={12} /> : <Copy size={12} />}{copied ? tq('Copied!', '已复制') : tq('Copy', '复制')}</button>
               </div>
             </div>
+            {/* AI Self-Evaluation */}
+            {(evaluating || evaluation) && (
+            <div className="px-5 py-4 border-b border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)]/50">
+              <div className="flex items-center gap-2 mb-3">
+                <Sparkles size={14} className="text-[var(--color-bench-accent)]" />
+                <span className="text-sm font-medium text-[var(--color-bench-text)]">{tq('AI Self-Evaluation', 'AI 自评')}</span>
+                {evaluating && <Loader size={12} className="animate-spin text-[var(--color-bench-muted)] ml-1" />}
+              </div>
+              {evaluation && (() => {
+                const text = evaluation;
+                const scoreMatch = text.match(/Score:\s*(\d+)/i);
+                const score = scoreMatch ? parseInt(scoreMatch[1]) : null;
+                const strengths = (text.match(/✅[^\n]*/g) || []).map(s => s.replace(/^✅\s*/, '').trim()).filter(Boolean);
+                const improvements = (text.match(/⚠﻿[^\n]*/g) || []).map(s => s.replace(/^⚠﻿\s*/, '').trim()).filter(Boolean);
+                const suggestions = (text.match(/💡[^\n]*/g) || []).map(s => s.replace(/^💡\s*/, '').trim()).filter(Boolean);
+                const scoreColor = score !== null
+                  ? score >= 80 ? 'text-[var(--color-bench-success)]' : score >= 50 ? 'text-[var(--color-bench-accent)]' : 'text-[var(--color-bench-error)]'
+                  : 'text-[var(--color-bench-muted)]';
+                return (
+                  <div className="space-y-3">
+                    {score !== null && (
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-[var(--color-bench-text-dim)]">{tq('Score', '评分')}: </span>
+                        <span className={"text-lg font-bold " + scoreColor}>{score}/100</span>
+                        <div className="flex-1 h-1.5 rounded-full bg-[var(--color-bench-bg)]">
+                          <div className="h-full rounded-full bg-current transition-all duration-700" style={{ width: score + '%' }} />
+                        </div>
+                      </div>
+                    )}
+                    {strengths.length > 0 && (
+                      <div>
+                        <span className="text-sm text-[var(--color-bench-success)] font-medium">{'✅'} {tq('Strengths', '优点')}</span>
+                        <ul className="mt-1 space-y-0.5">
+                          {strengths.map((s, i) => <li key={i} className="text-sm text-[var(--color-bench-text-dim)] pl-2">{s}</li>)}
+                        </ul>
+                      </div>
+                    )}
+                    {improvements.length > 0 && (
+                      <div>
+                        <span className="text-sm text-[var(--color-bench-accent)] font-medium">{'⚠﻿'} {tq('Improvements', '可改进')}</span>
+                        <ul className="mt-1 space-y-0.5">
+                          {improvements.map((s, i) => <li key={i} className="text-sm text-[var(--color-bench-text-dim)] pl-2">{s}</li>)}
+                        </ul>
+                      </div>
+                    )}
+                    {templateMatches.length > 0 && (
+                      <div>
+                        <span className="text-sm text-[var(--color-bench-accent)]/80 font-medium">{'💡'} {tq('Suggestions', '建议')}</span>
+                        <ul className="mt-1 space-y-0.5">
+                          {suggestions.map((s, i) => <li key={i} className="text-sm text-[var(--color-bench-text-dim)] pl-2">{s}</li>)}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+            </div>
+            )}
             {!editing ? (
             <div className="flex-1 overflow-y-auto bg-[var(--color-bench-bg)]"><pre className="p-4 md:p-6 text-sm text-[var(--color-bench-text)] leading-relaxed whitespace-pre-wrap font-mono">{result}{loading && <span className="ai-cursor" />}</pre></div>
             ) : (

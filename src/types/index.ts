@@ -73,6 +73,10 @@ export interface LibraryTemplate {
   expectedOutputZh?: string;
   expectedDeliverables?: string[];
   expectedDeliverablesZh?: string[];
+  examples?: string;
+  examplesZh?: string;
+  contextChecklist?: string[];
+  contextChecklistZh?: string[];
   mode?: 'single-turn' | 'multi-turn' | 'multi-agent';
   usage_tips?: string;
   usage_tipsZh?: string;

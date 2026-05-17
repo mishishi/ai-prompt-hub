@@ -97,5 +97,10 @@ export const sprintRetrospective: LibraryTemplate = {
   "difficulty": "Beginner",
   "mode": "single-turn",
   "usage_tips": "Include team feedback and metrics for deeper retro analysis.",
-  "usage_tipsZh": "包含团队反馈和指标可获得更深入回顾。"
+  "usage_tipsZh": "包含团队反馈和指标可获得更深入回顾。",
+  "examples": "Input: Write a PRD for a mobile payment feature.\nOutput: Structured PRD with problem statement, user personas, functional requirements, non-functional requirements, success metrics, and timeline.",
+  "examplesZh": "输入：为移动支付功能撰写 PRD。\n输出：结构化 PRD，含问题陈述、用户画像、功能需求、非功能需求、成功指标和时间线。",
+  "contextChecklist": ["Product context and goals", "User research or feedback available", "Stakeholder requirements"],
+  "contextChecklistZh": ["产品背景和目标", "可用的用户研究或反馈", "利益相关者需求"]
+
 };

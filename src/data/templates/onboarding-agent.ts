@@ -71,5 +71,10 @@ export const onboardingAgent: LibraryTemplate = {
     "agentic"
   ],
   "difficulty": "Beginner",
-  "mode": "single-turn"
+  "mode": "single-turn",
+  "examples": "Input: Build a complete feature from spec to deployment.\nOutput: Structured development plan with architecture, component tree, API contracts, test plan, and implementation code.",
+  "examplesZh": "输入：从规格说明到部署构建完整功能。\n输出：结构化开发计划，包含架构、组件树、API 契约、测试计划和实现代码。",
+  "contextChecklist": ["Feature specification ready", "Tech stack confirmed", "Any constraints or deadlines"],
+  "contextChecklistZh": ["功能规格已就绪", "技术栈已确认", "约束条件或截止日期"]
+
 };

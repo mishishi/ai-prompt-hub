@@ -75,5 +75,10 @@ export const frontendRefactorAgent: LibraryTemplate = {
     "frontend"
   ],
   "difficulty": "Advanced",
-  "mode": "multi-turn"
+  "mode": "multi-turn",
+  "examples": "Input: Build a responsive landing page with hero, features, and CTA sections.\nOutput: Complete React + Tailwind component with responsive breakpoints, animations, and accessibility support.",
+  "examplesZh": "输入：构建一个含 Hero、特性展示和 CTA 的响应式落地页。\n输出：完整的 React + Tailwind 组件，含响应式断点、动画和无障碍支持。",
+  "contextChecklist": ["Design reference or wireframe", "CSS framework preference", "Browser support requirements"],
+  "contextChecklistZh": ["设计参考或线框图", "CSS 框架偏好", "浏览器兼容要求"]
+
 };

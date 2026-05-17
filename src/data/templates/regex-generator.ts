@@ -94,5 +94,10 @@ export const regexGenerator: LibraryTemplate = {
     "efficiency"
   ],
   "difficulty": "Intermediate",
-  "mode": "single-turn"
+  "mode": "single-turn",
+  "examples": "Input: Generate regex for validating international phone numbers.\nOutput: Tested regex pattern with explanation, test cases, and edge case handling.",
+  "examplesZh": "输入：生成验证国际电话号码的正则表达式。\n输出：经测试的正则模式，含解释、测试用例和边界情况处理。",
+  "contextChecklist": ["Specific task description", "Expected input/output format", "Any constraints or requirements"],
+  "contextChecklistZh": ["具体任务描述", "预期输入/输出格式", "约束条件或要求"]
+
 };

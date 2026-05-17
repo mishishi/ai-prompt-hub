@@ -76,5 +76,10 @@ export const githubActionsGen: LibraryTemplate = {
     "devops"
   ],
   "difficulty": "Intermediate",
-  "mode": "single-turn"
+  "mode": "single-turn",
+  "examples": "Input: Create a CI/CD pipeline for a Next.js app deploying to Vercel.\nOutput: GitHub Actions workflow with build, lint, test, preview deploy, and production deploy stages.",
+  "examplesZh": "输入：为部署到 Vercel 的 Next.js 应用创建 CI/CD 流程。\n输出：GitHub Actions 工作流，包含构建、Lint、测试、预览部署和生产部署阶段。",
+  "contextChecklist": ["Repository structure understood", "Deployment target confirmed", "Environment variables documented"],
+  "contextChecklistZh": ["仓库结构已了解", "部署目标已确认", "环境变量已文档化"]
+
 };

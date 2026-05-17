@@ -92,5 +92,10 @@ export const codeStyleReview: LibraryTemplate = {
   "difficulty": "Beginner",
   "mode": "single-turn",
   "usage_tips": "For best results, mention which style guide you follow in your project.",
-  "usage_tipsZh": "提及项目遵循的代码风格指南可获得更精准建议。"
+  "usage_tipsZh": "提及项目遵循的代码风格指南可获得更精准建议。",
+  "examples": "Input: Review this module for code quality issues.\nOutput: Structured review with severity ratings, specific line references, improvement suggestions, and overall score.",
+  "examplesZh": "输入：审查这个模块的代码质量问题。\n输出：结构化审查，包含严重程度、具体行引用、改进建议和总体评分。",
+  "contextChecklist": ["Code to review", "Language/framework context", "Specific concerns to focus on"],
+  "contextChecklistZh": ["待审查代码", "语言/框架上下文", "需重点关注的方面"]
+
 };

@@ -72,5 +72,10 @@ export const apiIntegrationTest: LibraryTemplate = {
     "testing"
   ],
   "difficulty": "Intermediate",
-  "mode": "single-turn"
+  "mode": "single-turn",
+  "examples": "Input: Write tests for this user service module.\nOutput: 15 test cases covering unit, integration, error paths, and edge cases with setup/teardown.",
+  "examplesZh": "输入：为这个用户服务模块编写测试。\n输出：15 个测试用例，覆盖单元测试、集成测试、错误路径和边界情况，含 setup/teardown。",
+  "contextChecklist": ["Code module to test", "Testing framework", "Coverage targets"],
+  "contextChecklistZh": ["待测试代码模块", "测试框架", "覆盖率目标"]
+
 };

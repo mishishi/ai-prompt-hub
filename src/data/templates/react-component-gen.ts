@@ -83,5 +83,10 @@ export const reactComponentGen: LibraryTemplate = {
     "frontend"
   ],
   "difficulty": "Intermediate",
-  "mode": "single-turn"
+  "mode": "single-turn",
+  "examples": "Input: Create a DataTable component with sorting, pagination, and row selection.\nOutput: TypeScript React component with useMemo sorting, controlled pagination, checkbox selection, proper ARIA labels, and Storybook-compatible props.",
+  "examplesZh": "输入：创建一个带排序、分页和行选择的 DataTable 组件。\n输出：TypeScript React 组件，含 useMemo 排序、受控分页、复选框选择、ARIA 标签和 Storybook 兼容的 Props。",
+  "contextChecklist": ["Component specification", "TypeScript or JavaScript preference", "State management approach (local, context, external)"],
+  "contextChecklistZh": ["组件规格说明", "TypeScript 或 JavaScript 偏好", "状态管理方式（本地、Context、外部）"]
+
 };

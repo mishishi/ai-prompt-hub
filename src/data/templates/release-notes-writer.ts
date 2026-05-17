@@ -87,5 +87,10 @@ export const releaseNotesWriter: LibraryTemplate = {
   "difficulty": "Intermediate",
   "mode": "single-turn",
   "usage_tips": "Include feature names and metrics if available.",
-  "usage_tipsZh": "包含功能名称和指标。"
+  "usage_tipsZh": "包含功能名称和指标。",
+  "examples": "Input: Generate API documentation from this OpenAPI spec.\nOutput: Developer-friendly docs with endpoint descriptions, request/response examples, auth setup, and error handling guide.",
+  "examplesZh": "输入：根据此 OpenAPI 规范生成 API 文档。\n输出：开发者友好的文档，含端点描述、请求/响应示例、认证设置和错误处理指南。",
+  "contextChecklist": ["Source code or spec to document", "Documentation format preference", "Target audience (internal, public)"],
+  "contextChecklistZh": ["待文档化的源代码或规范", "文档格式偏好", "目标受众（内部、公开）"]
+
 };

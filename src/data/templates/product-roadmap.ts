@@ -94,5 +94,10 @@ export const productRoadmap: LibraryTemplate = {
   "difficulty": "Intermediate",
   "mode": "single-turn",
   "usage_tips": "List existing commitments and tech debt for realistic planning.",
-  "usage_tipsZh": "列出已有承诺和技术债务可实现更现实规划。"
+  "usage_tipsZh": "列出已有承诺和技术债务可实现更现实规划。",
+  "examples": "Input: Write a PRD for a mobile payment feature.\nOutput: Structured PRD with problem statement, user personas, functional requirements, non-functional requirements, success metrics, and timeline.",
+  "examplesZh": "输入：为移动支付功能撰写 PRD。\n输出：结构化 PRD，含问题陈述、用户画像、功能需求、非功能需求、成功指标和时间线。",
+  "contextChecklist": ["Product context and goals", "User research or feedback available", "Stakeholder requirements"],
+  "contextChecklistZh": ["产品背景和目标", "可用的用户研究或反馈", "利益相关者需求"]
+
 };

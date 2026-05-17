@@ -95,5 +95,10 @@ export const securityCodeReview: LibraryTemplate = {
   "difficulty": "Intermediate",
   "mode": "single-turn",
   "usage_tips": "Paste the full function or file. Include dependency versions if relevant.",
-  "usage_tipsZh": "粘贴完整函数或文件，附上依赖版本信息更佳。"
+  "usage_tipsZh": "粘贴完整函数或文件，附上依赖版本信息更佳。",
+  "examples": "Input: Paste this authentication middleware code.\nOutput: Found 3 issues - SQL injection in query builder (CWE-89), missing rate limiting (CWE-307), hardcoded JWT secret (CWE-798). Each with fix code.",
+  "examplesZh": "输入：粘贴这段认证中间件代码。\n输出：发现 3 个问题 - 查询构造器中的 SQL 注入（CWE-89）、缺少速率限制（CWE-307）、硬编码 JWT 密钥（CWE-798）。均附带修复代码。",
+  "contextChecklist": ["Source code file(s) ready to paste", "Dependency versions noted (if relevant)", "Any known security requirements or compliance standards"],
+  "contextChecklistZh": ["准备好要审查的源代码文件", "标注相关依赖版本", "已知的安全要求或合规标准"]
+
 };

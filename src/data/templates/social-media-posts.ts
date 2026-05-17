@@ -78,5 +78,10 @@ export const socialMediaPosts: LibraryTemplate = {
   "difficulty": "Beginner",
   "mode": "single-turn",
   "usage_tips": "Mention links, images, or CTAs to include.",
-  "usage_tipsZh": "注明需要包含的链接、图片或 CTA。"
+  "usage_tipsZh": "注明需要包含的链接、图片或 CTA。",
+  "examples": "Input: Write a technical blog post about Rust async programming.\nOutput: 1500-word article with introduction, 3 main sections with code examples, comparison table, and conclusion.",
+  "examplesZh": "输入：写一篇关于 Rust 异步编程的技术博客。\n输出：1500 字文章，含引言、3 个带代码示例的主要章节、对比表格和结论。",
+  "contextChecklist": ["Topic and target audience", "Word count target", "Any SEO keywords or style guide"],
+  "contextChecklistZh": ["主题和目标受众", "字数目标", "SEO 关键词或风格指南"]
+
 };

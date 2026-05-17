@@ -1,6 +1,6 @@
-﻿import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Copy, Check, Sparkles, ChevronLeftIcon, Save, Link2, ThumbsUp, ThumbsDown, FileText, Package, X } from 'lucide-react';
+import { Copy, Check, Sparkles, ChevronLeftIcon, Save, Link2, ThumbsUp, ThumbsDown, FileText, X, Lightbulb, ListChecks } from 'lucide-react';
 import { templates } from '../../data/templates';
 import type { LibraryTemplate } from '../../types';
 import { tName, tShort, tTips, tLabel, tOptions } from '../../data/templates/helper';
@@ -60,6 +60,8 @@ export function TemplateDetail() {
   const [flash, setFlash] = useState(false);
   const [saved, setSaved] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
+  const [examplesOpen, setExamplesOpen] = useState(false);
+  const [checklistOpen, setChecklistOpen] = useState(false);
   const [feedback, setFeedback] = useState<"up" | "down" | null>(null);
   const [ready, setReady] = useState(false);
   const [mobileTab, setMobileTab] = useState<'params' | 'preview'>('params');
@@ -291,55 +293,7 @@ const handleSave = () => {
       <div className="flex-1 flex flex-col min-h-0 relative">
         <div className="px-4 md:px-5 py-3 border-b border-[var(--color-bench-border)] flex items-center justify-between bg-[var(--color-bench-elevated)]">
           <span className="text-sm uppercase tracking-wider text-[var(--color-bench-muted)]">{tq('Prompt Output', 'Prompt 输出')}</span>
-          {hasExpected && (
-            <>
-              <button
-                onClick={() => setPopoverOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)] hover:bg-[var(--color-bench-accent)]/10 transition-all"
-              >
-                <FileText size={14} />
-                {t('detail.expectedOutput')}
-              </button>
-              {popoverOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setPopoverOpen(false)}>
-                  <div className="absolute inset-0 backdrop-blur-sm bg-black/60" />
-                  <div
-                    className="relative w-full max-w-md bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-2xl shadow-2xl overflow-hidden scale-95 opacity-0 animate-[popin_200ms_ease-out_forwards]"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--color-bench-border)]">
-                      <div className="flex items-center gap-2.5">
-                        <FileText size={16} className="text-[var(--color-bench-accent)]" />
-                        <span className="text-sm font-semibold text-[var(--color-bench-text)]">{t('detail.expectedOutput')}</span>
-                      </div>
-                      <button onClick={() => setPopoverOpen(false)} className="p-1.5 rounded-lg hover:bg-white/5 text-[var(--color-bench-muted)] hover:text-[var(--color-bench-text)] transition-colors"><X size={15} /></button>
-                    </div>
-                    <div className="p-5 space-y-4">
-                      {template!.expectedOutput && (
-                        <p className="text-sm text-[var(--color-bench-text-dim)] leading-relaxed">{lang === 'zh-CN' && template!.expectedOutputZh ? template!.expectedOutputZh : template!.expectedOutput}</p>
-                      )}
-                      {template!.expectedDeliverables && template!.expectedDeliverables.length > 0 && (
-                        <div className={template!.expectedOutput ? 'pt-4 border-t border-[var(--color-bench-border)]' : ''}>
-                          <div className="flex items-center gap-2 mb-3">
-                            <Package size={14} className="text-[var(--color-bench-accent)]" />
-                            <span className="text-xs font-semibold text-[var(--color-bench-muted)] uppercase tracking-wider">{t('detail.expectedDeliverables')}</span>
-                          </div>
-                          <ul className="space-y-2">
-                            {((lang === 'zh-CN' && template!.expectedDeliverablesZh ? template!.expectedDeliverablesZh : template!.expectedDeliverables!) as string[]).map((item: string, i: number) => (
-                              <li key={i} className="flex items-start gap-2.5 text-xs text-[var(--color-bench-text-dim)]">
-                                <Check size={13} className="text-[var(--color-bench-success)] mt-0.5 flex-shrink-0" />
-                                {item}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
+          
           <button onClick={handleCopy} className={'flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ' + (copied ? 'bg-[var(--color-bench-success)]/15 text-[var(--color-bench-success)]' : 'bg-[var(--color-bench-accent)] text-[var(--color-bench-bg)] hover:brightness-110')}>
             {copied ? <Check size={14} /> : <Copy size={14} />}
             {copied ? t('detail.copied') : t('detail.copy')}
@@ -347,6 +301,88 @@ const handleSave = () => {
           <button onClick={handleShare} className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)] hover:bg-[var(--color-bench-accent)]/10 transition-all"><Link2 size={14} />{tq("Share", "分享")}</button>
           <button onClick={handleSave} className={"flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all " + (saved ? "bg-[var(--color-bench-success)]/15 text-[var(--color-bench-success)]" : "bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)] hover:bg-[var(--color-bench-accent)]/20")}><Save size={14} />{t(saved ? "detail.saved" : "detail.save")}</button>
         </div>
+
+
+        {/* Action bar: Examples | Checklist | Expected Output */}
+        <div className="px-4 md:px-5 py-3 border-b border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)]/50 flex items-center justify-center gap-3">
+          {hasExpected && (
+            <button
+              onClick={() => setPopoverOpen(true)}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-[var(--color-bench-bg)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)] hover:border-[var(--color-bench-accent)]/30 hover:bg-[var(--color-bench-accent)]/5 transition-all"
+            >
+              <FileText size={14} />
+              {tq('Expected Output', '预期产出')}
+            </button>
+          )}
+          {(template?.examples || template?.examplesZh) && (
+            <button
+              onClick={() => setExamplesOpen(true)}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-[var(--color-bench-bg)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)] hover:border-[var(--color-bench-accent)]/30 hover:bg-[var(--color-bench-accent)]/5 transition-all"
+            >
+              <Lightbulb size={14} />
+              {tq('Examples', '示例')}
+            </button>
+          )}
+          {(template?.contextChecklist?.length || template?.contextChecklistZh?.length) ? (
+            <button
+              onClick={() => setChecklistOpen(true)}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-[var(--color-bench-bg)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-success)] hover:border-[var(--color-bench-success)]/30 hover:bg-[var(--color-bench-success)]/5 transition-all"
+            >
+              <ListChecks size={14} />
+              {tq('Checklist', '准备清单')}
+            </button>
+          ) : null}
+        </div>
+        {/* Popovers */}
+        {popoverOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setPopoverOpen(false)}>
+            <div className="absolute inset-0 backdrop-blur-sm bg-black/60" />
+            <div className="relative w-full max-w-md bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-2xl shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--color-bench-border)]">
+                <div className="flex items-center gap-2.5">
+                  <FileText size={16} className="text-[var(--color-bench-accent)]" />
+                  <h3 className="text-sm font-semibold text-[var(--color-bench-text)]">{tq('Expected Output', '预期产出')}</h3>
+                </div>
+                <button onClick={() => setPopoverOpen(false)} className="p-1.5 rounded-lg hover:bg-white/5 transition-colors"><X size={16} className="text-[var(--color-bench-muted)]" /></button>
+              </div>
+              <div className="p-5 max-h-96 overflow-y-auto text-sm text-[var(--color-bench-text-dim)] leading-relaxed">
+                {template?.expectedOutput && <p className="mb-4">{lang === "zh-CN" ? (template?.expectedOutputZh || template?.expectedOutput) : template.expectedOutput}</p>}
+                {(template?.expectedDeliverables?.length || template?.expectedDeliverablesZh?.length) ? (
+                  <div>
+                    <p className="text-sm font-medium text-[var(--color-bench-text)] mb-2">{tq("Deliverables", "交付物")}</p>
+                    <ul className="space-y-1.5">{((lang === "zh-CN" ? (template?.expectedDeliverablesZh || template?.expectedDeliverables) : (template?.expectedDeliverables || template?.expectedDeliverablesZh)) || []).map((item: string, i: number) => <li key={i} className="flex items-start gap-2">{'•'} {item}</li>)}</ul>
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          </div>
+        )}
+        {examplesOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setExamplesOpen(false)}>
+            <div className="absolute inset-0 backdrop-blur-sm bg-black/60" />
+            <div className="relative w-full max-w-md bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-2xl shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--color-bench-border)]">
+                <div className="flex items-center gap-2.5"><Lightbulb size={16} className="text-[var(--color-bench-accent)]" /><h3 className="text-sm font-semibold text-[var(--color-bench-text)]">{tq('Examples', '示例')}</h3></div>
+                <button onClick={() => setExamplesOpen(false)} className="p-1.5 rounded-lg hover:bg-white/5 transition-colors"><X size={16} className="text-[var(--color-bench-muted)]" /></button>
+              </div>
+              <div className="p-5 max-h-96 overflow-y-auto"><pre className="text-sm text-[var(--color-bench-text-dim)] leading-relaxed whitespace-pre-wrap font-mono">{lang === 'zh-CN' ? (template?.examplesZh || template?.examples) : (template?.examples || template?.examplesZh) || ''}</pre></div>
+            </div>
+          </div>
+        )}
+        {checklistOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setChecklistOpen(false)}>
+            <div className="absolute inset-0 backdrop-blur-sm bg-black/60" />
+            <div className="relative w-full max-w-md bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-2xl shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--color-bench-border)]">
+                <div className="flex items-center gap-2.5"><ListChecks size={16} className="text-[var(--color-bench-success)]" /><h3 className="text-sm font-semibold text-[var(--color-bench-text)]">{tq('Context Checklist', '使用前准备')}</h3></div>
+                <button onClick={() => setChecklistOpen(false)} className="p-1.5 rounded-lg hover:bg-white/5 transition-colors"><X size={16} className="text-[var(--color-bench-muted)]" /></button>
+              </div>
+              <div className="p-5 max-h-96 overflow-y-auto">
+                {(() => { const items = lang === 'zh-CN' ? (template?.contextChecklistZh || template?.contextChecklist) : (template?.contextChecklist || template?.contextChecklistZh); return (<ul className="space-y-2">{(items || []).map((item: string, i: number) => (<li key={i} className="flex items-start gap-2.5 text-sm text-[var(--color-bench-text-dim)]"><span className="text-[var(--color-bench-success)] mt-0.5 flex-shrink-0">{'☑'}</span>{item}</li>))}</ul>); })()}
+              </div>
+            </div>
+          </div>
+        )}
         <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-[var(--color-bench-bg)]">
           <div className={'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-xl overflow-hidden shadow-lg ' + (flash ? 'preview-flash' : '')}>
             <div className="px-4 md:px-5 py-3 border-b border-[var(--color-bench-border)] flex items-center gap-3 bg-[var(--color-bench-surface-solid)]">
