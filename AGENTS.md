@@ -136,6 +136,15 @@ npm run build    # tsc -b && vite build
 npx vitest run   # 30 tests across 4 files
 ```
 
+
+## Mandatory Post-Edit Verification
+
+After ANY file modification, run both before reporting success:
+- `npx tsc --noEmit`
+- `npx vite build`
+
+If either fails, fix the error and re-verify. Do NOT report "done" until both pass clean.
+
 ## Git
 
 - Do NOT push unless explicitly asked

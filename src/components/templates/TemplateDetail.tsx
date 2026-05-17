@@ -32,6 +32,7 @@ export function TemplateDetail() {
       .then(data => {
         if (data.ok && data.template) {
           setCommunityTemplate({
+            _community: true as any,
             id: data.template.id,
             meta: {
               name: data.template.name,
@@ -105,6 +106,88 @@ export function TemplateDetail() {
     if (!template) return '';
     return renderPrompt(template, lang, values);
   }, [template, lang, values]);
+  const sourceContent = !template ? null : template._community
+    ? (<>
+
+                    <div className="space-y-3 overflow-y-auto max-h-[calc(100vh-200px)] md:max-h-[calc(100vh-280px)]">
+                      {parseSections(template.user).map((sec: any, i: number) => (
+                        <div key={i} className="bg-[var(--color-bench-bg)] border rounded-xl p-4" style={{ borderColor: sec.color + '33' }}>
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: sec.color }} />
+                            <span className="text-sm font-semibold" style={{ color: sec.color }}>{sec.title}</span>
+                          </div>
+                          <pre className="text-sm text-[var(--color-bench-text-dim)] leading-relaxed whitespace-pre-wrap font-mono">{sec.content}</pre>
+                        </div>
+                      ))}
+                    </div>
+      </>)
+    : (<>
+
+                  <div className="space-y-3 overflow-y-auto max-h-[calc(100vh-200px)] md:max-h-[calc(100vh-280px)]">
+                  {/* Role */}
+                  <div className="bg-[var(--color-bench-bg)] border border-[#3b82f6]/20 rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-2 h-2 rounded-full bg-[#3b82f6]" />
+                      <span className="text-sm font-semibold text-[#3b82f6]">{tq('Role', '角色')} (system.role)</span>
+                    </div>
+                    <p className="text-sm text-[var(--color-bench-text-dim)] leading-relaxed">{lang === 'zh-CN' && template?.system?.roleZh ? template.system.roleZh : template?.system?.role || tq('(not set)', '(未设置)')}</p>
+                  </div>
+                  {(template?.system?.rules?.length ?? 0) > 0 && (
+                  <div className="bg-[var(--color-bench-bg)] border border-[#f59e0b]/20 rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-2 h-2 rounded-full bg-[#f59e0b]" />
+                      <span className="text-sm font-semibold text-[#f59e0b]">{tq('Rules', '规则')} (system.rules)</span>
+                    </div>
+                    <ul className="space-y-1">
+                      {((lang === "zh-CN" && (template?.system?.rulesZh?.length ?? 0) > 0 ? template.system.rulesZh : template?.system?.rules) || []).map((rule: string, i: number) => (
+                        <li key={i} className="flex items-start gap-2 text-sm text-[var(--color-bench-text-dim)]">
+                          <span className="text-[#f59e0b] text-xs mt-0.5">{i + 1}.</span>
+                          {rule}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  )}
+                  <div className="bg-[var(--color-bench-bg)] border border-[#a855f7]/20 rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-2 h-2 rounded-full bg-[#a855f7]" />
+                      <span className="text-sm font-semibold text-[#a855f7]">{tq('User Prompt', '用户模板')} (user)</span>
+                    </div>
+                    <pre className="text-sm text-[var(--color-bench-text-dim)] leading-relaxed whitespace-pre-wrap font-mono">{lang === 'zh-CN' ? (template?.userZh || template?.user) : (template?.user || template?.userZh) || ''}</pre>
+                  </div>
+                  {(template?.variables?.length ?? 0) > 0 && (
+                  <div className="bg-[var(--color-bench-bg)] border border-[#22c55e]/20 rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-2 h-2 rounded-full bg-[#22c55e]" />
+                      <span className="text-sm font-semibold text-[#22c55e]">{tq('Variables', '变量')} (variables)</span>
+                    </div>
+                    <div className="space-y-1.5">
+                      {template.variables.map((v: any, i: number) => {
+                        const val = values[v.name];
+                        const label = (lang === 'zh-CN' ? v.labelZh : v.label) || v.name;
+                        return (
+                          <div key={i} className="flex items-center gap-2 text-sm">
+                            <span className="text-[#22c55e] font-mono text-sm">{'{{'}{v.name}{'}}'}</span>
+                            <span className="text-[var(--color-bench-muted)]">{label}</span>
+                            <span className="text-[var(--color-bench-text-dim)]">{'='} {val !== undefined ? (typeof val === 'boolean' ? (val ? 'true' : 'false') : String(val)) : tq('(not filled)', '(未填)')}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  )}
+                  {template?.output_schema && (
+                  <div className="bg-[var(--color-bench-bg)] border border-[#6b7280]/20 rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-2 h-2 rounded-full bg-[#6b7280]" />
+                      <span className="text-sm font-semibold text-[#6b7280]">{tq('Output Schema', '输出格式')} (output_schema)</span>
+                    </div>
+                    <pre className="text-sm text-[var(--color-bench-text-dim)] leading-relaxed whitespace-pre-wrap font-mono">{typeof template.output_schema === 'string' ? template.output_schema : JSON.stringify(template.output_schema, null, 2)}</pre>
+                  </div>
+                  )}
+                </div>
+      </>);
+
 
 
   const handleFeedback = (value: 'up' | 'down') => {
@@ -432,86 +515,8 @@ const handleSave = () => {
               <span className="text-xs text-[var(--color-bench-muted)] uppercase tracking-wider">{t('detail.preview')}</span>
             </div>
             <div className="p-4 md:p-6">
-              {sourceView ? (
-                {/* Community template fallback */}
-                  {template._community ? (
-                    <div className="space-y-3 overflow-y-auto max-h-[calc(100vh-200px)] md:max-h-[calc(100vh-280px)]">
-                      {parseSections(template.user).map((sec: any, i: number) => (
-                        <div key={i} className="bg-[var(--color-bench-bg)] border rounded-xl p-4" style={{ borderColor: sec.color + '33' }}>
-                          <div className="flex items-center gap-2 mb-2">
-                            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: sec.color }} />
-                            <span className="text-sm font-semibold" style={{ color: sec.color }}>{sec.title}</span>
-                          </div>
-                          <pre className="text-sm text-[var(--color-bench-text-dim)] leading-relaxed whitespace-pre-wrap font-mono">{sec.content}</pre>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                  <div className="space-y-3 overflow-y-auto max-h-[calc(100vh-200px)] md:max-h-[calc(100vh-280px)]">
-                  {/* Role */}
-                  <div className="bg-[var(--color-bench-bg)] border border-[#3b82f6]/20 rounded-xl p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-2 h-2 rounded-full bg-[#3b82f6]" />
-                      <span className="text-sm font-semibold text-[#3b82f6]">{tq('Role', '角色')} (system.role)</span>
-                    </div>
-                    <p className="text-sm text-[var(--color-bench-text-dim)] leading-relaxed">{lang === 'zh-CN' && template?.system?.roleZh ? template.system.roleZh : template?.system?.role || tq('(not set)', '(未设置)')}</p>
-                  </div>
-                  {(template?.system?.rules?.length ?? 0) > 0 && (
-                  <div className="bg-[var(--color-bench-bg)] border border-[#f59e0b]/20 rounded-xl p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-2 h-2 rounded-full bg-[#f59e0b]" />
-                      <span className="text-sm font-semibold text-[#f59e0b]">{tq('Rules', '规则')} (system.rules)</span>
-                    </div>
-                    <ul className="space-y-1">
-                      {((lang === "zh-CN" && (template?.system?.rulesZh?.length ?? 0) > 0 ? template.system.rulesZh : template?.system?.rules) || []).map((rule: string, i: number) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-[var(--color-bench-text-dim)]">
-                          <span className="text-[#f59e0b] text-xs mt-0.5">{i + 1}.</span>
-                          {rule}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  )}
-                  <div className="bg-[var(--color-bench-bg)] border border-[#a855f7]/20 rounded-xl p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-2 h-2 rounded-full bg-[#a855f7]" />
-                      <span className="text-sm font-semibold text-[#a855f7]">{tq('User Prompt', '用户模板')} (user)</span>
-                    </div>
-                    <pre className="text-sm text-[var(--color-bench-text-dim)] leading-relaxed whitespace-pre-wrap font-mono">{lang === 'zh-CN' ? (template?.userZh || template?.user) : (template?.user || template?.userZh) || ''}</pre>
-                  </div>
-                  {(template?.variables?.length ?? 0) > 0 && (
-                  <div className="bg-[var(--color-bench-bg)] border border-[#22c55e]/20 rounded-xl p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-2 h-2 rounded-full bg-[#22c55e]" />
-                      <span className="text-sm font-semibold text-[#22c55e]">{tq('Variables', '变量')} (variables)</span>
-                    </div>
-                    <div className="space-y-1.5">
-                      {template.variables.map((v: any, i: number) => {
-                        const val = values[v.name];
-                        const label = (lang === 'zh-CN' ? v.labelZh : v.label) || v.name;
-                        return (
-                          <div key={i} className="flex items-center gap-2 text-sm">
-                            <span className="text-[#22c55e] font-mono text-sm">{'{{'}{v.name}{'}}'}</span>
-                            <span className="text-[var(--color-bench-muted)]">{label}</span>
-                            <span className="text-[var(--color-bench-text-dim)]">{'='} {val !== undefined ? (typeof val === 'boolean' ? (val ? 'true' : 'false') : String(val)) : tq('(not filled)', '(未填)')}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                  )}
-                  {template?.output_schema && (
-                  <div className="bg-[var(--color-bench-bg)] border border-[#6b7280]/20 rounded-xl p-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-2 h-2 rounded-full bg-[#6b7280]" />
-                      <span className="text-sm font-semibold text-[#6b7280]">{tq('Output Schema', '输出格式')} (output_schema)</span>
-                    </div>
-                    <pre className="text-sm text-[var(--color-bench-text-dim)] leading-relaxed whitespace-pre-wrap font-mono">{typeof template.output_schema === 'string' ? template.output_schema : JSON.stringify(template.output_schema, null, 2)}</pre>
-                  </div>
-                  )}
-                </div>
-              )}
-              ) : (
+              {sourceView ? sourceContent : (
+
                               <pre className="prompt-preview overflow-x-auto max-h-[calc(100vh-200px)] md:max-h-[calc(100vh-280px)]">{rendered || <span className="text-[var(--color-bench-muted)] italic">{t('detail.setValues')}</span>}</pre>
               )}            </div>
           </div>
