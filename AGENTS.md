@@ -129,6 +129,11 @@ src/
   types/           # TypeScript interfaces
 ```
 
+## Environment
+
+- .env file is gitignored, contains DATABASE_URL for local dev
+- Do NOT delete .env - it is needed locally and safe from commits
+
 ## Build & Test
 
 ```bash
