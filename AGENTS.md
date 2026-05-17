@@ -70,6 +70,14 @@ Read → construct new content → `writeFileSync` once. Fewer moving parts, few
 then `c = c.replace(/\r\n/g, '\n')`. Write back with `\n`. This eliminates Windows CRLF
 matching failures.
 
+**Read before edit — mandatory.** Before ANY file modification, verify current state:
+1. Search for key identifiers in the target file to see what already exists
+2. Never assume the file is in clean/original state
+3. If re-adding reverted code, verify what was lost vs what remains
+4. Skipping this is the #1 cause of duplicate declarations
+
+**Never git checkout without git stash first.** git checkout -- file discards uncommitted changes. Always: git stash then git checkout then edit then git stash pop if needed.
+
 ## Font Scale
 
 Redefined in `src/index.css` `@theme` block (not global replacements):
