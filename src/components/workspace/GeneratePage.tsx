@@ -156,17 +156,13 @@ export function GeneratePage() {
   const [evaluationOpen, setEvaluationOpen] = useState(false);
   const [progressDone, setProgressDone] = useState(false);
   const evaluationPillRef = useRef<HTMLButtonElement>(null);
+  const evalTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [refining, setRefining] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   useEffect(() => { inputRef.current?.focus(); }, []);
+  useEffect(() => { return () => { if (evalTimerRef.current) clearTimeout(evalTimerRef.current); }; }, []);
 
 
-  useEffect(() => {
-    if (evaluationOpen && !progressDone) {
-      const t = setTimeout(() => setProgressDone(true), 2800);
-      return () => clearTimeout(t);
-    }
-  }, [evaluationOpen, progressDone]);
 
   useEffect(() => { inputRef.current?.focus(); }, []);
 
@@ -188,10 +184,15 @@ export function GeneratePage() {
 
   const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
 
+  const clearEvalTimer = () => {
+    if (evalTimerRef.current) { clearTimeout(evalTimerRef.current); evalTimerRef.current = null; }
+  };
+
   const handleGenerate = async () => {
     if (!intent.trim()) return;
     if (!useQuota()) { setError(tq('Daily quota exhausted. Browse the template library instead.', '今日免费次数已用完，明天重置。试试浏览模板库？')); return; }
     setLoading(true); setError(''); setFeedback(null);
+    clearEvalTimer();
     setEvaluationOpen(false); setProgressDone(false);
     setResult('');
     setQuotaLeft(getRemainingQuota());
