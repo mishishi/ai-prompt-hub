@@ -81,6 +81,16 @@ const ResultView = ({ result, loading }: { result: string; loading: boolean }) =
   );
 };
 
+const StatusLabel = ({ tq }: { tq: (en: string, zh: string) => string }) => {
+  const labels = [tq('parsing intent','\u89E3\u6790\u610F\u56FE'), tq('extracting entities','\u63D0\u53D6\u5B9E\u4F53'), tq('matching templates','\u5339\u914D\u6A21\u677F'), tq('structuring output','\u6784\u5EFA\u7ED3\u6784'), tq('optimizing prompt','\u4F18\u5316\u63D0\u793A\u8BCD')];
+  const [li, setLi] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setLi(i => (i+1)%labels.length), 1800);
+    return () => clearInterval(t);
+  }, []);
+  return <>{labels[li]}</>;
+};
+
 export function GeneratePage() {
   const { user } = useUser();
   const { lang } = useT();
@@ -328,7 +338,7 @@ const handleSave = () => {
                   </div>
                 </div>
                 <div className="term-section-in flex items-center gap-3 mt-4 pt-2" style={{animationDelay:'1.6s'}}>
-                  <span className="text-xs" style={{color:'var(--color-bench-muted)'}}>{(() => { const labels = [tq('parsing intent','解析意图'), tq('extracting entities','提取实体'), tq('matching templates','匹配模板'), tq('structuring output','构建结构'), tq('optimizing prompt','优化提示词')]; const [li, setLi] = useState(0); useEffect(() => { const t = setInterval(() => setLi(i => (i+1)%labels.length), 1800); return () => clearInterval(t); }, []); return labels[li]; })()}</span>
+{<StatusLabel tq={tq} />}
                   <div className="flex-1 h-[3px] rounded-sm overflow-hidden" style={{background:'var(--color-bench-border)'}}>
                     <div className="h-full term-progress-fill rounded-sm" style={{background:'var(--color-bench-accent)'}} />
                   </div>
