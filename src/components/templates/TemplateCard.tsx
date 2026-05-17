@@ -83,27 +83,20 @@ export function TemplateCard({ template, onClick, score = 0, copyCount = 0, onCo
 
         <span className={"text-sm font-semibold px-1.5 py-0.5 rounded bg-[var(--color-bench-accent-secondary)]/10 text-[var(--color-bench-accent-secondary)]"}>{template.mode && t('mode.' + template.mode)}</span>
         
-        <div className="flex items-center justify-between pt-4 mt-4 border-t border-[var(--color-bench-border)] group-hover:border-[var(--color-bench-accent)]/30 transition-colors">
-          <span className="text-sm font-medium text-[var(--color-bench-muted)] uppercase tracking-wider">
-            {t('category.' + template.category[0])}
-          </span>
-          <div className="flex items-center gap-3">
-            <button onClick={handleFavorite} className={"flex items-center gap-1 text-sm font-medium transition-colors " + (fav ? 'text-[var(--color-bench-warn)]' : 'text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-warn)]')}>
-              <Star size={11} fill={fav ? 'currentColor' : 'none'} />
-              {t(fav ? 'card.favorited' : 'card.favorite')}
-            </button>
-            <button onClick={handleCopy} className={"flex items-center gap-1 text-sm font-medium transition-colors " + (copied ? 'text-[var(--color-bench-success)]' : 'text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)]')}>
-              {copied ? <Check size={11} /> : <Copy size={11} />}
-              {copied ? t('card.copied') : t('card.copy')}
-            </button>
-          </div>
+        <div className="flex items-center gap-3 pt-4 mt-4 border-t border-[var(--color-bench-border)] group-hover:border-[var(--color-bench-accent)]/30 transition-colors">
+          <button onClick={handleFavorite} className={"flex items-center gap-1 text-sm font-medium transition-colors " + (fav ? 'text-[var(--color-bench-warn)]' : 'text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-warn)]')}>
+            <Star size={12} fill={fav ? 'currentColor' : 'none'} />
+            {t(fav ? 'card.favorited' : 'card.favorite')}
+          </button>
+          <button onClick={handleCopy} className={"flex items-center gap-1 text-sm font-medium transition-colors " + (copied ? 'text-[var(--color-bench-success)]' : 'text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)]')}>
+            {copied ? <Check size={12} /> : <Copy size={12} />}
+            {copied ? t('card.copied') : t('card.copy')}
+          </button>
           {copyCount > 0 && (
-            <div className="flex justify-end mt-2">
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium bg-[var(--color-bench-accent)]/8 text-[var(--color-bench-accent)]">
-                <Copy size={10} />
-                {t('card.copies').replace('{n}', String(copyCount))}
-              </span>
-            </div>
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium bg-[var(--color-bench-accent)]/8 text-[var(--color-bench-accent)]">
+              <Copy size={10} />
+              {t('card.copies').replace('{n}', String(copyCount))}
+            </span>
           )}
         </div>
       </div>

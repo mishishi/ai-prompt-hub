@@ -74,7 +74,7 @@ export function TemplateBrowser() {
     return () => window.removeEventListener('keydown', handler);
   }, []);
 
-  const events = useMemo(() => getEvents(), []);
+  const events = useMemo(() => getEvents(), [copyTicker]);
 
   const templateScores = useMemo(() => {
     const scores: Record<string, number> = {};
