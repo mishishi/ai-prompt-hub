@@ -93,8 +93,12 @@ export function TemplateCard({ template, onClick, score = 0, copyCount = 0 }: { 
               {copied ? <Check size={11} /> : <Copy size={11} />}
               {copied ? t('card.copied') : t('card.copy')}
             </button>
-            {copyCount > 0 && <span className="text-xs text-[var(--color-bench-muted)]/50">{copyCount}</span>}
           </div>
+          {copyCount > 0 && (
+            <div className="flex justify-end mt-1">
+              <span className="text-xs text-[var(--color-bench-muted)]/50">{t('card.copies').replace('{n}', String(copyCount))}</span>
+            </div>
+          )}
         </div>
       </div>
     </article>
