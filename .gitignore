@@ -27,10 +27,9 @@ dist-ssr
 
 # Temp scripts
 _*.mjs
-_*.cjs
+*.cjs
 _*.json
 _*.txt
-f.endsWith('.ts')
 
 # Audit
 .audit/test-results/

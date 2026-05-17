@@ -2,15 +2,17 @@ import { useState } from 'react';
 import { Copy, Check, Star, BadgeCheck } from 'lucide-react';
 import type { LibraryTemplate } from '../../types';
 import { useT } from '../../i18n/LanguageContext';
+import { useUser } from '@clerk/clerk-react';
 import { tName, tShort } from '../../data/templates/helper';
 import { copyToClipboard } from '../../utils/clipboard';
-import { track } from '../../utils/analytics';
+import { track, getDisplayName } from '../../utils/analytics';
 import { toggleFavorite, isFavorite } from '../../utils/storage';
 import { useToast } from '../ui/Toast';
 import { getPlatformLabel } from '../../utils/platform';
 
 export function TemplateCard({ template, onClick, score = 0, copyCount = 0, onCopy }: { template: LibraryTemplate; onClick: () => void; score?: number; copyCount?: number; onCopy?: () => void }) {
   const { t, lang } = useT();
+  const { user } = useUser();
   const toast = useToast();
   const [copied, setCopied] = useState(false);
   const [fav, setFav] = useState(() => isFavorite(template.id));
@@ -30,7 +32,7 @@ export function TemplateCard({ template, onClick, score = 0, copyCount = 0, onCo
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
     toast.show(t('card.copied'));
-    track({ type: 'template_copy', templateId: template.id, lang });
+    track({ type: 'template_copy', templateId: template.id, lang, userId: user?.id, userName: getDisplayName(user), provider: user?.externalAccounts?.[0]?.provider });
     onCopy?.();
   };
 
