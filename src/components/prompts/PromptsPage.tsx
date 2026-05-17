@@ -146,7 +146,7 @@ export function PromptsPage() {
                       {sourceViewId === p.id ? tq('Text', '文本') : tq('Source', '源码')}
                     </button>
                   </div>
-                                    {true ? (
+                                    {sourceViewId !== p.id ? (
                     <div className="space-y-2 max-h-80 overflow-y-auto">
                       {/* AI-generated: parse markdown sections from user text */}
                       {(!p.system?.role && p.source === 'generated') ? (

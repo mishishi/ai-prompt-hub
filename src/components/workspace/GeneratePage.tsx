@@ -154,10 +154,23 @@ export function GeneratePage() {
   const [evaluating, setEvaluating] = useState(false);
   const [evaluation, setEvaluation] = useState<string | null>(null);
   const [evaluationOpen, setEvaluationOpen] = useState(false);
+  const [progressDone, setProgressDone] = useState(false);
   const evaluationPillRef = useRef<HTMLButtonElement>(null);
   const autoOpenedRef = useRef(false);
   const [refining, setRefining] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => { inputRef.current?.focus(); }, []);
+
+  useEffect(() => {
+    if (evaluating && !evaluation) { setEvaluationOpen(true); setProgressDone(false); }
+  }, [evaluating, evaluation]);
+
+  useEffect(() => {
+    if (evaluationOpen && !evaluation) {
+      const t = setTimeout(() => setProgressDone(true), 2800);
+      return () => clearTimeout(t);
+    }
+  }, [evaluationOpen, evaluation]);
 
   useEffect(() => { inputRef.current?.focus(); }, []);
 
@@ -388,7 +401,7 @@ const handleSave = () => {
                       <span className="relative z-10">{tq('AI Score', 'AI 评分')} {score != null ? score : '?'}/100</span>
                     </button>
                   </div>
-                  {evaluationOpen && !evaluation && (
+                  {evaluationOpen && !progressDone && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                       <div className="absolute inset-0 bg-black/40" style={{ animation: 'eval-fade-in 250ms ease-out both' }} />
                       <div className="relative w-full max-w-sm bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-2xl shadow-2xl overflow-hidden"
@@ -399,7 +412,7 @@ const handleSave = () => {
                       </div>
                     </div>
                   )}
-                  {evaluationOpen && evaluation && (
+                  {evaluationOpen && (evaluation ? progressDone : true) && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setEvaluationOpen(false)}>
                       <div className="absolute inset-0 bg-black/60" style={{ animation: 'eval-fade-in 250ms ease-out both' }} />
                       <div
