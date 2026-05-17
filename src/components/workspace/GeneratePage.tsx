@@ -20,6 +20,8 @@ export function GeneratePage() {
   const [editing, setEditing] = useState(false);
   const [editText, setEditText] = useState('');
   const [saved, setSaved] = useState(false);
+  const [refineInput, setRefineInput] = useState('');
+  const [refining, setRefining] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => { inputRef.current?.focus(); }, []);
@@ -70,6 +72,18 @@ const handleSave = () => {
   };
 
   const handleFeedback = (v: 'up' | 'down') => { setFeedback(v); track({ type: 'ai_feedback', lang }); const k = 'promptbench-feedback'; const ex = JSON.parse(localStorage.getItem(k) || '[]'); ex.push({ intent: intent.slice(0, 100), value: v, ts: Date.now() }); localStorage.setItem(k, JSON.stringify(ex.slice(-50))); };
+
+  const handleRefine = async () => {
+    if (!refineInput.trim() || !result) return;
+    if (!useQuota()) { setError(tq('Daily quota exhausted.', '今日免费次数已用完。')); return; }
+    setRefining(true); setError('');
+    try {
+      await aiGenerate(intent.trim(), lang, (chunk) => setResult(chunk), { previousResult: result, feedback: refineInput.trim() });
+      setRefineInput('');
+      track({ type: 'ai_generate', lang, userId: user?.id, userName: getDisplayName(user), provider: user?.externalAccounts?.[0]?.provider });
+    } catch (e: any) { setError(e.message || tq('API error.', 'API 错误，请重试。')); }
+    finally { setRefining(false); }
+  };
 
   const suggestions = [
     { en: 'Code security review', zh: '代码安全审查' },
@@ -171,7 +185,30 @@ const handleSave = () => {
               <textarea value={editText} onChange={(e) => setEditText(e.target.value)} className="flex-1 p-4 md:p-6 text-sm text-[var(--color-bench-text)] leading-relaxed font-mono bg-[var(--color-bench-bg)] border-0 resize-none focus:outline-none focus:ring-2 focus:ring-[var(--color-bench-accent)]/30 rounded-b-lg" />
             </div>
             )}
-            <div className="px-5 py-3 border-t border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] flex items-center justify-center gap-3">
+            {!editing && (
+            <div className="px-5 py-3 border-t border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)]">
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={refineInput}
+                  onChange={(e) => setRefineInput(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' && !refining) handleRefine(); }}
+                  placeholder={tq('Not satisfied? Tell AI what to change...', '不满意？告诉 AI 哪里要改...')}
+                  className="flex-1 px-3 py-2 rounded-lg bg-[var(--color-bench-bg)] border border-[var(--color-bench-border)] text-sm text-[var(--color-bench-text)] placeholder:text-[var(--color-bench-muted)]/50 focus:outline-none focus:border-[var(--color-bench-accent)] transition-colors"
+                  disabled={refining}
+                />
+                <button
+                  onClick={handleRefine}
+                  disabled={!refineInput.trim() || refining}
+                  className="flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)] hover:bg-[var(--color-bench-accent)]/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all flex-shrink-0"
+                >
+                  {refining ? <Loader size={14} className="animate-spin" /> : <RefreshCw size={14} />}
+                  {tq('Refine', '调整')}
+                </button>
+              </div>
+            </div>
+          )}
+          <div className="px-5 py-3 border-t border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] flex items-center justify-center gap-3">
               <span className="text-sm text-[var(--color-bench-text-dim)]">{tq('Was this helpful?', '对你有帮助吗？')}</span>
               {feedback ? <span className="text-sm text-[var(--color-bench-success)] font-medium">{tq('Thanks!', '感谢反馈！')}</span> : <>
                 <button onClick={() => handleFeedback('up')} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--color-bench-success)]/10 text-[var(--color-bench-success)] hover:bg-[var(--color-bench-success)]/20 transition-colors"><ThumbsUp size={12} />{tq('Helpful', '有帮助')}</button>

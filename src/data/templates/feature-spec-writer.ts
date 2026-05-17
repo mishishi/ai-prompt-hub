@@ -72,6 +72,8 @@ export const featureSpecWriter: LibraryTemplate = {
   "output_schema": {
     "type": "markdown"
   },
+  "expectedOutput": "A detailed feature specification with user stories, acceptance criteria, edge cases, and technical constraints.",
+  "expectedOutputZh": "一份详细功能规格书，包含用户故事、验收标准、边界条件和技术约束。",
   "category": [
     "product"
   ],

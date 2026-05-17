@@ -62,6 +62,8 @@ export const conventionalCommits: LibraryTemplate = {
     "type": "text"
   },
   
+  "expectedOutput": "Conventional Commits-formatted messages with type, scope, and description following the spec.",
+  "expectedOutputZh": "符合 Conventional Commits 规范的提交信息，包含类型、范围和描述。",
   "category": [
     "efficiency"
   ],

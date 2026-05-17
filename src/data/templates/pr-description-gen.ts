@@ -66,6 +66,8 @@ export const prDescriptionGen: LibraryTemplate = {
     "type": "markdown"
   },
   
+  "expectedOutput": "A structured PR description with summary, changes, testing notes, and screenshots checklist.",
+  "expectedOutputZh": "一份结构化PR描述，包含摘要、变更说明、测试说明和截图清单。",
   "category": [
     "efficiency"
   ],

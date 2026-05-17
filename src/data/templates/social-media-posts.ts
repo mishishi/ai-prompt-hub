@@ -70,6 +70,8 @@ export const socialMediaPosts: LibraryTemplate = {
   "output_schema": {
     "type": "markdown"
   },
+  "expectedOutput": "A set of platform-optimized social media posts with hooks, body, hashtags, and media suggestions.",
+  "expectedOutputZh": "一组适配各平台的社交媒体帖子，含钩子、正文、标签和媒体建议。",
   "category": [
     "writing"
   ],

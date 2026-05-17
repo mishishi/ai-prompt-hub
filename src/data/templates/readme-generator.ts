@@ -65,6 +65,8 @@ export const readmeGenerator: LibraryTemplate = {
     "type": "markdown"
   },
   
+  "expectedOutput": "A project README with badges, installation, usage, API reference, and contributing guide.",
+  "expectedOutputZh": "一个项目README文档，含徽章、安装说明、使用指南、API参考和贡献指南。",
   "category": [
     "documentation"
   ],

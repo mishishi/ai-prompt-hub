@@ -63,6 +63,10 @@ export const onboardingAgent: LibraryTemplate = {
     "type": "markdown"
   },
   
+  "expectedOutput": "A new project setup with tooling config, CI pipeline, documentation, and starter code.",
+  "expectedOutputZh": "一个新项目脚手架，包含工具配置、CI流水线、文档和启动代码。",
+  "expectedDeliverables": ["Project scaffolding with configs","CI/CD pipeline definition","README and contributing guide","Environment setup script"],
+  "expectedDeliverablesZh": ["项目脚手架与配置文件","CI/CD流水线定义","README和贡献指南","环境配置脚本"],
   "category": [
     "agentic"
   ],

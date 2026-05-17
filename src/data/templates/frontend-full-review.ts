@@ -67,6 +67,8 @@ export const frontendFullReview: LibraryTemplate = {
     "type": "markdown"
   },
   
+  "expectedOutput": "A comprehensive frontend review covering UX, accessibility, performance, code quality, and maintainability with prioritized recommendations.",
+  "expectedOutputZh": "一份全面前端审查报告，覆盖UX、无障碍、性能、代码质量和可维护性，含优先级建议。",
   "category": [
     "frontend"
   ],

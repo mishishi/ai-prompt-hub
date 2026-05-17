@@ -74,6 +74,8 @@ export const dbSchemaDesign: LibraryTemplate = {
     "type": "code"
   },
   
+  "expectedOutput": "A normalized database schema with table definitions, relationships, indexes, and migration strategy.",
+  "expectedOutputZh": "一个规范化数据库Schema，包含表定义、关系、索引和迁移策略。",
   "category": [
     "architecture"
   ],

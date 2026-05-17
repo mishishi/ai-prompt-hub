@@ -66,6 +66,10 @@ export const designSystemBuilder: LibraryTemplate = {
     "type": "code"
   },
   
+  "expectedOutput": "A design system with color tokens, typography scale, spacing, component specs, and usage guidelines.",
+  "expectedOutputZh": "一个设计系统，包含颜色令牌、字阶、间距、组件规范和用法指南。",
+  "expectedDeliverables": ["Design token definitions (CSS vars / JSON)","Component specifications","Typography & spacing scale","Usage documentation"],
+  "expectedDeliverablesZh": ["设计令牌定义（CSS变量/JSON）","组件规范","字体与间距比例","使用文档"],
   "category": [
     "frontend"
   ],

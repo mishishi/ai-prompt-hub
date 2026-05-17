@@ -27,6 +27,8 @@ export const techTutorialWriter: LibraryTemplate = {
   "user": "## Task\nWrite a {{level}} tutorial about {{topic}}.\n\nStructure: 1) Prerequisites 2) Steps 3) Code 4) Common issues 5) Summary",
   "userZh": "## 目标\n写一篇 {{level}} 难度的 {{topic}} 教程。\n\n结构：1) 前置条件 2) 步骤 3) 代码 4) 常见问题 5) 总结",
   "output_schema": { "type": "markdown" },
+  "expectedOutput": "A step-by-step tutorial with prerequisites, code examples, explanations, common pitfalls, and a final working result.",
+  "expectedOutputZh": "一份分步教程，包含前置条件、代码示例、解释、常见陷阱和最终可运行结果。",
   "category": ["writing"],
   "difficulty": "Intermediate",
   "mode": "single-turn",

@@ -64,6 +64,8 @@ export const apiDocGenerator: LibraryTemplate = {
     "type": "markdown"
   },
   
+  "expectedOutput": "Comprehensive API documentation with endpoint descriptions, request/response examples, auth details, and error codes.",
+  "expectedOutputZh": "一份完整API文档，包含端点说明、请求/响应示例、认证细节和错误码。",
   "category": [
     "documentation"
   ],

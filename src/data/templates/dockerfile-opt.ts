@@ -66,6 +66,8 @@ export const dockerfileOpt: LibraryTemplate = {
     "type": "code"
   },
   
+  "expectedDeliverables": ["Optimized Dockerfile with layer caching","Size comparison (before/after)","Security scan results","Build time benchmark"],
+  "expectedDeliverablesZh": ["优化后的 Dockerfile（含层缓存）","大小对比（优化前后）","安全扫描结果","构建时间基准测试"],
   "category": [
     "devops"
   ],

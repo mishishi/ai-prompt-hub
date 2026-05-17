@@ -88,6 +88,8 @@ export const regexGenerator: LibraryTemplate = {
     "type": "code"
   },
   
+  "expectedOutput": "A regular expression with test cases, explanation of each component, and usage examples.",
+  "expectedOutputZh": "一个正则表达式，附带测试用例、各组件解释和使用示例。",
   "category": [
     "efficiency"
   ],

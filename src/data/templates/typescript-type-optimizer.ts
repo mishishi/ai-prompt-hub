@@ -64,6 +64,8 @@ export const typescriptTypeOptimizer: LibraryTemplate = {
     "type": "code"
   },
   
+  "expectedOutput": "Optimized TypeScript types with improved type safety, reduced complexity, and migration notes.",
+  "expectedOutputZh": "优化后的TypeScript类型定义，提升类型安全性、降低复杂度，附迁移说明。",
   "category": [
     "language"
   ],

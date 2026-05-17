@@ -92,6 +92,8 @@ export const dataCleaningScript: LibraryTemplate = {
   "output_schema": {
     "type": "markdown"
   },
+  "expectedOutput": "A Python/JavaScript data cleaning script with validation, transformation, and error handling.",
+  "expectedOutputZh": "一个数据清洗脚本，包含验证、转换和错误处理。",
   "category": [
     "data"
   ],

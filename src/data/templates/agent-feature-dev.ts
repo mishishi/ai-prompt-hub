@@ -75,6 +75,10 @@ export const agentFeatureDev: LibraryTemplate = {
   "output_schema": {
     "type": "markdown"
   },
+  "expectedOutput": "A complete feature implementation with source code, tests, configuration, and documentation.",
+  "expectedOutputZh": "一个完整功能实现，包含源码、测试、配置和文档。",
+  "expectedDeliverables": ["Feature source files","Unit & integration tests","Configuration changes","README with usage docs"],
+  "expectedDeliverablesZh": ["功能源码文件","单元测试和集成测试","配置变更","README 使用文档"],
   "category": [
     "agentic"
   ],

@@ -79,6 +79,8 @@ export const releaseNotesWriter: LibraryTemplate = {
   "output_schema": {
     "type": "markdown"
   },
+  "expectedOutput": "Release notes with version, highlights, breaking changes, new features, and upgrade guide.",
+  "expectedOutputZh": "一份发布说明，包含版本号、亮点、破坏性变更、新功能和升级指南。",
   "category": [
     "writing"
   ],

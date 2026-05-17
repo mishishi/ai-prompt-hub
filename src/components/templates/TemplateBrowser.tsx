@@ -6,6 +6,8 @@ import type { LibraryTemplate } from '../../types';
 import { getFavorites } from '../../utils/storage';
 import { TemplateCard } from './TemplateCard';
 import { useT } from '../../i18n/LanguageContext';
+import { getEvents } from '../../utils/analytics';
+import { aggregateEvents, calcScore } from '../../utils/scoring';
 
 export function TemplateBrowser() {
   const navigate = useNavigate();
@@ -20,6 +22,7 @@ export function TemplateBrowser() {
   const [showCommunity, setShowCommunity] = useState(false);
   const [communityTpls, setCommunityTpls] = useState<LibraryTemplate[]>([]);
   const [communityLoading, setCommunityLoading] = useState(false);
+  const [sortBy, setSortBy] = useState<'default' | 'score'>('default');
   const favorites = useMemo(() => getFavorites(), []);
 
   useEffect(() => {
@@ -70,6 +73,26 @@ export function TemplateBrowser() {
     return () => window.removeEventListener('keydown', handler);
   }, []);
 
+  const events = useMemo(() => getEvents(), []);
+
+  const templateScores = useMemo(() => {
+    const scores: Record<string, number> = {};
+    for (const tmpl of templates) {
+      const agg = aggregateEvents(events, tmpl.id);
+      scores[tmpl.id] = calcScore(agg);
+    }
+    return scores;
+  }, [events]);
+
+  const copyCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const tmpl of templates) {
+      const agg = aggregateEvents(events, tmpl.id);
+      counts[tmpl.id] = agg.copies;
+    }
+    return counts;
+  }, [events]);
+
   const filtered = useMemo(() => {
     if (showCommunity) return communityTpls as any;
     let results = templates;
@@ -78,7 +101,7 @@ export function TemplateBrowser() {
     if (showFavorites) results = results.filter(t => favorites.includes(t.id));
     if (difficulty) results = results.filter(t => t.difficulty === difficulty);
     return results;
-  }, [search, activeCategory, showFavorites, favorites, difficulty, showCommunity, communityTpls]);
+  }, [search, activeCategory, showFavorites, favorites, difficulty, showCommunity, communityTpls, sortBy, templateScores]);
 
 
   return (
@@ -104,6 +127,7 @@ export function TemplateBrowser() {
           <button key={cat.id} onClick={() => setActiveCategory(cat.id)} className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${activeCategory === cat.id ? 'bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)] shadow-[0_0_12px_var(--color-bench-accent-glow)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}>{t('category.' + cat.id)}</button>
         ))}
       
+        <button onClick={() => setSortBy(sortBy === 'score' ? 'default' : 'score')} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${sortBy === 'score' ? 'bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}>{tq('Top Rated', '最高评分')}</button>
         {!showCommunity && <span className="text-[var(--color-bench-border)] mx-1">|</span>}
         {!showCommunity && ['Beginner','Intermediate','Advanced'].map(d => (
           <button key={d} onClick={() => setDifficulty(difficulty === d ? null : d)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${difficulty === d ? 'bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}>{t('difficulty.' + d)}</button>
@@ -132,7 +156,7 @@ export function TemplateBrowser() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map((tmpl: any, i: number) => (<div key={tmpl.id} className={`card-enter stagger-${(i % 4) + 1}`}><TemplateCard template={tmpl} onClick={() => navigate('/template/' + tmpl.id)} /></div>))}
+          {filtered.map((tmpl: any, i: number) => (<div key={tmpl.id} className={`card-enter stagger-${(i % 4) + 1}`}><TemplateCard template={tmpl} score={templateScores[tmpl.id]} copyCount={copyCounts[tmpl.id]} onClick={() => navigate('/template/' + tmpl.id)} /></div>))}
         </div>
       )}
     </div>

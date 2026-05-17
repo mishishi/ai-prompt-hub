@@ -69,6 +69,8 @@ export const changelogGenerator: LibraryTemplate = {
   "output_schema": {
     "type": "markdown"
   },
+  "expectedOutput": "A well-formatted changelog following Keep a Changelog conventions, with Added/Changed/Fixed/Removed sections.",
+  "expectedOutputZh": "一份遵循 Keep a Changelog 规范的变更日志，按新增/变更/修复/移除分类。",
   "category": [
     "writing"
   ],

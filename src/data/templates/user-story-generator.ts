@@ -80,6 +80,8 @@ export const userStoryGenerator: LibraryTemplate = {
   "output_schema": {
     "type": "markdown"
   },
+  "expectedOutput": "Well-formed user stories following the \"As a... I want... So that...\" format with acceptance criteria.",
+  "expectedOutputZh": "符合\"As a... I want... So that...\"格式的完整用户故事，附带验收标准。",
   "category": [
     "product"
   ],

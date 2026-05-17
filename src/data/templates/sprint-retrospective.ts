@@ -89,6 +89,8 @@ export const sprintRetrospective: LibraryTemplate = {
   "output_schema": {
     "type": "markdown"
   },
+  "expectedOutput": "A sprint retrospective document with what went well, what to improve, action items, and team health metrics.",
+  "expectedOutputZh": "一份Sprint回顾文档，包含做得好、需改进、行动项和团队健康指标。",
   "category": [
     "product"
   ],

@@ -68,6 +68,10 @@ export const githubActionsGen: LibraryTemplate = {
     "type": "code"
   },
   
+  "expectedOutput": "A GitHub Actions workflow YAML file with build, test, and deploy jobs.",
+  "expectedOutputZh": "一个GitHub Actions工作流YAML文件，包含构建、测试和部署任务。",
+  "expectedDeliverables": ["Workflow YAML file","Environment variable configuration","Secret references documentation","Trigger configuration (push/PR/schedule)"],
+  "expectedDeliverablesZh": ["工作流YAML文件","环境变量配置","Secret引用文档","触发条件配置"],
   "category": [
     "devops"
   ],

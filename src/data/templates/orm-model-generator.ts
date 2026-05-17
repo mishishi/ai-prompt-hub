@@ -66,6 +66,10 @@ export const ormModelGenerator: LibraryTemplate = {
     "type": "code"
   },
   
+  "expectedOutput": "Database ORM model definitions with relationships, validations, migrations, and seed data.",
+  "expectedOutputZh": "数据库ORM模型定义，包含关系、验证、迁移和种子数据。",
+  "expectedDeliverables": ["Model definition files","Migration files","Seed data scripts","Relationship diagram (described)"],
+  "expectedDeliverablesZh": ["模型定义文件","迁移文件","种子数据脚本","关系图（文字描述）"],
   "category": [
     "data"
   ],

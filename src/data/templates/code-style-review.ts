@@ -84,6 +84,8 @@ export const codeStyleReview: LibraryTemplate = {
   "output_schema": {
     "type": "markdown"
   },
+  "expectedOutput": "A code style report with violations per rule, severity levels, fix suggestions, and a summary score.",
+  "expectedOutputZh": "一份代码风格审查报告，按规则列出违规项、严重程度、修复建议和总评分。",
   "category": [
     "code-review"
   ],

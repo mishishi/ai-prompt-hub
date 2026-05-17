@@ -64,6 +64,10 @@ export const apiIntegrationTest: LibraryTemplate = {
     "type": "code"
   },
   
+  "expectedOutput": "A test suite covering API endpoints with happy path, error cases, auth, and edge conditions.",
+  "expectedOutputZh": "一个API测试套件，覆盖正常路径、错误场景、认证和边界条件。",
+  "expectedDeliverables": ["Test file with describe/it blocks","Mock fixtures and factories","Test configuration"],
+  "expectedDeliverablesZh": ["含 describe/it 块的测试文件","Mock 数据和工厂函数","测试配置"],
   "category": [
     "testing"
   ],

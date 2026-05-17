@@ -86,6 +86,8 @@ export const securityCodeReview: LibraryTemplate = {
   "output_schema": {
     "type": "markdown"
   },
+  "expectedOutput": "A markdown security audit table with severity ratings, CWE identifiers, file locations, impact analysis, and concrete fix suggestions.",
+  "expectedOutputZh": "一份 Markdown 安全审计表格，包含严重程度、CWE 编号、文件位置、影响分析及具体修复方案。",
   "category": [
     "code-review"
   ],

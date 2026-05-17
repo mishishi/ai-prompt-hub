@@ -64,6 +64,8 @@ export const uxReview: LibraryTemplate = {
     "type": "markdown"
   },
   
+  "expectedOutput": "A UX audit report covering heuristic violations, severity ratings, screenshots references, and prioritized fixes.",
+  "expectedOutputZh": "一份UX审计报告，涵盖启发式违规、严重程度评级、截图引用和优先级修复方案。",
   "category": [
     "frontend"
   ],

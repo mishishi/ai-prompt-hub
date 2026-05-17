@@ -65,6 +65,8 @@ export const prReviewAgent: LibraryTemplate = {
   "output_schema": {
     "type": "markdown"
   },
+  "expectedOutput": "A structured code review report with severity tags, file-level comments, and actionable suggestions.",
+  "expectedOutputZh": "一份结构化代码审查报告，包含严重程度标签、文件级评论和可操作的建议。",
   "category": [
     "agentic"
   ],

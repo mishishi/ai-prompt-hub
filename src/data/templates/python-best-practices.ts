@@ -66,6 +66,8 @@ export const pythonBestPractices: LibraryTemplate = {
     "type": "markdown"
   },
   
+  "expectedOutput": "A code review checklist organized by Python best practices categories with specific, actionable recommendations.",
+  "expectedOutputZh": "一份按Python最佳实践分类的代码审查清单，包含具体可操作的建议。",
   "category": [
     "language"
   ],

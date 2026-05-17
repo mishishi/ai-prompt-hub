@@ -88,6 +88,8 @@ export const performanceReview: LibraryTemplate = {
   "output_schema": {
     "type": "markdown"
   },
+  "expectedOutput": "A performance audit report with metrics, bottlenecks, flamegraph descriptions, and optimization roadmap.",
+  "expectedOutputZh": "一份性能审计报告，包含指标、瓶颈分析、火焰图描述和优化路线图。",
   "category": [
     "code-review"
   ],

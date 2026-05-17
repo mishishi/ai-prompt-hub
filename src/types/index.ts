@@ -68,6 +68,10 @@ export interface LibraryTemplate {
   output_schema?: PromptOutputSchema;
   category: string[];
   difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
+  expectedOutput?: string;
+  expectedOutputZh?: string;
+  expectedDeliverables?: string[];
+  expectedDeliverablesZh?: string[];
   mode?: 'single-turn' | 'multi-turn' | 'multi-agent';
   usage_tips?: string;
   usage_tipsZh?: string;

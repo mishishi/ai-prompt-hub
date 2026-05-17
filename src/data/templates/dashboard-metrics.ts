@@ -84,6 +84,8 @@ export const dashboardMetrics: LibraryTemplate = {
   "output_schema": {
     "type": "markdown"
   },
+  "expectedOutput": "A dashboard metrics strategy document with KPIs, data sources, visualization recommendations, and alert thresholds.",
+  "expectedOutputZh": "一份仪表盘指标策略文档，包含KPI定义、数据源、可视化建议和告警阈值。",
   "category": [
     "data"
   ],

@@ -65,6 +65,10 @@ export const frontendScreenshotToPage: LibraryTemplate = {
     "type": "code"
   },
   
+  "expectedOutput": "A pixel-accurate HTML/CSS page reproduced from a screenshot with responsive layout.",
+  "expectedOutputZh": "从截图中像素级还原的HTML/CSS页面，支持响应式布局。",
+  "expectedDeliverables": ["HTML page file","CSS stylesheet","Asset references (icons, images)","Responsive breakpoint handling"],
+  "expectedDeliverablesZh": ["HTML页面文件","CSS样式表","资源引用（图标、图片）","响应式断点处理"],
   "category": [
     "frontend"
   ],

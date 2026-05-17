@@ -7,16 +7,43 @@
 
 ## File Editing Rules (CRITICAL)
 
-**Never use PowerShell string manipulation on JSX/TSX files.** It breaks template
-literals, Chinese characters, and regex patterns.
+**Never use `node -e "..."` for editing files.** PowerShell mangles quotes, `﻿# AGENTS.md — PromptBench
 
-Correct approach:
-1. Write a `.cjs` script to disk using `[System.IO.File]::WriteAllText` with UTF8
+## Tech Stack
+- Vite + React 19 + TypeScript + Tailwind CSS
+- No backend — all data in localStorage
+- Deployed on Vercel (`ai-propmpt-hub.vercel.app`)
+
+,
+`--`, backticks before Node sees them. This is the #1 cause of corrupted files.
+
+Correct approach (no exceptions):
+1. Write a `.cjs` script to disk using `[System.IO.File]::WriteAllText`
 2. Execute with `node script.cjs`
-3. Delete the script after
+3. Delete with `rm script.cjs`
 
-For files containing Chinese characters, use PowerShell `Set-Content -Encoding UTF8`
-to write the entire file at once (here-string → Set-Content), not incremental edits.
+**Anti-patterns — NEVER do these:**
+- `node -e "fs.writeFileSync(...) "` — PowerShell eats `﻿# AGENTS.md — PromptBench
+
+## Tech Stack
+- Vite + React 19 + TypeScript + Tailwind CSS
+- No backend — all data in localStorage
+- Deployed on Vercel (`ai-propmpt-hub.vercel.app`)
+
+ and `"`
+- `node -e " ...replace('...','...')..." ` — quotes conflict
+- `(Get-Content file) -replace '...','...' | Set-Content` — breaks UTF8 JSX
+
+**For simple single-line replacements** (no JSX, no CSS vars, no Chinese):
+- `node -e "..." ` is acceptable ONLY if the code contains no: `﻿# AGENTS.md — PromptBench
+
+## Tech Stack
+- Vite + React 19 + TypeScript + Tailwind CSS
+- No backend — all data in localStorage
+- Deployed on Vercel (`ai-propmpt-hub.vercel.app`)
+
+, `"`, `'`, `--`, Chinese characters
+- When in doubt, use `.cjs`
 
 ## Font Scale
 

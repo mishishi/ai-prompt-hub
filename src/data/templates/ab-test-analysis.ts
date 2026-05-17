@@ -70,6 +70,8 @@ export const abTestAnalysis: LibraryTemplate = {
   "output_schema": {
     "type": "markdown"
   },
+  "expectedOutput": "A statistical A/B test report with significance analysis, confidence intervals, and actionable recommendations.",
+  "expectedOutputZh": "一份统计A/B测试报告，包含显著性分析、置信区间和可操作建议。",
   "category": [
     "data"
   ],

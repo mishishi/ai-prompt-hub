@@ -39,7 +39,8 @@ export function getRemainingQuota(): number {
 export async function aiGenerate(
   intent: string,
   lang: "en" | "zh-CN",
-  onChunk: (text: string) => void
+  onChunk: (text: string) => void,
+  refineContext?: { previousResult: string; feedback: string }
 ): Promise<string> {
   const systemPrompt = lang === "zh-CN"
     ? `你是一位 Prompt 工程专家，为 PromptBench（开发者结构化 Prompt 管理工具）生成专业 Prompt。
@@ -79,12 +80,15 @@ export async function aiGenerate(
 例如：「- 如果需求不明确，先追问而不是猜测
 - 如果输出将超过 500 行，先征求确认」
 
+如果提供了 refineContext，说明用户对上一次生成的 Prompt 不满意。请根据 feedback 修改上一版 Prompt，只修改不满意的部分，保留其余内容。
+
 规则：
 - 用中文回复
 - 直接输出完整 Prompt，不要加引言或解释
 - # 字段名保持英文
 - 字段之间用空行分隔
-- 根据用户任务类型智能调整各字段的详细程度`
+- 根据用户任务类型智能调整各字段的详细程度
+- 根据用户的 feedback 针对性调整，不要大改结构`
     : `You are a prompt engineering expert generating professional prompts for PromptBench, a structured prompt management tool for developers.
 
 The prompt MUST follow this structure. Every field must be specific and actionable:
@@ -122,14 +126,35 @@ Example: "Output in 3 sections: 1) Component code 2) Styles 3) Usage instruction
 Example: "- If requirements are unclear, ask before guessing
 - If output exceeds 500 lines, confirm with user first"
 
+If refineContext is provided, the user is not satisfied with the previous prompt. Revise it based on the feedback — only change what they asked, keep everything else.
+
 Rules:
 - Reply in English
 - Output the complete prompt directly, no preamble or explanation
 - Keep # field names in English
 - Separate fields with blank lines
-- Adjust field detail level based on the task type`;
+- Adjust field detail level based on the task type
+- Target only issues mentioned in the feedback, do not overhaul the entire prompt`;
 
-  const userMsg = lang === "zh-CN"
+  const userMsg = refineContext
+    ? (lang === "zh-CN"
+      ? `原始任务：${intent}
+
+上一版 Prompt：
+${refineContext.previousResult}
+
+用户修改意见：${refineContext.feedback}
+
+请根据以上意见重新生成改进后的 Prompt。`
+      : `Original task: ${intent}
+
+Previous prompt:
+${refineContext.previousResult}
+
+User feedback: ${refineContext.feedback}
+
+Please regenerate the improved prompt based on the feedback above.`)
+    : lang === "zh-CN"
     ? `请为以下任务生成一个结构化的 Prompt：${intent}`
     : `Generate a structured prompt for this task: ${intent}`;
 

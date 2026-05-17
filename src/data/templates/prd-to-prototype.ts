@@ -62,6 +62,10 @@ export const prdToPrototype: LibraryTemplate = {
     "type": "code"
   },
   
+  "expectedOutput": "A working prototype with core interactions, navigation flow, and placeholders for future features.",
+  "expectedOutputZh": "一个可交互原型，包含核心交互、导航流程和未来功能的占位符。",
+  "expectedDeliverables": ["Prototype source code","Component architecture map","Interaction flow documentation","Setup and run instructions"],
+  "expectedDeliverablesZh": ["原型源码","组件架构图","交互流程文档","安装运行说明"],
   "category": [
     "frontend"
   ],

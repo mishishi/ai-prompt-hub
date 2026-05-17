@@ -66,6 +66,10 @@ export const frontendRefactorAgent: LibraryTemplate = {
     "type": "code"
   },
   
+  "expectedOutput": "Refactored frontend code with improved structure, performance, accessibility, and test coverage.",
+  "expectedOutputZh": "重构后的前端代码，改进结构、性能、无障碍和测试覆盖率。",
+  "expectedDeliverables": ["Refactored component files","Updated tests","Refactoring summary report","Migration notes for breaking changes"],
+  "expectedDeliverablesZh": ["重构后的组件文件","更新后的测试","重构摘要报告","破坏性变更的迁移说明"],
   "category": [
     "agentic",
     "frontend"

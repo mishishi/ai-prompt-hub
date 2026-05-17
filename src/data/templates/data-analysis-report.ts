@@ -80,6 +80,8 @@ export const dataAnalysisReport: LibraryTemplate = {
   "output_schema": {
     "type": "markdown"
   },
+  "expectedOutput": "A data analysis report with methodology, key findings, visualizations (described), and conclusions.",
+  "expectedOutputZh": "一份数据分析报告，包含方法论、关键发现、可视化描述和结论。",
   "category": [
     "data"
   ],

@@ -86,6 +86,8 @@ export const productRoadmap: LibraryTemplate = {
   "output_schema": {
     "type": "markdown"
   },
+  "expectedOutput": "A product roadmap with timeline, milestones, dependencies, and success metrics.",
+  "expectedOutputZh": "一份产品路线图，包含时间线、里程碑、依赖关系和成功指标。",
   "category": [
     "product"
   ],

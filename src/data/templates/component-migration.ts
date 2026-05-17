@@ -85,6 +85,10 @@ export const componentMigration: LibraryTemplate = {
     "type": "code"
   },
   
+  "expectedOutput": "Migrated components with updated imports, refactored logic, and compatibility notes.",
+  "expectedOutputZh": "迁移后的组件，包含更新的导入、重构的逻辑和兼容性说明。",
+  "expectedDeliverables": ["Migrated component files","Migration guide document","Before/after comparison notes"],
+  "expectedDeliverablesZh": ["迁移后的组件文件","迁移指南文档","前后对比说明"],
   "category": [
     "frontend"
   ],

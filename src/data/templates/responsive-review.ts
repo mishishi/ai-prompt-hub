@@ -64,6 +64,8 @@ export const responsiveReview: LibraryTemplate = {
     "type": "markdown"
   },
   
+  "expectedOutput": "A responsive design report with breakpoint analysis, layout issues per device, CSS fixes, and before/after comparison points.",
+  "expectedOutputZh": "一份响应式设计审查报告，包含断点分析、各设备布局问题、CSS修复方案和前后对比要点。",
   "category": [
     "frontend"
   ],

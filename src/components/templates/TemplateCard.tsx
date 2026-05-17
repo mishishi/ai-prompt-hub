@@ -8,7 +8,7 @@ import { toggleFavorite, isFavorite } from '../../utils/storage';
 import { useToast } from '../ui/Toast';
 import { getPlatformLabel } from '../../utils/platform';
 
-export function TemplateCard({ template, onClick }: { template: LibraryTemplate; onClick: () => void }) {
+export function TemplateCard({ template, onClick, score = 0, copyCount = 0 }: { template: LibraryTemplate; onClick: () => void; score?: number; copyCount?: number }) {
   const { t, lang } = useT();
   const toast = useToast();
   const [copied, setCopied] = useState(false);
@@ -47,21 +47,25 @@ export function TemplateCard({ template, onClick }: { template: LibraryTemplate;
 
   return (
     <article onClick={onClick} className="glass-card group relative flex flex-col p-5 h-full overflow-hidden cursor-pointer">
-      {/* Hover glow */}
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none bg-gradient-to-br from-[var(--color-bench-accent)]/5 via-transparent to-[var(--color-bench-accent-secondary)]/5" />
 
-<div className="relative z-10 flex flex-col h-full">
-        {/* Header */}
+      <div className="relative z-10 flex flex-col h-full">
         <div className="flex items-center justify-between mb-4">
           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-sm font-semibold uppercase tracking-wider bg-[var(--color-bench-accent-secondary)]/10 text-[var(--color-bench-accent-secondary)]">
             {getPlatformLabel(platform, lang)}
           </span>
-          <span className={`text-sm font-semibold px-1.5 py-0.5 rounded ${diffColors[template.difficulty] || diffColors.Intermediate} bg-white/5`}>
-            {t('difficulty.' + template.difficulty)}
-          </span>
+          <div className="flex items-center gap-1.5">
+            {score > 0 && (
+              <span className={"text-sm font-semibold px-1.5 py-0.5 rounded bg-white/5 " + (score >= 60 ? 'text-[var(--color-bench-success)]' : score >= 30 ? 'text-[var(--color-bench-warn)]' : 'text-[var(--color-bench-muted)]')}>
+                {lang === 'zh-CN' ? score + '分' : score + 'pts'}
+              </span>
+            )}
+            <span className={"text-sm font-semibold px-1.5 py-0.5 rounded " + (diffColors[template.difficulty] || diffColors.Intermediate) + " bg-white/5"}>
+              {t('difficulty.' + template.difficulty)}
+            </span>
+          </div>
         </div>
 
-        {/* Content */}
         <h3 className="text-sm font-semibold text-[var(--color-bench-text)] mb-2 leading-snug font-[var(--font-display)]">
           {tName(template, lang)}
         </h3>
@@ -69,25 +73,25 @@ export function TemplateCard({ template, onClick }: { template: LibraryTemplate;
           {tShort(template, lang)}
         </p>
 
-        <span className={`text-sm font-semibold px-1.5 py-0.5 rounded bg-[var(--color-bench-accent-secondary)]/10 text-[var(--color-bench-accent-secondary)]`}>{template.mode && t('mode.' + template.mode)}</span>
+        <span className={"text-sm font-semibold px-1.5 py-0.5 rounded bg-[var(--color-bench-accent-secondary)]/10 text-[var(--color-bench-accent-secondary)]"}>{template.mode && t('mode.' + template.mode)}</span>
         
         <div className="flex items-center justify-between pt-4 mt-4 border-t border-[var(--color-bench-border)] group-hover:border-[var(--color-bench-accent)]/30 transition-colors">
           <span className="text-sm font-medium text-[var(--color-bench-muted)] uppercase tracking-wider">
             {t('category.' + template.category[0])}
           </span>
           <div className="flex items-center gap-3">
-            <button onClick={handleFavorite} className={`flex items-center gap-1 text-sm font-medium transition-colors ${fav ? 'text-[var(--color-bench-warn)]' : 'text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-warn)]'}`}>
+            <button onClick={handleFavorite} className={"flex items-center gap-1 text-sm font-medium transition-colors " + (fav ? 'text-[var(--color-bench-warn)]' : 'text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-warn)]')}>
               <Star size={11} fill={fav ? 'currentColor' : 'none'} />
               {t(fav ? 'card.favorited' : 'card.favorite')}
             </button>
-            <button onClick={handleCopy} className={`flex items-center gap-1 text-sm font-medium transition-colors ${copied ? 'text-[var(--color-bench-success)]' : 'text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)]'}`}>
-            {copied ? <Check size={11} /> : <Copy size={11} />}
-            {copied ? t('card.copied') : t('card.copy')}
-          </button>
+            <button onClick={handleCopy} className={"flex items-center gap-1 text-sm font-medium transition-colors " + (copied ? 'text-[var(--color-bench-success)]' : 'text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)]')}>
+              {copied ? <Check size={11} /> : <Copy size={11} />}
+              {copied ? t('card.copied') : t('card.copy')}
+            </button>
+            {copyCount > 0 && <span className="text-xs text-[var(--color-bench-muted)]/50">{copyCount}</span>}
           </div>
         </div>
       </div>
-
     </article>
   );
 }

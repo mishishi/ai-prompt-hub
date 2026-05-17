@@ -84,6 +84,8 @@ export const sqlAnalysisQuery: LibraryTemplate = {
   "output_schema": {
     "type": "markdown"
   },
+  "expectedOutput": "An optimized SQL query with comments, index recommendations, and expected output schema.",
+  "expectedOutputZh": "一个优化后的SQL查询，包含注释、索引建议和预期输出结构。",
   "category": [
     "data"
   ],

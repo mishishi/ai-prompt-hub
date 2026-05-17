@@ -64,6 +64,8 @@ export const sqlQueryOptimizer: LibraryTemplate = {
     "type": "code"
   },
   
+  "expectedOutput": "An optimized SQL query with before/after comparison, execution plan explanation, and performance gain estimate.",
+  "expectedOutputZh": "一个优化后的SQL查询，包含前后对比、执行计划说明和性能提升预估。",
   "category": [
     "data"
   ],

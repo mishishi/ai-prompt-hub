@@ -70,6 +70,8 @@ export const competitorAnalysis: LibraryTemplate = {
   "output_schema": {
     "type": "markdown"
   },
+  "expectedOutput": "A competitive analysis report with strengths, weaknesses, feature matrix, and strategic recommendations.",
+  "expectedOutputZh": "一份竞品分析报告，包含优劣势对比、功能矩阵和战略建议。",
   "category": [
     "product"
   ],
