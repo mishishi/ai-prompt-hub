@@ -40,5 +40,17 @@ export function parseSections(text: string): { title: string; content: string; c
     }
     sections.push({ title: currentTitle || 'Prompt', content: currentContent.join('\n').trim(), color });
   }
+  
+  if (sections.length === 0) {
+    const bl = text.split(/\n\n+/);
+    for (const b of bl) {
+      const t = b.trim();
+      if (!t) continue;
+      const fl = t.split(/\r?\n/)[0];
+      const hd = fl.length < 60 && fl.indexOf(".") < 0;
+      sections.push({ title: hd ? fl : "Prompt", content: hd ? t.substring(fl.length).trim() || fl : t, color: "#6b7280" });
+    }
+  }
+
   return sections;
 }
