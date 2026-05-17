@@ -180,7 +180,6 @@ export function TemplateBrowser() {
         <span className="px-1.5 py-0.5 rounded bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)]">Beta</span>
       </div>
       )}
-</div>
 
       {communityLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">{[1,2,3,4,5,6].map(i => <div key={i} className="h-40 rounded-xl bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] animate-pulse" />)}</div>
