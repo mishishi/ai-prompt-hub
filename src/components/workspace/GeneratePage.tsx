@@ -166,7 +166,7 @@ export function GeneratePage() {
   }, [evaluating, evaluation]);
 
   useEffect(() => {
-    if (evaluationOpen && !evaluation) {
+    if (evaluationOpen && !progressDone) {
       const t = setTimeout(() => setProgressDone(true), 2800);
       return () => clearTimeout(t);
     }
@@ -372,9 +372,6 @@ const handleSave = () => {
               </div>
             </div>
             {/* AI Self-Evaluation */}
-            {evaluating && !evaluation && (
-              <>{!evaluationOpen && setEvaluationOpen(true)}</>
-            )}
             {evaluation && (() => {
               const ev = parseEval(evaluation);
               const score = ev.score;
