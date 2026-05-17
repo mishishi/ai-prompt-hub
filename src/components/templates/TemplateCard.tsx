@@ -4,6 +4,7 @@ import type { LibraryTemplate } from '../../types';
 import { useT } from '../../i18n/LanguageContext';
 import { tName, tShort } from '../../data/templates/helper';
 import { copyToClipboard } from '../../utils/clipboard';
+import { track } from '../../utils/analytics';
 import { toggleFavorite, isFavorite } from '../../utils/storage';
 import { useToast } from '../ui/Toast';
 import { getPlatformLabel } from '../../utils/platform';
@@ -29,6 +30,7 @@ export function TemplateCard({ template, onClick, score = 0, copyCount = 0 }: { 
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
     toast.show(t('card.copied'));
+    track({ type: 'template_copy', templateId: template.id, lang });
   };
 
   const handleFavorite = (e: React.MouseEvent) => {
