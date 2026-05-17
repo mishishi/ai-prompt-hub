@@ -19,7 +19,7 @@ export function TemplateBrowser() {
   const [activeCategory, setActiveCategory] = useState<string | null>(searchParams.get('category') || null);
   const [showFavorites, setShowFavorites] = useState(false);
   const [difficulty, setDifficulty] = useState<string | null>(null);
-  const [showCommunity, setShowCommunity] = useState(false);
+  const [activeTab, setActiveTab] = useState<'library' | 'community'>('library');
   const [communityTpls, setCommunityTpls] = useState<LibraryTemplate[]>([]);
   const [communityLoading, setCommunityLoading] = useState(false);
   const [sortBy, setSortBy] = useState<'default' | 'score'>('default');
@@ -35,7 +35,7 @@ export function TemplateBrowser() {
   const searchRef = useRef<HTMLInputElement>(null);
 
   const fetchCommunity = () => {
-    if (communityTpls.length > 0 && showCommunity) return;
+    if (communityTpls.length > 0 && activeTab === "community") return;
     setCommunityLoading(true);
     fetch('/api/community?sort=popular&limit=30')
       .then(r => r.json())
@@ -95,7 +95,7 @@ export function TemplateBrowser() {
   }, [events, copyTicker]);
 
   const filtered = useMemo(() => {
-    if (showCommunity) return communityTpls as any;
+    if (activeTab === "community") return communityTpls as any;
     let results = templates;
     if (search.trim()) results = searchTemplates(search);
     else if (activeCategory) results = getTemplatesByCategory(activeCategory);
@@ -125,7 +125,7 @@ export function TemplateBrowser() {
     }
 
     return results;
-  }, [search, activeCategory, showFavorites, favorites, difficulty, showCommunity, communityTpls, sortBy, templateScores]);
+  }, [search, activeCategory, showFavorites, favorites, difficulty, activeTab, communityTpls, sortBy, templateScores]);
 
 
   return (
@@ -143,19 +143,43 @@ export function TemplateBrowser() {
         <input ref={searchRef} type="text" placeholder={`${t('browser.search')} (${t('browser.searchHint')})`} value={searchInput} onChange={(e) => setSearchInput(e.target.value)} className="w-full pl-10 pr-16 py-3 bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-lg text-sm text-[var(--color-bench-text)] placeholder:text-[var(--color-bench-muted)] focus:outline-none focus:border-[var(--color-bench-accent)] transition-colors" /><kbd className="absolute right-3 top-1/2 -translate-y-1/2 px-2 py-0.5 rounded text-xs font-medium bg-white/5 border border-white/10 text-[var(--color-bench-muted)]">{t("browser.shortcut")}</kbd>
       </div>
 
-      <div className="flex gap-2 mb-8 overflow-x-auto pb-1 flex-nowrap md:flex-wrap">
-        <button onClick={() => setActiveCategory(null)} className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${!activeCategory ? 'bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)] shadow-[0_0_12px_var(--color-bench-accent-glow)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}>{t('browser.all')} ({showCommunity ? communityTpls.length : templates.length})</button>
+      {/* Tab bar */}
+      <div className="flex items-center gap-1 mb-4 w-full">
+        <button onClick={() => { setActiveTab('library'); setShowFavorites(false); }} className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${activeTab === 'library' ? 'bg-[var(--color-bench-accent)]/12 text-[var(--color-bench-accent)] shadow-[0_0_16px_var(--color-bench-accent-glow)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}>
+          <Library size={15} />
+          {tq('Library', '\u6A21\u677F\u5E93')}
+        </button>
+        <button onClick={() => { setActiveTab('community'); fetchCommunity(); setShowFavorites(false); setActiveCategory(null); }} className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${activeTab === 'community' ? 'bg-[var(--color-bench-accent)]/12 text-[var(--color-bench-accent)] shadow-[0_0_16px_var(--color-bench-accent-glow)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}>
+          <Users size={15} />
+          {tq('Community', '\u793E\u533A')}
+          <span className="ml-1 px-1.5 py-0.5 rounded-full text-xs bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)]">{communityTpls.length || '...'}</span>
+        </button>
+      </div>
+
+      {/* Library filters */}
+      {activeTab === 'library' && (
+      <div className="flex items-center gap-1.5 flex-wrap">
+        <button onClick={() => setActiveCategory(null)} className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${!activeCategory ? 'bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)] shadow-[0_0_12px_var(--color-bench-accent-glow)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}>{t('browser.all')} ({templates.length})</button>
         <button onClick={() => { setShowFavorites(!showFavorites); if (!showFavorites) setActiveCategory(null); }} className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-1.5 ${showFavorites ? 'bg-[var(--color-bench-warn)]/15 text-[var(--color-bench-warn)] shadow-[0_0_12px_var(--color-bench-warn)]/20' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}><Star size={12} fill={showFavorites ? 'currentColor' : 'none'} />{t('browser.favorites')} ({favorites.length})</button>
-        <button onClick={() => { setShowCommunity(!showCommunity); if (!showCommunity) fetchCommunity(); setShowFavorites(false); setActiveCategory(null); }} className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-1.5 ${showCommunity ? 'bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)] shadow-[0_0_12px_var(--color-bench-accent-glow)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}><Globe size={12} />{tq('Community', '社区')}</button>
-        {!showCommunity && categories.map((cat) => (
+        {categories.map((cat) => (
           <button key={cat.id} onClick={() => setActiveCategory(cat.id)} className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${activeCategory === cat.id ? 'bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)] shadow-[0_0_12px_var(--color-bench-accent-glow)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}>{t('category.' + cat.id)}</button>
         ))}
-      
-        <button onClick={() => setSortBy(sortBy === 'score' ? 'default' : 'score')} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${sortBy === 'score' ? 'bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}>{tq('Top Rated', '最高评分')}</button>
-        {!showCommunity && <span className="text-[var(--color-bench-border)] mx-1">|</span>}
-        {!showCommunity && ['Beginner','Intermediate','Advanced'].map(d => (
+        <span className="text-[var(--color-bench-border)] mx-1">|</span>
+        <button onClick={() => setSortBy(sortBy === 'score' ? 'default' : 'score')} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${sortBy === 'score' ? 'bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}>{tq('Top Rated', '\u6700\u9AD8\u8BC4\u5206')}</button>
+        {['Beginner','Intermediate','Advanced'].map(d => (
           <button key={d} onClick={() => setDifficulty(difficulty === d ? null : d)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${difficulty === d ? 'bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}>{t('difficulty.' + d)}</button>
         ))}
+      </div>
+      )}
+
+      {/* Community info */}
+      {activeTab === 'community' && (
+      <div className="flex items-center gap-2 text-xs text-[var(--color-bench-muted)]">
+        <Globe size={12} />
+        {tq('Community templates shared by users', '\u7528\u6237\u5171\u4EAB\u7684\u793E\u533A\u6A21\u677F')}
+        <span className="px-1.5 py-0.5 rounded bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)]">Beta</span>
+      </div>
+      )}
 </div>
 
       {communityLoading ? (
