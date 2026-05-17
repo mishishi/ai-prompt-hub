@@ -78,6 +78,7 @@ export const reactComponentGen: LibraryTemplate = {
   "expectedOutputZh": "一个生产就绪的React组件，包含TypeScript类型、测试、Story和可访问性支持。",
   "expectedDeliverables": ["Component file with Props interface","Unit test file","Storybook story (optional)","CSS module / Tailwind styles"],
   "expectedDeliverablesZh": ["组件文件（含Props接口）","单元测试文件","Storybook示例（可选）","CSS Module/Tailwind样式"],
+  "verified": true,
   "category": [
     "frontend"
   ],

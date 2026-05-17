@@ -79,6 +79,7 @@ export const fullstackFrontendAgent: LibraryTemplate = {
   "expectedOutputZh": "一个完整的前端应用，包含组件树、路由、状态管理和 API 对接。",
   "expectedDeliverables": ["Project structure with config files","Component tree (pages + shared components)","Route definitions with lazy loading","State management setup","API integration layer with error handling","Unit + integration tests","README with setup instructions"],
   "expectedDeliverablesZh": ["项目目录结构与配置文件","组件树（页面 + 共享组件）","路由定义（含懒加载）","状态管理配置","API 对接层（含错误处理）","单元测试 + 集成测试","README 启动说明"],
+  "verified": true,
   "category": [
     "agentic",
     "frontend"

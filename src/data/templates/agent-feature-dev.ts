@@ -79,6 +79,7 @@ export const agentFeatureDev: LibraryTemplate = {
   "expectedOutputZh": "一个完整功能实现，包含源码、测试、配置和文档。",
   "expectedDeliverables": ["Feature source files","Unit & integration tests","Configuration changes","README with usage docs"],
   "expectedDeliverablesZh": ["功能源码文件","单元测试和集成测试","配置变更","README 使用文档"],
+  "verified": true,
   "category": [
     "agentic"
   ],

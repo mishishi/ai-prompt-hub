@@ -57,6 +57,7 @@ export const apiDesign: LibraryTemplate = {
   
   "expectedDeliverables": ["RESTful API endpoint definitions (method + path + description)","Request/response schemas","Authentication model","Error response format","Rate limiting strategy"],
   "expectedDeliverablesZh": ["RESTful API 端点定义（方法 + 路径 + 描述）","请求/响应模型","认证模型","错误响应格式","限流策略"],
+  "verified": true,
   "category": [
     "architecture"
   ],

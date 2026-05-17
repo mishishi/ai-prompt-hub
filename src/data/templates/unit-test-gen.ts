@@ -89,6 +89,7 @@ export const unitTestGen: LibraryTemplate = {
   
   "expectedOutput": "A test file with at least one test per function, covering happy path, edge cases, and error scenarios.",
   "expectedOutputZh": "一个测试文件，每个函数至少一个测试用例，覆盖正常路径、边界条件和错误场景。",
+  "verified": true,
   "category": [
     "testing"
   ],

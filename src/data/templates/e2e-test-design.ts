@@ -68,6 +68,7 @@ export const e2eTestDesign: LibraryTemplate = {
   "expectedOutputZh": "一个E2E测试方案，包含用户流程、测试场景、选择器和Playwright/Cypress脚本。",
   "expectedDeliverables": ["Test plan document","E2E test scripts","Test data / fixtures","CI integration config"],
   "expectedDeliverablesZh": ["测试方案文档","E2E测试脚本","测试数据/Fixtures","CI集成配置"],
+  "verified": true,
   "category": [
     "testing"
   ],
