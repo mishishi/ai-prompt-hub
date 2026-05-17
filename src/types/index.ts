@@ -51,6 +51,7 @@ export interface Prompt {
   userZh?: string;
   output_schema?: PromptOutputSchema;
   source: 'library' | 'forked' | 'generated';
+  evaluation?: string;
   forkedFrom?: string;
   createdAt: number;
   updatedAt: number;

@@ -172,6 +172,7 @@ const handleSave = () => {
       system: { role: '', rules: [] },
       user: result,
       source: 'generated',
+      evaluation: evaluation || undefined,
       createdAt: Date.now(),
       updatedAt: Date.now(),
       version: 1,

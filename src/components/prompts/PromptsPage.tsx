@@ -4,6 +4,7 @@ import { FileText, Trash2, Copy, Check, Clock, Sparkles, Eye, Search, X, Downloa
 import { getSavedPrompts, deletePrompt, savePrompt, generateId } from '../../utils/storage';
 import type { Prompt } from '../../types';
 import { copyToClipboard } from '../../utils/clipboard';
+import { parseEval } from '../../utils/parseEval';
 import { parseSections } from '../../utils/parseSections';
 import { useT } from '../../i18n/LanguageContext';
 import { useUser } from '@clerk/clerk-react';
@@ -125,7 +126,19 @@ export function PromptsPage() {
                   <p className="text-sm text-[var(--color-bench-text-dim)] line-clamp-2 mb-2">{p.user.slice(0, 200)}</p>
                   <div className="flex items-center gap-3 text-xs text-[var(--color-bench-muted)]">
                     <span className="flex items-center gap-1"><Clock size={10} />{formatDate(p.updatedAt)}</span>
-                    <span className="px-1.5 py-0.5 rounded bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)]">{p.source === 'generated' ? 'AI' : tq('Template', '模板')}</span>
+                    {p.source === 'generated' ? (
+                      <span className="px-1.5 py-0.5 rounded bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)] text-xs font-medium">AI</span>
+                    ) : (
+                      <span className="px-1.5 py-0.5 rounded bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)] text-xs font-medium">{tq('Template', '\u6A21\u677F')}</span>
+                    )}
+                      {p.evaluation && (() => {
+                        const sc = parseEval(p.evaluation).score;
+                        return sc !== null ? (
+                          <span className="px-1.5 py-0.5 rounded bg-[var(--color-bench-success)]/10 text-[var(--color-bench-success)] text-xs font-medium flex items-center gap-1">
+                            <Sparkles size={10} />{sc}/100
+                          </span>
+                        ) : null;
+                      })()}
                   </div>
                 </div>
                 <div className="flex items-center gap-1 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
