@@ -70,6 +70,23 @@ export function TemplateDetail() {
     return () => window.removeEventListener('keydown', handler);
   }, [navigate, popoverOpen]);
   useEffect(() => {
+    if (!template) return;
+    const name = tName(template, lang);
+    const desc = tShort(template, lang);
+    document.title = name + ' — PromptBench';
+    const setMeta = (attr: string, val: string, isProp: boolean) => {
+      const sel = isProp ? 'meta[property="' + attr + '"]' : 'meta[name="' + attr + '"]';
+      let el = document.querySelector(sel) as HTMLMetaElement | null;
+      if (!el) { el = document.createElement('meta'); isProp ? el.setAttribute('property', attr) : el.setAttribute('name', attr); document.head.appendChild(el); }
+      el.content = val;
+    };
+    setMeta('description', desc, false);
+    setMeta('og:title', name + ' — PromptBench', true);
+    setMeta('og:description', desc, true);
+    setMeta('og:url', window.location.href, true);
+    return () => { document.title = 'PromptBench — Structured Prompt Engineering'; };
+  }, [template, lang]);
+  useEffect(() => {
     if (template) {
       track({ type: 'template_view', templateId: template.id, lang, userId: user?.id, userName: getDisplayName(user), provider: user?.externalAccounts?.[0]?.provider });
       addRecentView(template.id);

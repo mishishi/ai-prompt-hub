@@ -100,6 +100,29 @@ export function TemplateBrowser() {
     else if (activeCategory) results = getTemplatesByCategory(activeCategory);
     if (showFavorites) results = results.filter(t => favorites.includes(t.id));
     if (difficulty) results = results.filter(t => t.difficulty === difficulty);
+
+    // Sort: score toggle first, then search relevance, otherwise default
+    if (sortBy === 'score') {
+      results = [...results].sort((a, b) => (templateScores[b.id] || 0) - (templateScores[a.id] || 0));
+    } else if (search.trim()) {
+      // Search mode: sort by match quality + score
+      const q = search.toLowerCase();
+      const matchScore = (t: any) => {
+        let s = 0;
+        if (t.meta.name.toLowerCase() === q) s += 5;
+        else if (t.meta.name.toLowerCase().includes(q)) s += 3;
+        if (t.meta.nameZh && t.meta.nameZh.toLowerCase().includes(q)) s += 3;
+        if (t.meta.description.toLowerCase().includes(q)) s += 1;
+        if (t.meta.descriptionZh && t.meta.descriptionZh.toLowerCase().includes(q)) s += 1;
+        return s;
+      };
+      results = [...results].sort((a, b) => {
+        const scoreA = matchScore(a) * 10 + (templateScores[a.id] || 0) * 0.6;
+        const scoreB = matchScore(b) * 10 + (templateScores[b.id] || 0) * 0.6;
+        return scoreB - scoreA;
+      });
+    }
+
     return results;
   }, [search, activeCategory, showFavorites, favorites, difficulty, showCommunity, communityTpls, sortBy, templateScores]);
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Copy, Check, Star } from 'lucide-react';
+import { Copy, Check, Star, BadgeCheck } from 'lucide-react';
 import type { LibraryTemplate } from '../../types';
 import { useT } from '../../i18n/LanguageContext';
 import { tName, tShort } from '../../data/templates/helper';
@@ -54,6 +54,11 @@ export function TemplateCard({ template, onClick, score = 0, copyCount = 0 }: { 
           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-sm font-semibold uppercase tracking-wider bg-[var(--color-bench-accent-secondary)]/10 text-[var(--color-bench-accent-secondary)]">
             {getPlatformLabel(platform, lang)}
           </span>
+          {template.verified && (
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-xs font-semibold bg-[var(--color-bench-success)]/10 text-[var(--color-bench-success)]">
+              <BadgeCheck size={11} />
+            </span>
+          )}
           <div className="flex items-center gap-1.5">
             {score > 0 && (
               <span className={"text-sm font-semibold px-1.5 py-0.5 rounded bg-white/5 " + (score >= 60 ? 'text-[var(--color-bench-success)]' : score >= 30 ? 'text-[var(--color-bench-warn)]' : 'text-[var(--color-bench-muted)]')}>

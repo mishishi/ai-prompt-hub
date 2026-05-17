@@ -68,6 +68,7 @@ export interface LibraryTemplate {
   output_schema?: PromptOutputSchema;
   category: string[];
   difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
+  verified?: boolean;
   expectedOutput?: string;
   expectedOutputZh?: string;
   expectedDeliverables?: string[];
