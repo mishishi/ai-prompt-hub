@@ -170,7 +170,7 @@ export function GeneratePage() {
       const t = setTimeout(() => setProgressDone(true), 2800);
       return () => clearTimeout(t);
     }
-  }, [evaluationOpen, evaluation]);
+  }, [evaluationOpen, progressDone]);
 
   useEffect(() => { inputRef.current?.focus(); }, []);
 
@@ -412,7 +412,7 @@ const handleSave = () => {
                       </div>
                     </div>
                   )}
-                  {evaluationOpen && (evaluation ? progressDone : true) && (
+                  {evaluationOpen && evaluation && progressDone && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setEvaluationOpen(false)}>
                       <div className="absolute inset-0 bg-black/60" style={{ animation: 'eval-fade-in 250ms ease-out both' }} />
                       <div
@@ -487,7 +487,7 @@ const handleSave = () => {
                 </>
               );
             })()}{!editing ? (
-            <div className="flex-1 overflow-y-auto bg-[var(--color-bench-bg)]"><pre className="p-4 md:p-6 text-sm text-[var(--color-bench-text)] leading-relaxed whitespace-pre-wrap font-mono">{result}{loading && <span className="ai-cursor" />}</pre></div>
+            <ResultView result={result || ""} loading={loading} />
             ) : (
             <div className="flex-1 flex flex-col">
               <div className="px-5 py-2 border-b border-[var(--color-bench-border)] flex items-center justify-between bg-[var(--color-bench-elevated)]">
