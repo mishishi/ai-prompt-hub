@@ -156,14 +156,10 @@ export function GeneratePage() {
   const [evaluationOpen, setEvaluationOpen] = useState(false);
   const [progressDone, setProgressDone] = useState(false);
   const evaluationPillRef = useRef<HTMLButtonElement>(null);
-  const autoOpenedRef = useRef(false);
   const [refining, setRefining] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   useEffect(() => { inputRef.current?.focus(); }, []);
 
-  useEffect(() => {
-    if (evaluating && !evaluation) { setEvaluationOpen(true); setProgressDone(false); }
-  }, [evaluating, evaluation]);
 
   useEffect(() => {
     if (evaluationOpen && !progressDone) {
@@ -196,6 +192,7 @@ export function GeneratePage() {
     if (!intent.trim()) return;
     if (!useQuota()) { setError(tq('Daily quota exhausted. Browse the template library instead.', '今日免费次数已用完，明天重置。试试浏览模板库？')); return; }
     setLoading(true); setError(''); setFeedback(null);
+    setEvaluationOpen(false); setProgressDone(false);
     setResult('');
     setQuotaLeft(getRemainingQuota());
     try {
@@ -203,14 +200,10 @@ export function GeneratePage() {
       setResult(fullPrompt);
       setEvaluating(true);
       setEvaluation(null);
+      setEvaluationOpen(true);
       evaluatePrompt(fullPrompt, lang, (chunk) => setEvaluation(chunk)).then((evalText) => {
         setEvaluation(evalText);
         setEvaluating(false);
-        setEvaluationOpen(true);
-        if (!autoOpenedRef.current) {
-          autoOpenedRef.current = true;
-          setTimeout(() => setEvaluationOpen(true), 500);
-        }
       }).catch((err: any) => { console.error('[eval] failed:', err?.message); setEvaluating(false); });
       track({ type: 'ai_generate', lang, userId: user?.id, userName: getDisplayName(user), provider: user?.externalAccounts?.[0]?.provider });
     } catch (e: any) { setError(e.message || tq('API error. Please try again.', 'API 错误，请重试。')); }
