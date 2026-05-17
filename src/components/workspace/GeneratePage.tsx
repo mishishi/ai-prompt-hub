@@ -385,7 +385,7 @@ const handleSave = () => {
       </div>
     </div>
   )}
-</>); })()}
+</>); })()}{!editing ? (
             <ResultView result={result || ""} loading={loading} />
             ) : (
             <div className="flex-1 flex flex-col">
