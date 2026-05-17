@@ -582,3 +582,20 @@ body {
     opacity: 0;
   }
 }
+
+/* Skeleton shimmer for loading states */
+@keyframes skeleton-shimmer {
+  0% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.5; }
+}
+@keyframes skeleton-sweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.skeleton-shimmer {
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
+}
+.skeleton-sweep {
+  animation: skeleton-sweep 1.8s ease-in-out infinite;
+}

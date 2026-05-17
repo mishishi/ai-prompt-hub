@@ -53,12 +53,19 @@ const SparkleBurst = ({ color }: { color: string }) => {
 };
 
 const ResultView = ({ result, loading }: { result: string; loading: boolean }) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [result]);
+
   const sections = parseSections(result);
   if (sections.length === 0) {
-    return <div className="flex-1 overflow-y-auto bg-[var(--color-bench-bg)]"><pre className="p-4 md:p-6 text-sm text-[var(--color-bench-text)] leading-relaxed whitespace-pre-wrap font-mono">{result}{loading && <span className="ai-cursor" />}</pre></div>;
+    return <div ref={scrollRef} className="flex-1 overflow-y-auto bg-[var(--color-bench-bg)]"><pre className="p-4 md:p-6 text-sm text-[var(--color-bench-text)] leading-relaxed whitespace-pre-wrap font-mono">{result}{loading && <span className="ai-cursor" />}</pre></div>;
   }
   return (
-    <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-3 bg-[var(--color-bench-bg)]">
+    <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 md:p-6 space-y-3 bg-[var(--color-bench-bg)]">
       {sections.map((sec: any, i: number) => (
         <div key={i} className="rounded-xl border overflow-hidden" style={{ borderColor: sec.color + '33' }}>
           <div className="flex items-center gap-2 px-4 py-2.5" style={{ backgroundColor: sec.color + '14' }}>
@@ -261,12 +268,33 @@ const handleSave = () => {
       <div className="flex-1 flex flex-col min-h-0 bg-[var(--color-bench-bg)] min-h-[250px] sm:min-h-[400px]">
         {loading && !result ? (
           <div className="flex-1 flex items-center justify-center p-8">
-            <div className="text-center space-y-4">
-              <div className="inline-block w-5 h-5 bg-[var(--color-bench-accent)] rounded-full animate-bounce" />
-              <p className="text-sm text-[var(--color-bench-muted)]">{tq('Generating your prompt...', '正在生成你的 Prompt...')}</p>
+            <div className="flex flex-col items-center gap-6 max-w-md w-full">
+              {/* Skeleton card with shimmer */}
+              <div className="w-full space-y-4">
+                {/* Shimmer header */}
+                <div className="h-6 w-2/3 rounded-lg overflow-hidden relative skeleton-shimmer" style={{background: 'var(--color-bench-elevated)', border: '1px solid var(--color-bench-border)'}}>
+                  <div className="absolute inset-0 skeleton-sweep" style={{background: 'linear-gradient(90deg, transparent, var(--color-bench-accent)10, transparent)'}} />
+                </div>
+                {/* Shimmer lines */}
+                <div className="space-y-2.5">
+                  {[100, 85, 92, 60, 78].map((w, i) => (
+                    <div key={i} className="h-4 rounded-lg overflow-hidden relative skeleton-shimmer" style={{width: w+'%', background: 'var(--color-bench-elevated)', border: '1px solid var(--color-bench-border)', animationDelay: (i*100)+'ms'}}>
+                      <div className="absolute inset-0 skeleton-sweep" style={{background: 'linear-gradient(90deg, transparent, var(--color-bench-accent)10, transparent)', animationDelay: (i*120)+'ms'}} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+              {/* Status text */}
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-bench-accent)] animate-pulse" style={{animationDelay: '0ms'}} />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-bench-accent)] animate-pulse" style={{animationDelay: '150ms'}} />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-bench-accent)] animate-pulse" style={{animationDelay: '300ms'}} />
+                </div>
+                <p className="text-sm text-[var(--color-bench-muted)] font-medium">{tq('Generating your prompt...', '正在生成你的 Prompt...')}</p>
+              </div>
             </div>
           </div>
-        ) : !result ? (
           <div className="flex-1 flex items-center justify-center p-8">
             <div className="text-center space-y-4">
               <div className="w-16 h-16 rounded-xl border border-[var(--color-bench-border)] flex items-center justify-center mx-auto bg-[var(--color-bench-elevated)]"><Sparkles size={24} className="text-[var(--color-bench-muted)]/30" /></div>
