@@ -192,7 +192,18 @@ export function TemplateDetail() {
 
 
 
-    const handleFeedback = async (value: 'up' | 'down') => {
+    
+  const handleShare = async () => {
+    try {
+      const url = window.location.href;
+      await navigator.clipboard.writeText(url);
+      toast.show(tq("Link copied!", "链接已复制！"));
+    } catch {
+      // fallback
+    }
+  };
+
+const handleFeedback = async (value: 'up' | 'down') => {
     setFeedback(value);
     track({ type: 'ai_feedback', templateId: template!.id, lang, userId: user?.id, userName: getDisplayName(user), provider: user?.externalAccounts?.[0]?.provider });
     if (template?._community && user?.id) {
