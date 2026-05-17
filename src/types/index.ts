@@ -77,6 +77,8 @@ export interface LibraryTemplate {
   examplesZh?: string;
   contextChecklist?: string[];
   contextChecklistZh?: string[];
+  antiPatterns?: string[];
+  antiPatternsZh?: string[];
   mode?: 'single-turn' | 'multi-turn' | 'multi-agent';
   usage_tips?: string;
   usage_tipsZh?: string;

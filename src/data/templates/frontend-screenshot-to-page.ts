@@ -78,5 +78,8 @@ export const frontendScreenshotToPage: LibraryTemplate = {
   "examplesZh": "输入：[一个带侧边栏、KPI 卡片和图表的仪表盘截图]\n输出：完整的 React + Tailwind 组件，包含响应式侧边栏、4 个统计卡片和 recharts 折线图，像素级还原截图。",
   "contextChecklist": ["Screenshot/image file ready", "Preferred CSS framework (Tailwind, styled-components, etc.)", "Any animation/interaction preferences"],
   "contextChecklistZh": ["准备好截图/图片文件", "CSS 框架偏好（Tailwind、styled-components 等）", "动画/交互偏好"]
+,
+  "antiPatterns": ["Don't use low-resolution screenshots - AI needs detail", "Don't expect interactive logic from a static screenshot", "Don't skip specifying the CSS framework preference"],
+  "antiPatternsZh": ["不要用低分辨率截图 - AI 需要细节", "不要期望从静态截图生成交互逻辑", "不要跳过指定 CSS 框架偏好"]
 
 };

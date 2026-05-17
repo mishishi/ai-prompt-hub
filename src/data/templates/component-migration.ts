@@ -98,5 +98,8 @@ export const componentMigration: LibraryTemplate = {
   "examplesZh": "输入：构建一个含 Hero、特性展示和 CTA 的响应式落地页。\n输出：完整的 React + Tailwind 组件，含响应式断点、动画和无障碍支持。",
   "contextChecklist": ["Design reference or wireframe", "CSS framework preference", "Browser support requirements"],
   "contextChecklistZh": ["设计参考或线框图", "CSS 框架偏好", "浏览器兼容要求"]
+,
+  "antiPatterns": ["Don't skip specifying responsive breakpoints", "Don't expect accessibility without explicit requirements"],
+  "antiPatternsZh": ["不要跳过指定响应式断点", "不要没有明确需求就期望无障碍支持"]
 
 };

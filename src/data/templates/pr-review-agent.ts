@@ -79,5 +79,8 @@ export const prReviewAgent: LibraryTemplate = {
   "examplesZh": "输入：审查 PR #234（附 diff）\n输出：12 条审查意见 - 2 条严重（潜在 N+1 查询、缺少输入验证）、5 条建议（命名、DRY）、3 条细节、2 条肯定。附审批建议总结。",
   "contextChecklist": ["PR diff or link to PR", "Codebase context (language, framework)", "Any specific review focus areas"],
   "contextChecklistZh": ["PR diff 或 PR 链接", "代码库上下文（语言、框架）", "特定审查重点"]
+,
+  "antiPatterns": ["Don't use as a replacement for human code review", "Don't paste entire PRs - focus on high-risk files", "Don't skip explaining the codebase conventions to the AI"],
+  "antiPatternsZh": ["不要用它替代人工 Code Review", "不要粘贴整个 PR - 聚焦高风险文件", "不要跳过向 AI 说明代码库规范"]
 
 };

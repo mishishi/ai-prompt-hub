@@ -82,5 +82,8 @@ export const changelogGenerator: LibraryTemplate = {
   "examplesZh": "输入：根据此 OpenAPI 规范生成 API 文档。\n输出：开发者友好的文档，含端点描述、请求/响应示例、认证设置和错误处理指南。",
   "contextChecklist": ["Source code or spec to document", "Documentation format preference", "Target audience (internal, public)"],
   "contextChecklistZh": ["待文档化的源代码或规范", "文档格式偏好", "目标受众（内部、公开）"]
+,
+  "antiPatterns": ["Don't generate docs without reviewing accuracy", "Don't forget to update docs when code changes"],
+  "antiPatternsZh": ["不要不审查准确性就生成文档", "不要代码变更后忘记更新文档"]
 
 };

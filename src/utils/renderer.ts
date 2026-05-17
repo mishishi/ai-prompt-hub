@@ -45,7 +45,7 @@ export function renderPrompt(t: LibraryTemplate | Prompt, lang: string, values: 
   const filled = fillVars(userText, lt.variables, values);
   const parts: string[] = [];
   const role = (zh && lt.system.roleZh) ? lt.system.roleZh : lt.system.role;
-  parts.push(`Role: ${role}`);
+  parts.push(zh ? `角色：${role}` : `Role: ${role}`);
   const personality = (zh && lt.system.personalityZh) ? lt.system.personalityZh : lt.system.personality;
   if (personality) parts.push(zh ? `个性：${personality}` : `Personality: ${personality}`);
   const ltRules = (zh && lt.system.rulesZh && lt.system.rulesZh.length > 0) ? lt.system.rulesZh : lt.system.rules;

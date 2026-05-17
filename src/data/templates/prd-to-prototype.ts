@@ -75,5 +75,8 @@ export const prdToPrototype: LibraryTemplate = {
   "examplesZh": "输入：为移动支付功能撰写 PRD。\n输出：结构化 PRD，含问题陈述、用户画像、功能需求、非功能需求、成功指标和时间线。",
   "contextChecklist": ["Product context and goals", "User research or feedback available", "Stakeholder requirements"],
   "contextChecklistZh": ["产品背景和目标", "可用的用户研究或反馈", "利益相关者需求"]
+,
+  "antiPatterns": ["Don't skip validating the prototype against the original PRD", "Don't expect production-ready code - prototypes are for validation", "Don't use for complex multi-page apps in one go"],
+  "antiPatternsZh": ["不要跳过对照原始 PRD 验证原型", "不要期望生产级代码 - 原型用于验证想法", "不要一次用于复杂的多页面应用"]
 
 };

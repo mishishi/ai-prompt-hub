@@ -73,5 +73,8 @@ export const conventionalCommits: LibraryTemplate = {
   "examplesZh": "输入：修复了登录重定向循环并添加了会话超时\n输出：fix(auth): resolve redirect loop after login\n\nAdded session timeout handling with 30min default.\n\nCloses #456",
   "contextChecklist": ["List of changes to commit", "Issue/ticket numbers (if any)", "Scope preferences (module names)"],
   "contextChecklistZh": ["变更列表", "Issue/Ticket 编号（如有）", "Scope 命名偏好（模块名）"]
+,
+  "antiPatterns": ["Don't skip verifying the output before using it", "Don't expect the AI to know your exact toolchain"],
+  "antiPatternsZh": ["不要在使用前跳过验证输出", "不要期望 AI 知道你的确切工具链"]
 
 };

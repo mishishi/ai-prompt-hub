@@ -79,5 +79,8 @@ export const frontendFullReview: LibraryTemplate = {
   "examplesZh": "输入：审查这个 React 结账页面的 UX 问题。\n输出：跨 6 个类别的 15 个问题 - 无障碍（4）、性能（3）、响应式（3）、一致性（2）、错误处理（2）、加载状态（1）。均含严重程度和修复方案。",
   "contextChecklist": ["Page/component URL or code", "Target devices (mobile, tablet, desktop)", "Any specific UX standards to check against"],
   "contextChecklistZh": ["页面/组件 URL 或代码", "目标设备（移动端、平板、桌面端）", "需参照的 UX 标准"]
+,
+  "antiPatterns": ["Don't skip specifying responsive breakpoints", "Don't expect accessibility without explicit requirements"],
+  "antiPatternsZh": ["不要跳过指定响应式断点", "不要没有明确需求就期望无障碍支持"]
 
 };

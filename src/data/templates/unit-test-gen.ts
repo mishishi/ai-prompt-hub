@@ -101,5 +101,8 @@ export const unitTestGen: LibraryTemplate = {
   "examplesZh": "输入：function calculateDiscount(price, user) { ... }\n输出：8 个测试用例，覆盖正常路径、边界值（0、负数、最大值）、错误状态和用户等级。使用 Jest + describe/it 块。",
   "contextChecklist": ["Function/code to test", "Test framework (Jest, Vitest, Mocha, etc.)", "Any mocking requirements"],
   "contextChecklistZh": ["待测试的函数/代码", "测试框架（Jest、Vitest、Mocha 等）", "Mock 需求"]
+,
+  "antiPatterns": ["Don't paste code without context - AI needs to understand what the function does", "Don't expect 100% coverage from one prompt - focus on critical paths", "Don't skip reviewing generated mocks - they may not match your actual dependencies"],
+  "antiPatternsZh": ["不要缺少上下文就粘贴代码 - AI 需要理解函数的作用", "不要期望一次 Prompt 达到 100% 覆盖率 - 聚焦关键路径", "不要跳过审查生成的 Mock - 它们可能和实际依赖不匹配"]
 
 };

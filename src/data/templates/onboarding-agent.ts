@@ -76,5 +76,8 @@ export const onboardingAgent: LibraryTemplate = {
   "examplesZh": "输入：从规格说明到部署构建完整功能。\n输出：结构化开发计划，包含架构、组件树、API 契约、测试计划和实现代码。",
   "contextChecklist": ["Feature specification ready", "Tech stack confirmed", "Any constraints or deadlines"],
   "contextChecklistZh": ["功能规格已就绪", "技术栈已确认", "约束条件或截止日期"]
+,
+  "antiPatterns": ["Don't skip reviewing the AI's output before integrating", "Don't use for tasks that require ambiguous judgment"],
+  "antiPatternsZh": ["不要在集成前跳过审查 AI 输出", "不要用于需要模糊判断的任务"]
 
 };

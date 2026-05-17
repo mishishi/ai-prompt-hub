@@ -88,5 +88,8 @@ export const reactComponentGen: LibraryTemplate = {
   "examplesZh": "输入：创建一个带排序、分页和行选择的 DataTable 组件。\n输出：TypeScript React 组件，含 useMemo 排序、受控分页、复选框选择、ARIA 标签和 Storybook 兼容的 Props。",
   "contextChecklist": ["Component specification", "TypeScript or JavaScript preference", "State management approach (local, context, external)"],
   "contextChecklistZh": ["组件规格说明", "TypeScript 或 JavaScript 偏好", "状态管理方式（本地、Context、外部）"]
+,
+  "antiPatterns": ["Don't skip specifying TypeScript vs JavaScript", "Don't expect production-ready components without accessibility requirements", "Don't generate too many components at once - one at a time for best quality"],
+  "antiPatternsZh": ["不要跳过指定 TypeScript 还是 JavaScript", "不要没有无障碍需求就期望生产级组件", "不要一次生成太多组件 - 一个一个来质量最高"]
 
 };

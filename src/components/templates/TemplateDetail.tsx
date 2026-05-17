@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Copy, Check, Sparkles, ChevronLeftIcon, Save, Link2, ThumbsUp, ThumbsDown, FileText, X, Lightbulb, ListChecks } from 'lucide-react';
+import { Copy, Check, Sparkles, ChevronLeftIcon, Save, Link2, ThumbsUp, ThumbsDown, FileText, X, Lightbulb, ListChecks, AlertCircle, Code2 } from 'lucide-react';
 import { templates } from '../../data/templates';
 import type { LibraryTemplate } from '../../types';
 import { tName, tShort, tTips, tLabel, tOptions } from '../../data/templates/helper';
@@ -62,6 +62,8 @@ export function TemplateDetail() {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [examplesOpen, setExamplesOpen] = useState(false);
   const [checklistOpen, setChecklistOpen] = useState(false);
+  const [antiOpen, setAntiOpen] = useState(false);
+  const [sourceView, setSourceView] = useState(true);
   const [feedback, setFeedback] = useState<"up" | "down" | null>(null);
   const [ready, setReady] = useState(false);
   const [mobileTab, setMobileTab] = useState<'params' | 'preview'>('params');
@@ -293,6 +295,14 @@ const handleSave = () => {
       <div className="flex-1 flex flex-col min-h-0 relative">
         <div className="px-4 md:px-5 py-3 border-b border-[var(--color-bench-border)] flex items-center justify-between bg-[var(--color-bench-elevated)]">
           <span className="text-sm uppercase tracking-wider text-[var(--color-bench-muted)]">{tq('Prompt Output', 'Prompt 输出')}</span>
+          <button
+            onClick={() => setSourceView(!sourceView)}
+            className={"flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all " + (sourceView ? "bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)]" : "text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)] hover:bg-white/5")}
+            title={sourceView ? tq('Show rendered output', '显示渲染结果') : tq('Show source view', '显示源码视图')}
+          >
+            <Code2 size={12} />
+            {sourceView ? tq('Rendered', '渲染') : tq('Source', '源码')}
+          </button>
           
           <button onClick={handleCopy} className={'flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ' + (copied ? 'bg-[var(--color-bench-success)]/15 text-[var(--color-bench-success)]' : 'bg-[var(--color-bench-accent)] text-[var(--color-bench-bg)] hover:brightness-110')}>
             {copied ? <Check size={14} /> : <Copy size={14} />}
@@ -330,6 +340,15 @@ const handleSave = () => {
             >
               <ListChecks size={14} />
               {tq('Checklist', '准备清单')}
+            </button>
+          ) : null}
+          {(template?.antiPatterns?.length || template?.antiPatternsZh?.length) ? (
+            <button
+              onClick={() => setAntiOpen(true)}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-[var(--color-bench-bg)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-error)] hover:border-[var(--color-bench-error)]/30 hover:bg-[var(--color-bench-error)]/5 transition-all"
+            >
+              <AlertCircle size={14} />
+              {tq('Anti-Patterns', '反面模式')}
             </button>
           ) : null}
         </div>
@@ -383,6 +402,24 @@ const handleSave = () => {
             </div>
           </div>
         )}
+        {antiOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setAntiOpen(false)}>
+            <div className="absolute inset-0 backdrop-blur-sm bg-black/60" />
+            <div className="relative w-full max-w-md bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-2xl shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--color-bench-border)]">
+                <div className="flex items-center gap-2.5">
+                  <AlertCircle size={16} className="text-[var(--color-bench-error)]" />
+                  <h3 className="text-sm font-semibold text-[var(--color-bench-text)]">{tq('Anti-Patterns', '反面模式')}</h3>
+                </div>
+                <button onClick={() => setAntiOpen(false)} className="p-1.5 rounded-lg hover:bg-white/5 transition-colors"><X size={16} className="text-[var(--color-bench-muted)]" /></button>
+              </div>
+              <div className="p-5 max-h-96 overflow-y-auto">
+                <p className="text-sm text-[var(--color-bench-muted)] mb-3">{tq('Things to avoid when using this prompt:', '使用此 Prompt 时应避免：')}</p>
+                {(() => { const items = lang === 'zh-CN' ? (template?.antiPatternsZh || template?.antiPatterns) : (template?.antiPatterns || template?.antiPatternsZh); return (<ul className="space-y-2">{(items || []).map((item: string, i: number) => (<li key={i} className="flex items-start gap-2.5 text-sm text-[var(--color-bench-text-dim)]"><span className="text-[var(--color-bench-error)] mt-0.5 flex-shrink-0">{'✗'}</span>{item}</li>))}</ul>); })()}
+              </div>
+            </div>
+          </div>
+        )}
         <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-[var(--color-bench-bg)]">
           <div className={'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-xl overflow-hidden shadow-lg ' + (flash ? 'preview-flash' : '')}>
             <div className="px-4 md:px-5 py-3 border-b border-[var(--color-bench-border)] flex items-center gap-3 bg-[var(--color-bench-surface-solid)]">
@@ -394,8 +431,73 @@ const handleSave = () => {
               <span className="text-xs text-[var(--color-bench-muted)] uppercase tracking-wider">{t('detail.preview')}</span>
             </div>
             <div className="p-4 md:p-6">
-              <pre className="prompt-preview overflow-x-auto max-h-[calc(100vh-200px)] md:max-h-[calc(100vh-280px)]">{rendered || <span className="text-[var(--color-bench-muted)] italic">{t('detail.setValues')}</span>}</pre>
-            </div>
+              {sourceView ? (
+                <div className="space-y-3 overflow-y-auto max-h-[calc(100vh-200px)] md:max-h-[calc(100vh-280px)]">
+                  {/* Role */}
+                  <div className="bg-[var(--color-bench-bg)] border border-[#3b82f6]/20 rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-2 h-2 rounded-full bg-[#3b82f6]" />
+                      <span className="text-sm font-semibold text-[#3b82f6]">{tq('Role', '角色')} (system.role)</span>
+                    </div>
+                    <p className="text-sm text-[var(--color-bench-text-dim)] leading-relaxed">{lang === 'zh-CN' && template?.system?.roleZh ? template.system.roleZh : template?.system?.role || tq('(not set)', '(未设置)')}</p>
+                  </div>
+                  {(template?.system?.rules?.length ?? 0) > 0 && (
+                  <div className="bg-[var(--color-bench-bg)] border border-[#f59e0b]/20 rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-2 h-2 rounded-full bg-[#f59e0b]" />
+                      <span className="text-sm font-semibold text-[#f59e0b]">{tq('Rules', '规则')} (system.rules)</span>
+                    </div>
+                    <ul className="space-y-1">
+                      {((lang === "zh-CN" && (template?.system?.rulesZh?.length ?? 0) > 0 ? template.system.rulesZh : template?.system?.rules) || []).map((rule: string, i: number) => (
+                        <li key={i} className="flex items-start gap-2 text-sm text-[var(--color-bench-text-dim)]">
+                          <span className="text-[#f59e0b] text-xs mt-0.5">{i + 1}.</span>
+                          {rule}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  )}
+                  <div className="bg-[var(--color-bench-bg)] border border-[#a855f7]/20 rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-2 h-2 rounded-full bg-[#a855f7]" />
+                      <span className="text-sm font-semibold text-[#a855f7]">{tq('User Prompt', '用户模板')} (user)</span>
+                    </div>
+                    <pre className="text-sm text-[var(--color-bench-text-dim)] leading-relaxed whitespace-pre-wrap font-mono">{lang === 'zh-CN' ? (template?.userZh || template?.user) : (template?.user || template?.userZh) || ''}</pre>
+                  </div>
+                  {(template?.variables?.length ?? 0) > 0 && (
+                  <div className="bg-[var(--color-bench-bg)] border border-[#22c55e]/20 rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-2 h-2 rounded-full bg-[#22c55e]" />
+                      <span className="text-sm font-semibold text-[#22c55e]">{tq('Variables', '变量')} (variables)</span>
+                    </div>
+                    <div className="space-y-1.5">
+                      {template.variables.map((v: any, i: number) => {
+                        const val = values[v.name];
+                        const label = (lang === 'zh-CN' ? v.labelZh : v.label) || v.name;
+                        return (
+                          <div key={i} className="flex items-center gap-2 text-sm">
+                            <span className="text-[#22c55e] font-mono text-sm">{'{{'}{v.name}{'}}'}</span>
+                            <span className="text-[var(--color-bench-muted)]">{label}</span>
+                            <span className="text-[var(--color-bench-text-dim)]">{'='} {val !== undefined ? (typeof val === 'boolean' ? (val ? 'true' : 'false') : String(val)) : tq('(not filled)', '(未填)')}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  )}
+                  {template?.output_schema && (
+                  <div className="bg-[var(--color-bench-bg)] border border-[#6b7280]/20 rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-2 h-2 rounded-full bg-[#6b7280]" />
+                      <span className="text-sm font-semibold text-[#6b7280]">{tq('Output Schema', '输出格式')} (output_schema)</span>
+                    </div>
+                    <pre className="text-sm text-[var(--color-bench-text-dim)] leading-relaxed whitespace-pre-wrap font-mono">{typeof template.output_schema === 'string' ? template.output_schema : JSON.stringify(template.output_schema, null, 2)}</pre>
+                  </div>
+                  )}
+                </div>
+              ) : (
+                              <pre className="prompt-preview overflow-x-auto max-h-[calc(100vh-200px)] md:max-h-[calc(100vh-280px)]">{rendered || <span className="text-[var(--color-bench-muted)] italic">{t('detail.setValues')}</span>}</pre>
+              )}            </div>
           </div>
 
           <div className="mt-4 flex items-center gap-2 px-1">

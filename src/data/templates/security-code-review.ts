@@ -100,5 +100,8 @@ export const securityCodeReview: LibraryTemplate = {
   "examplesZh": "输入：粘贴这段认证中间件代码。\n输出：发现 3 个问题 - 查询构造器中的 SQL 注入（CWE-89）、缺少速率限制（CWE-307）、硬编码 JWT 密钥（CWE-798）。均附带修复代码。",
   "contextChecklist": ["Source code file(s) ready to paste", "Dependency versions noted (if relevant)", "Any known security requirements or compliance standards"],
   "contextChecklistZh": ["准备好要审查的源代码文件", "标注相关依赖版本", "已知的安全要求或合规标准"]
+,
+  "antiPatterns": ["Don't paste entire codebase - focus on one module at a time", "Don't skip providing dependency versions - vulnerabilities are version-specific", "Don't expect the AI to find all issues in one pass - iterate"],
+  "antiPatternsZh": ["不要粘贴整个代码库 - 每次聚焦一个模块", "不要省略依赖版本 - 漏洞与版本强相关", "不要期望 AI 一次找到所有问题 - 多轮迭代"]
 
 };

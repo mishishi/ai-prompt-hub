@@ -77,5 +77,8 @@ export const apiIntegrationTest: LibraryTemplate = {
   "examplesZh": "输入：为这个用户服务模块编写测试。\n输出：15 个测试用例，覆盖单元测试、集成测试、错误路径和边界情况，含 setup/teardown。",
   "contextChecklist": ["Code module to test", "Testing framework", "Coverage targets"],
   "contextChecklistZh": ["待测试代码模块", "测试框架", "覆盖率目标"]
+,
+  "antiPatterns": ["Don't expect tests to pass without reviewing mocks", "Don't generate tests without understanding the code first"],
+  "antiPatternsZh": ["不要不审查 Mock 就期望测试通过", "不要不理解代码就生成测试"]
 
 };

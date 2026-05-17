@@ -91,5 +91,8 @@ export const agentFeatureDev: LibraryTemplate = {
   "examplesZh": "输入：构建一个带 JWT、刷新令牌和邮箱验证的用户认证系统。\n输出：完整 PRD + 架构图 + 10 个用户故事 + API 契约 + 数据库 Schema + 6 个 Sprint 计划。",
   "contextChecklist": ["Feature requirements clearly defined", "Tech stack preferences known", "Team size and sprint duration"],
   "contextChecklistZh": ["功能需求已明确定义", "明确技术栈偏好", "团队规模和 Sprint 周期"]
+,
+  "antiPatterns": ["Don't use for trivial features - this prompt is heavy and expensive", "Don't skip reviewing the AI's architecture before writing code", "Don't expect pixel-perfect output without design references"],
+  "antiPatternsZh": ["不要用于简单功能 - 这个 Prompt 开销很大", "不要在写代码前跳过审查 AI 的架构设计", "不要没有设计参考就期望像素级输出"]
 
 };

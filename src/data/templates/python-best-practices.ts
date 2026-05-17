@@ -77,5 +77,8 @@ export const pythonBestPractices: LibraryTemplate = {
   "examplesZh": "输入：优化此 TypeScript 类型以获得更好的类型推断。\n输出：精炼的泛型类型，含适当约束、可辨识联合类型和改进的 IDE 自动补全。",
   "contextChecklist": ["Code to optimize", "Language version", "Performance or readability priority"],
   "contextChecklistZh": ["待优化代码", "语言版本", "性能或可读性优先级"]
+,
+  "antiPatterns": ["Don't apply style suggestions blindly - consider team conventions", "Don't optimize for the wrong metric"],
+  "antiPatternsZh": ["不要盲目应用风格建议 - 考虑团队规范", "不要为错误的指标优化"]
 
 };

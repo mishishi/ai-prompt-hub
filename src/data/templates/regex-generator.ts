@@ -99,5 +99,8 @@ export const regexGenerator: LibraryTemplate = {
   "examplesZh": "输入：生成验证国际电话号码的正则表达式。\n输出：经测试的正则模式，含解释、测试用例和边界情况处理。",
   "contextChecklist": ["Specific task description", "Expected input/output format", "Any constraints or requirements"],
   "contextChecklistZh": ["具体任务描述", "预期输入/输出格式", "约束条件或要求"]
+,
+  "antiPatterns": ["Don't skip verifying the output before using it", "Don't expect the AI to know your exact toolchain"],
+  "antiPatternsZh": ["不要在使用前跳过验证输出", "不要期望 AI 知道你的确切工具链"]
 
 };

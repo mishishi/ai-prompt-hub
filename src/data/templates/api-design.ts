@@ -70,5 +70,8 @@ export const apiDesign: LibraryTemplate = {
 ,
   "expectedOutput": "A complete OpenAPI 3.0 specification YAML file with all endpoints, request/response schemas, authentication, error codes, and pagination configured.",
   "expectedOutputZh": "一份完整的 OpenAPI 3.0 规范 YAML 文件，包含所有端点、请求/响应 Schema、认证、错误码和分页配置。"
+,
+  "antiPatterns": ["Don't design APIs without understanding the data model first", "Don't blindly accept the AI's auth scheme - verify against your security requirements", "Don't forget to specify rate limiting and pagination requirements"],
+  "antiPatternsZh": ["不要在不了解数据模型的情况下设计 API", "不要盲目接受 AI 的认证方案 - 对照安全需求验证", "不要忘记指定速率限制和分页需求"]
 
 };

@@ -81,5 +81,8 @@ export const githubActionsGen: LibraryTemplate = {
   "examplesZh": "输入：为部署到 Vercel 的 Next.js 应用创建 CI/CD 流程。\n输出：GitHub Actions 工作流，包含构建、Lint、测试、预览部署和生产部署阶段。",
   "contextChecklist": ["Repository structure understood", "Deployment target confirmed", "Environment variables documented"],
   "contextChecklistZh": ["仓库结构已了解", "部署目标已确认", "环境变量已文档化"]
+,
+  "antiPatterns": ["Don't deploy without testing in staging first", "Don't hardcode secrets in CI configs"],
+  "antiPatternsZh": ["不要不在预发布环境测试就部署", "不要在 CI 配置中硬编码密钥"]
 
 };

@@ -99,5 +99,8 @@ export const productRoadmap: LibraryTemplate = {
   "examplesZh": "输入：为移动支付功能撰写 PRD。\n输出：结构化 PRD，含问题陈述、用户画像、功能需求、非功能需求、成功指标和时间线。",
   "contextChecklist": ["Product context and goals", "User research or feedback available", "Stakeholder requirements"],
   "contextChecklistZh": ["产品背景和目标", "可用的用户研究或反馈", "利益相关者需求"]
+,
+  "antiPatterns": ["Don't skip validating with real users", "Don't treat AI output as final without stakeholder review"],
+  "antiPatternsZh": ["不要跳过真实用户验证", "不要在利益相关者审查前把 AI 输出当最终版"]
 
 };

@@ -101,5 +101,8 @@ export const performanceReview: LibraryTemplate = {
   "examplesZh": "输入：审查这个模块的代码质量问题。\n输出：结构化审查，包含严重程度、具体行引用、改进建议和总体评分。",
   "contextChecklist": ["Code to review", "Language/framework context", "Specific concerns to focus on"],
   "contextChecklistZh": ["待审查代码", "语言/框架上下文", "需重点关注的方面"]
+,
+  "antiPatterns": ["Don't paste code without explaining what it should do", "Don't skip providing the language/framework context"],
+  "antiPatternsZh": ["不要不说明代码用途就粘贴", "不要跳过提供语言/框架上下文"]
 
 };

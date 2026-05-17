@@ -39,5 +39,8 @@ export const blogPostWriter: LibraryTemplate = {
   "examplesZh": "输入：写一篇关于 Rust 异步编程的技术博客。\n输出：1500 字文章，含引言、3 个带代码示例的主要章节、对比表格和结论。",
   "contextChecklist": ["Topic and target audience", "Word count target", "Any SEO keywords or style guide"],
   "contextChecklistZh": ["主题和目标受众", "字数目标", "SEO 关键词或风格指南"]
+,
+  "antiPatterns": ["Don't publish without fact-checking AI-generated content", "Don't skip adding your own voice and experience"],
+  "antiPatternsZh": ["不要不核实事实就发布 AI 生成的内容", "不要跳过添加自己的观点和经验"]
 
 };

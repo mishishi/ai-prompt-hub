@@ -81,5 +81,8 @@ export const dockerfileOpt: LibraryTemplate = {
 ,
   "expectedOutput": "Optimized Dockerfile with multi-stage builds, pinned base images, security scan integration, and image size comparison (before/after).",
   "expectedOutputZh": "优化后的 Dockerfile，含多阶段构建、固定基础镜像版本、安全扫描集成及镜像大小对比（优化前/后）。"
+,
+  "antiPatterns": ["Don't optimize without understanding the current build context", "Don't blindly apply all suggestions - test each change", "Don't forget to pin base image SHAs for production"],
+  "antiPatternsZh": ["不要在不了解当前构建上下文的情况下优化", "不要盲目应用所有建议 - 逐个测试变更", "不要忘记为生产环境固定基础镜像 SHA"]
 
 };

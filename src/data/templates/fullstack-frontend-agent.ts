@@ -92,5 +92,8 @@ export const fullstackFrontendAgent: LibraryTemplate = {
   "examplesZh": "输入：从规格说明到部署构建完整功能。\n输出：结构化开发计划，包含架构、组件树、API 契约、测试计划和实现代码。",
   "contextChecklist": ["Feature specification ready", "Tech stack confirmed", "Any constraints or deadlines"],
   "contextChecklistZh": ["功能规格已就绪", "技术栈已确认", "约束条件或截止日期"]
+,
+  "antiPatterns": ["Don't use for projects without clear requirements", "Don't skip reviewing the generated database schema", "Don't expect the AI to handle complex state management without guidance"],
+  "antiPatternsZh": ["不要用于需求不清晰的项目", "不要跳过审查生成的数据库 Schema", "不要期望 AI 在没有指导的情况下处理复杂状态管理"]
 
 };
