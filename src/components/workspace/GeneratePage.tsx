@@ -1,6 +1,6 @@
 ﻿import { useState, useRef, useEffect } from 'react';
 import { Sparkles, Copy, Check, Loader, ThumbsUp, ThumbsDown, Zap, Lightbulb, RefreshCw, Edit3, X, Save } from 'lucide-react';
-import { aiGenerate, useQuota } from '../../utils/ai';
+import { aiGenerate, useQuota, getRemainingQuota } from '../../utils/ai';
 import { copyToClipboard } from '../../utils/clipboard';
 import { track, getDisplayName } from '../../utils/analytics';
 import { savePrompt, generateId } from '../../utils/storage';
@@ -20,6 +20,7 @@ export function GeneratePage() {
   const [editing, setEditing] = useState(false);
   const [editText, setEditText] = useState('');
   const [saved, setSaved] = useState(false);
+  const [quotaLeft, setQuotaLeft] = useState(() => getRemainingQuota());
   const [refineInput, setRefineInput] = useState('');
   const [refining, setRefining] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -39,6 +40,7 @@ export function GeneratePage() {
     if (!useQuota()) { setError(tq('Daily quota exhausted. Browse the template library instead.', '今日免费次数已用完，明天重置。试试浏览模板库？')); return; }
     setLoading(true); setError(''); setFeedback(null);
     setResult('');
+    setQuotaLeft(getRemainingQuota());
     try {
       await aiGenerate(intent.trim(), lang, (chunk) => setResult(chunk));
       track({ type: 'ai_generate', lang, userId: user?.id, userName: getDisplayName(user), provider: user?.externalAccounts?.[0]?.provider });
@@ -77,6 +79,7 @@ const handleSave = () => {
     if (!refineInput.trim() || !result) return;
     if (!useQuota()) { setError(tq('Daily quota exhausted.', '今日免费次数已用完。')); return; }
     setRefining(true); setError('');
+    setQuotaLeft(getRemainingQuota());
     try {
       await aiGenerate(intent.trim(), lang, (chunk) => setResult(chunk), { previousResult: result, feedback: refineInput.trim() });
       setRefineInput('');
@@ -131,7 +134,7 @@ const handleSave = () => {
             </div>
           </div>
         </div>
-        <div className="px-4 md:px-6 py-3 border-t border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)]"><p className="text-xs text-[var(--color-bench-muted)] text-center uppercase tracking-wider">{tq('Press Enter to generate · 10 free / day', '回车生成 · 每日免费 10 次')}</p></div>
+        <div className="px-4 md:px-6 py-3 border-t border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)]"><p className="text-xs text-[var(--color-bench-muted)] text-center uppercase tracking-wider">{tq('Press Enter · ' + quotaLeft + ' free today', '回车生成 · 今日剩余 ' + quotaLeft + ' 次')}</p></div>
       </div>
 
       {/* Output Panel */}
