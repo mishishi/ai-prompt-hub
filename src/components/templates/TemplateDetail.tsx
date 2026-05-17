@@ -5,6 +5,7 @@ import { templates } from '../../data/templates';
 import type { LibraryTemplate } from '../../types';
 import { tName, tShort, tTips, tLabel, tOptions } from '../../data/templates/helper';
 import { renderPrompt } from '../../utils/renderer';
+import { parseSections } from '../../utils/parseSections';
 import { copyToClipboard } from '../../utils/clipboard';
 import { track, getDisplayName } from '../../utils/analytics';
 import { useT } from '../../i18n/LanguageContext';
@@ -432,7 +433,21 @@ const handleSave = () => {
             </div>
             <div className="p-4 md:p-6">
               {sourceView ? (
-                <div className="space-y-3 overflow-y-auto max-h-[calc(100vh-200px)] md:max-h-[calc(100vh-280px)]">
+                {/* Community template fallback */}
+                  {template._community ? (
+                    <div className="space-y-3 overflow-y-auto max-h-[calc(100vh-200px)] md:max-h-[calc(100vh-280px)]">
+                      {parseSections(template.user).map((sec: any, i: number) => (
+                        <div key={i} className="bg-[var(--color-bench-bg)] border rounded-xl p-4" style={{ borderColor: sec.color + '33' }}>
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: sec.color }} />
+                            <span className="text-sm font-semibold" style={{ color: sec.color }}>{sec.title}</span>
+                          </div>
+                          <pre className="text-sm text-[var(--color-bench-text-dim)] leading-relaxed whitespace-pre-wrap font-mono">{sec.content}</pre>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                  <div className="space-y-3 overflow-y-auto max-h-[calc(100vh-200px)] md:max-h-[calc(100vh-280px)]">
                   {/* Role */}
                   <div className="bg-[var(--color-bench-bg)] border border-[#3b82f6]/20 rounded-xl p-4">
                     <div className="flex items-center gap-2 mb-2">
@@ -495,6 +510,7 @@ const handleSave = () => {
                   </div>
                   )}
                 </div>
+              )}
               ) : (
                               <pre className="prompt-preview overflow-x-auto max-h-[calc(100vh-200px)] md:max-h-[calc(100vh-280px)]">{rendered || <span className="text-[var(--color-bench-muted)] italic">{t('detail.setValues')}</span>}</pre>
               )}            </div>
