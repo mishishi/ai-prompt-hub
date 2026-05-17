@@ -7,6 +7,7 @@ import { ArrowLeft } from 'lucide-react';
 
 export function AuthorPage() {
   const { t, lang } = useT();
+  const tq = (en, zh) => lang === 'zh-CN' ? zh : en;
   const { authorId } = useParams<{ authorId: string }>();
   const navigate = useNavigate();
   const [templates, setTemplates] = useState<LibraryTemplate[]>([]);
@@ -64,14 +65,14 @@ export function AuthorPage() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-[var(--color-bench-text)]">{authorName}</h1>
-                <p className="text-sm text-[var(--color-bench-muted)]">{templates.length} {t('community.templates', 'templates')}</p>
+                <p className="text-sm text-[var(--color-bench-muted)]">{templates.length} {tq('templates', '个模板')}</p>
               </div>
             </div>
           </div>
 
           {templates.length === 0 ? (
             <div className="text-center py-16 text-[var(--color-bench-muted)]">
-              <p className="text-lg">{t('community.noTemplates')}</p>
+              <p className="text-lg">{tq('No templates published yet.', '暂无发布的模板。')}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
