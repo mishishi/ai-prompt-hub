@@ -92,12 +92,10 @@ export function TemplateCard({ template, onClick, score = 0, copyCount = 0, onCo
             {copied ? <Check size={12} /> : <Copy size={12} />}
             {copied ? t('card.copied') : t('card.copy')}
           </button>
-          {copyCount > 0 && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium bg-[var(--color-bench-accent)]/8 text-[var(--color-bench-accent)]">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium bg-[var(--color-bench-accent)]/8 text-[var(--color-bench-accent)]">
               <Copy size={10} />
               {t('card.copies').replace('{n}', String(copyCount))}
             </span>
-          )}
         </div>
       </div>
     </article>
