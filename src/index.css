@@ -483,3 +483,102 @@ body {
     font-size: 16px; /* prevent iOS zoom on focus */
   }
 }
+
+
+/* === AI Self-Evaluation Animations === */
+
+@keyframes eval-scale-in {
+  from { opacity: 0; transform: scale(0.75) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes eval-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 8px currentColor; opacity: 0.7; }
+  50% { box-shadow: 0 0 20px currentColor; opacity: 1; }
+}
+
+.eval-stagger-item {
+  animation: eval-stagger-in 0.4s ease-out both;
+}
+
+@keyframes eval-stagger-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes eval-sparkle-burst {
+  0% { opacity: 0; }
+  20% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes eval-particle {
+  0% {
+    transform: translate(-50%, -50%) rotate(var(--angle, 0deg)) translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(var(--angle, 0deg)) translateY(calc(var(--dist, 30px) * -1)) scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes eval-check-pop {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.3); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes eval-checklist-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+
+/* === AI Self-Evaluation Animations === */
+
+@keyframes eval-scale-in {
+  from { opacity: 0; transform: scale(0.75) translateY(20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes eval-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 8px currentColor; opacity: 0.7; }
+  50% { box-shadow: 0 0 20px currentColor; opacity: 1; }
+}
+
+.eval-stagger-item {
+  animation: eval-stagger-in 0.4s ease-out both;
+}
+
+@keyframes eval-stagger-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes eval-sparkle-burst {
+  0% { opacity: 0; }
+  20% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes eval-particle {
+  0% {
+    transform: translate(-50%, -50%) rotate(var(--angle, 0deg)) translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(var(--angle, 0deg)) translateY(calc(var(--dist, 30px) * -1)) scale(0);
+    opacity: 0;
+  }
+}

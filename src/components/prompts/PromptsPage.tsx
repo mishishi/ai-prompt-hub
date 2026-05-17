@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FileText, Trash2, Copy, Check, Clock, Sparkles, Eye, Search, X, Download, Upload, Globe } from 'lucide-react';
+import { FileText, Trash2, Copy, Check, Clock, Sparkles, Eye, Search, X, Download, Upload, Globe, Code2 } from 'lucide-react';
 import { getSavedPrompts, deletePrompt, savePrompt, generateId } from '../../utils/storage';
 import type { Prompt } from '../../types';
 import { copyToClipboard } from '../../utils/clipboard';
+import { parseSections } from '../../utils/parseSections';
 import { useT } from '../../i18n/LanguageContext';
 import { useUser } from '@clerk/clerk-react';
 import { getDisplayName } from '../../utils/analytics';
@@ -19,6 +20,7 @@ export function PromptsPage() {
   const [search, setSearch] = useState("");
   const [publishTarget, setPublishTarget] = useState<Prompt | null>(null);
   const [publishSuccess, setPublishSuccess] = useState(false);
+  const [sourceViewId, setSourceViewId] = useState<string | null>(null);
   const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
 
   useEffect(() => { setPrompts(getSavedPrompts()); }, []);
@@ -134,8 +136,67 @@ export function PromptsPage() {
               </div>
               {expandedId === p.id && (
                 <div className="mt-4 pt-4 border-t border-[var(--color-bench-border)]">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-bench-muted)]">{tq('Full Preview', '完整预览')}</span>
-                  <pre className="mt-2 text-xs text-[var(--color-bench-text)] leading-relaxed whitespace-pre-wrap font-mono bg-[var(--color-bench-bg)] rounded-lg p-4 max-h-64 overflow-y-auto">{p.user}</pre>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-bench-muted)]">{tq('Full Preview', '完整预览')}</span>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setSourceViewId(sourceViewId === p.id ? null : p.id); }}
+                      className={"flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium transition-all " + (sourceViewId === p.id ? "bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)]" : "text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)] hover:bg-white/5")}
+                    >
+                      <Code2 size={11} />
+                      {sourceViewId === p.id ? tq('Text', '文本') : tq('Source', '源码')}
+                    </button>
+                  </div>
+                                    {true ? (
+                    <div className="space-y-2 max-h-80 overflow-y-auto">
+                      {/* AI-generated: parse markdown sections from user text */}
+                      {(!p.system?.role && p.source === 'generated') ? (
+                        parseSections(p.user).map((sec, i) => (
+                          <div key={i} className="rounded-lg border overflow-hidden" style={{ borderColor: sec.color + '33' }}>
+                            <div className="flex items-center gap-1.5 px-3 py-1.5" style={{ backgroundColor: sec.color + '14' }}>
+                              <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: sec.color }} />
+                              <span className="text-xs font-semibold" style={{ color: sec.color }}>{sec.title}</span>
+                            </div>
+                            <div className="px-3 py-2 bg-[var(--color-bench-bg)]">
+                              <pre className="text-xs text-[var(--color-bench-text-dim)] leading-relaxed whitespace-pre-wrap font-mono">{sec.content}</pre>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <>
+                      {p.system?.role && (
+                        <div className="bg-[var(--color-bench-bg)] border border-[#3b82f6]/20 rounded-lg p-3">
+                          <div className="flex items-center gap-1.5 mb-1"><div className="w-1.5 h-1.5 rounded-full bg-[#3b82f6]" /><span className="text-xs font-semibold text-[#3b82f6]">Role</span></div>
+                          <p className="text-xs text-[var(--color-bench-text-dim)]">{lang === 'zh-CN' && p.system.roleZh ? p.system.roleZh : p.system.role}</p>
+                        </div>
+                      )}
+                      {(p.system?.rules?.length ?? 0) > 0 && (
+                        <div className="bg-[var(--color-bench-bg)] border border-[#f59e0b]/20 rounded-lg p-3">
+                          <div className="flex items-center gap-1.5 mb-1"><div className="w-1.5 h-1.5 rounded-full bg-[#f59e0b]" /><span className="text-xs font-semibold text-[#f59e0b]">Rules</span></div>
+                          <ul className="space-y-0.5">{(lang === 'zh-CN' && p.system.rulesZh?.length ? p.system.rulesZh : p.system.rules)?.map((r, i) => <li key={i} className="text-xs text-[var(--color-bench-text-dim)]">{i + 1}. {r}</li>)}</ul>
+                        </div>
+                      )}
+                      <div className="bg-[var(--color-bench-bg)] border border-[#a855f7]/20 rounded-lg p-3">
+                        <div className="flex items-center gap-1.5 mb-1"><div className="w-1.5 h-1.5 rounded-full bg-[#a855f7]" /><span className="text-xs font-semibold text-[#a855f7]">Prompt</span></div>
+                        <pre className="text-xs text-[var(--color-bench-text-dim)] leading-relaxed whitespace-pre-wrap font-mono">{lang === 'zh-CN' && p.userZh ? p.userZh : p.user}</pre>
+                      </div>
+                      {(p.variables?.length ?? 0) > 0 && (
+                        <div className="bg-[var(--color-bench-bg)] border border-[#22c55e]/20 rounded-lg p-3">
+                          <div className="flex items-center gap-1.5 mb-1"><div className="w-1.5 h-1.5 rounded-full bg-[#22c55e]" /><span className="text-xs font-semibold text-[#22c55e]">Variables</span></div>
+                          <div className="space-y-0.5">{p.variables.map((v, i) => <div key={i} className="text-xs text-[var(--color-bench-text-dim)]"><span className="text-[#22c55e] font-mono">{'{{'}{v.name}{'}}'}</span> {lang === 'zh-CN' && v.labelZh ? v.labelZh : v.label} = {String(v.default ?? tq('(none)', '(无)'))}</div>)}</div>
+                        </div>
+                      )}
+                      {p.output_schema && (
+                        <div className="bg-[var(--color-bench-bg)] border border-[#6b7280]/20 rounded-lg p-3">
+                          <div className="flex items-center gap-1.5 mb-1"><div className="w-1.5 h-1.5 rounded-full bg-[#6b7280]" /><span className="text-xs font-semibold text-[#6b7280]">Output Schema</span></div>
+                          <pre className="text-xs text-[var(--color-bench-text-dim)] font-mono">{typeof p.output_schema === 'string' ? p.output_schema : JSON.stringify(p.output_schema, null, 2)}</pre>
+                        </div>
+                      )}
+                        </>
+                      )}
+                    </div>
+                  ) : (
+                    <pre className="text-xs text-[var(--color-bench-text)] leading-relaxed whitespace-pre-wrap font-mono bg-[var(--color-bench-bg)] rounded-lg p-4 max-h-64 overflow-y-auto">{p.user}</pre>
+                  )}
                 </div>
               )}
             </div>

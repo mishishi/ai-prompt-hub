@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, Copy, Check, Loader, ThumbsUp, ThumbsDown, Zap, Lightbulb, RefreshCw, Edit3, X, Save } from 'lucide-react';
+import { Sparkles, Copy, Check, Loader, ThumbsUp, ThumbsDown, Zap, Lightbulb, RefreshCw, Edit3, X, Save, CheckCircle2, AlertCircle } from 'lucide-react';
+import { parseEval } from '../../utils/parseEval';
+import { parseSections } from '../../utils/parseSections';
 import { aiGenerate, useQuota, getRemainingQuota, evaluatePrompt } from '../../utils/ai';
 import { findBestMatch, type TemplateMatch } from '../../data/templates';
 import { tName } from '../../data/templates/helper';
@@ -10,6 +12,128 @@ import { savePrompt, generateId } from '../../utils/storage';
 import type { Prompt } from '../../types';
 import { useT } from '../../i18n/LanguageContext';
 import { useUser } from '@clerk/clerk-react';
+
+
+const EvalProgress = ({ lang, tq }: { lang: string; tq: (en: string, zh: string) => string }) => {
+  const [doneSteps, setDoneSteps] = useState<number[]>([]);
+  const steps = lang === 'zh-CN'
+    ? ['分析 Prompt 结构完整性', '检查规则与约束一致性', '评估可用性与表达质量', '生成改进建议']
+    : ['Analyzing prompt structure', 'Checking rule consistency', 'Evaluating usability', 'Generating suggestions'];
+  useEffect(() => {
+    const delays = [300, 1100, 1900, 2700];
+    const timers = delays.map((d, i) => setTimeout(() => setDoneSteps(p => [...p, i]), d));
+    return () => timers.forEach(clearTimeout);
+  }, []);
+  return (
+    <div className="w-full max-w-sm mx-auto py-4 space-y-0" style={{ animation: 'eval-fade-in 300ms ease-out both' }}>
+      <div className="flex items-center gap-2.5 mb-4">
+        <Sparkles size={14} className="text-[var(--color-bench-accent)]" style={{ animation: 'glow-pulse 2.5s ease-in-out infinite' }} />
+        <span className="text-sm font-medium text-[var(--color-bench-text)]">
+          {lang === 'zh-CN' ? 'AI 正在评估...' : 'AI is evaluating...'}
+        </span>
+      </div>
+      <div className="space-y-1.5">
+        {steps.map((label, i) => {
+          const isDone = doneSteps.includes(i);
+          const isActive = doneSteps.length === i;
+          return (
+            <div
+              key={i}
+              className="flex items-center gap-3 py-1.5 transition-all duration-500"
+              style={{ opacity: isDone ? 0.5 : 1, animation: isActive ? "eval-checklist-pulse 1.5s ease-in-out infinite" : undefined }}
+            >
+              <div
+                className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center transition-all duration-400"
+                style={{
+                  border: isDone ? "1.5px solid var(--color-bench-success)" : isActive ? "1.5px solid var(--color-bench-accent)" : "1.5px solid var(--color-bench-border)",
+                  background: isDone ? "var(--color-bench-success)15" : isActive ? "var(--color-bench-accent)15" : "transparent",
+                  boxShadow: isActive ? "0 0 6px var(--color-bench-accent)40" : undefined,
+                }}
+              >
+                {isDone ? (
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ animation: "eval-check-pop 300ms cubic-bezier(0.34, 1.56, 0.64, 1) both" }}>
+                    <path d="M2.5 6L5 8.5L9.5 3.5" stroke="var(--color-bench-success)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                ) : isActive ? (
+                  <div className="w-2 h-2 rounded-full bg-[var(--color-bench-accent)] animate-pulse" />
+                ) : (
+                  <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-bench-border)]" />
+                )}
+              </div>
+              <span className="text-xs transition-colors duration-500" style={{ color: isDone ? "var(--color-bench-muted)" : isActive ? "var(--color-bench-accent)" : "var(--color-bench-text-dim)" }}>
+                {label}
+              </span>
+              {isDone && (
+                <span className="ml-auto text-xs text-[var(--color-bench-success)]" style={{ animation: "eval-check-pop 300ms cubic-bezier(0.34, 1.56, 0.64, 1) both" }}>
+                  {lang === 'zh-CN' ? '完成' : 'Done'}
+                </span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+const CountUpDisplay = ({ target, color }: { target: number; color: string }) => {
+  const [display, setDisplay] = useState(0);
+  useEffect(() => {
+    if (target <= 0) { setDisplay(0); return; }
+    const duration = 1500;
+    const startTime = performance.now();
+    const tick = () => {
+      const elapsed = performance.now() - startTime;
+      const p = Math.min(elapsed / duration, 1);
+      setDisplay(Math.round((1 - Math.pow(1 - p, 3)) * target));
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }, [target]);
+  return <span className="text-2xl font-bold" style={{ color }}>{display}</span>;
+};
+
+const SparkleBurst = ({ color }: { color: string }) => {
+  const particles = Array.from({ length: 8 }, (_, i) => ({
+    angle: (i / 8) * 360 + Math.random() * 20 - 10,
+    distance: 35 + Math.random() * 40,
+    size: 4 + Math.random() * 6,
+    delay: Math.random() * 0.15,
+  }));
+  return (
+    <div className="absolute inset-0 pointer-events-none" style={{ animation: "eval-sparkle-burst 0.8s ease-out forwards" }}>
+      {particles.map((p, i) => (
+        <div key={i} className="absolute rounded-full" style={{
+          width: p.size, height: p.size, background: color, left: "50%", top: "35%",
+          boxShadow: "0 0 " + (p.size * 2) + "px " + color,
+          animation: "eval-particle " + (0.6 + Math.random() * 0.4) + "s ease-out " + p.delay + "s forwards",
+          "--angle": p.angle + "deg", "--dist": p.distance + "px",
+        } as React.CSSProperties} />
+      ))}
+    </div>
+  );
+};
+
+const ResultView = ({ result, loading }: { result: string; loading: boolean }) => {
+  const sections = parseSections(result);
+  if (sections.length === 0) {
+    return <ResultView result={result || ""} loading={loading} />;
+  }
+  return (
+    <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-3 bg-[var(--color-bench-bg)]">
+      {sections.map((sec: any, i: number) => (
+        <div key={i} className="rounded-xl border overflow-hidden" style={{ borderColor: sec.color + '33' }}>
+          <div className="flex items-center gap-2 px-4 py-2.5" style={{ backgroundColor: sec.color + '14' }}>
+            <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: sec.color }} />
+            <span className="text-sm font-semibold" style={{ color: sec.color }}>{sec.title}</span>
+          </div>
+          <div className="px-4 py-3">
+            <pre className="text-sm text-[var(--color-bench-text-dim)] leading-relaxed whitespace-pre-wrap font-mono">{sec.content}</pre>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 export function GeneratePage() {
   const { user } = useUser();
@@ -29,6 +153,9 @@ export function GeneratePage() {
   const [templateMatches, setTemplateMatches] = useState<TemplateMatch[]>([]);
   const [evaluating, setEvaluating] = useState(false);
   const [evaluation, setEvaluation] = useState<string | null>(null);
+  const [evaluationOpen, setEvaluationOpen] = useState(false);
+  const evaluationPillRef = useRef<HTMLButtonElement>(null);
+  const autoOpenedRef = useRef(false);
   const [refining, setRefining] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -66,7 +193,12 @@ export function GeneratePage() {
       evaluatePrompt(fullPrompt, lang, (chunk) => setEvaluation(chunk)).then((evalText) => {
         setEvaluation(evalText);
         setEvaluating(false);
-      }).catch(() => setEvaluating(false));
+        setEvaluationOpen(true);
+        if (!autoOpenedRef.current) {
+          autoOpenedRef.current = true;
+          setTimeout(() => setEvaluationOpen(true), 500);
+        }
+      }).catch((err: any) => { console.error('[eval] failed:', err?.message); setEvaluating(false); });
       track({ type: 'ai_generate', lang, userId: user?.id, userName: getDisplayName(user), provider: user?.externalAccounts?.[0]?.provider });
     } catch (e: any) { setError(e.message || tq('API error. Please try again.', 'API 错误，请重试。')); }
     finally { setLoading(false); }
@@ -227,64 +359,110 @@ const handleSave = () => {
               </div>
             </div>
             {/* AI Self-Evaluation */}
-            {(evaluating || evaluation) && (
-            <div className="px-5 py-4 border-b border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)]/50">
-              <div className="flex items-center gap-2 mb-3">
-                <Sparkles size={14} className="text-[var(--color-bench-accent)]" />
-                <span className="text-sm font-medium text-[var(--color-bench-text)]">{tq('AI Self-Evaluation', 'AI 自评')}</span>
-                {evaluating && <Loader size={12} className="animate-spin text-[var(--color-bench-muted)] ml-1" />}
-              </div>
-              {evaluation && (() => {
-                const text = evaluation;
-                const scoreMatch = text.match(/Score:\s*(\d+)/i);
-                const score = scoreMatch ? parseInt(scoreMatch[1]) : null;
-                const strengths = (text.match(/✅[^\n]*/g) || []).map(s => s.replace(/^✅\s*/, '').trim()).filter(Boolean);
-                const improvements = (text.match(/⚠﻿[^\n]*/g) || []).map(s => s.replace(/^⚠﻿\s*/, '').trim()).filter(Boolean);
-                const suggestions = (text.match(/💡[^\n]*/g) || []).map(s => s.replace(/^💡\s*/, '').trim()).filter(Boolean);
-                const scoreColor = score !== null
-                  ? score >= 80 ? 'text-[var(--color-bench-success)]' : score >= 50 ? 'text-[var(--color-bench-accent)]' : 'text-[var(--color-bench-error)]'
-                  : 'text-[var(--color-bench-muted)]';
-                return (
-                  <div className="space-y-3">
-                    {score !== null && (
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-[var(--color-bench-text-dim)]">{tq('Score', '评分')}: </span>
-                        <span className={"text-lg font-bold " + scoreColor}>{score}/100</span>
-                        <div className="flex-1 h-1.5 rounded-full bg-[var(--color-bench-bg)]">
-                          <div className="h-full rounded-full bg-current transition-all duration-700" style={{ width: score + '%' }} />
+            {evaluating && !evaluation && (
+              <EvalProgress lang={lang} tq={tq} />
+            )}
+            {evaluation && (() => {
+              const ev = parseEval(evaluation);
+              const score = ev.score;
+              const scoreColor = score !== null
+                ? score >= 80 ? 'var(--color-bench-success)' : score >= 50 ? 'var(--color-bench-accent)' : 'var(--color-bench-error)'
+                : 'var(--color-bench-muted)';
+              const isHigh = score !== null && score >= 50;
+              return (
+                <>
+                  <div className="px-5 py-3 border-b border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] flex items-center justify-center">
+                    <button
+                      ref={evaluationPillRef}
+                      onClick={() => setEvaluationOpen(true)}
+                      className="group flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all duration-300 border"
+                      style={{
+                        backgroundColor: scoreColor + '14',
+                        borderColor: scoreColor + '33',
+                        color: scoreColor,
+                        boxShadow: '0 0 14px ' + scoreColor + '30',
+                        animation: 'glow-pulse 2.5s ease-in-out infinite'
+                      }}
+                    >
+                      <Sparkles size={12} className="relative z-10" />
+                      <span className="relative z-10">{tq('AI Score', 'AI 评分')} {score != null ? score : '?'}/100</span>
+                    </button>
+                  </div>
+                  {evaluationOpen && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setEvaluationOpen(false)}>
+                      <div className="absolute inset-0 bg-black/60" style={{ animation: 'eval-fade-in 250ms ease-out both' }} />
+                      <div
+                        className="relative w-full max-w-lg bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-2xl shadow-2xl overflow-hidden"
+                        onClick={(e) => e.stopPropagation()}
+                        style={{ animation: 'eval-scale-in 400ms cubic-bezier(0.34, 1.56, 0.64, 1) both' }}
+                      >
+                        <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--color-bench-border)]">
+                          <div className="flex items-center gap-2.5">
+                            <Sparkles size={18} className="text-[var(--color-bench-accent)]" />
+                            <h3 className="text-sm font-semibold text-[var(--color-bench-text)]">{tq('AI Self-Evaluation', 'AI 自评')}</h3>
+                          </div>
+                          <button onClick={() => setEvaluationOpen(false)} className="p-1.5 rounded-lg hover:bg-white/5 transition-colors"><X size={16} className="text-[var(--color-bench-muted)]" /></button>
+                        </div>
+                        <div className="p-6 max-h-[70vh] overflow-y-auto space-y-5">
+                          {score !== null && (
+                            <div className="flex flex-col items-center py-2 relative">
+                              {isHigh && <SparkleBurst color={scoreColor} />}
+                              <div className="relative w-24 h-24 mb-3">
+                                <svg className="w-24 h-24 -rotate-90" viewBox="0 0 96 96">
+                                  <circle cx="48" cy="48" r="40" fill="none" stroke="var(--color-bench-border)" strokeWidth="6" />
+                                  <circle cx="48" cy="48" r="40" fill="none" stroke={scoreColor} strokeWidth="6" strokeLinecap="round"
+                                    strokeDasharray={2 * Math.PI * 40}
+                                    strokeDashoffset={2 * Math.PI * 40 * (1 - score / 100)}
+                                    style={{ transition: 'stroke-dashoffset 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
+                                  />
+                                </svg>
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                  <CountUpDisplay target={score} color={scoreColor} />
+                                </div>
+                              </div>
+                              <span className="text-sm text-[var(--color-bench-text-dim)]">{tq('out of 100', '/ 100')}</span>
+                            </div>
+                          )}
+                          {ev.strengths.length > 0 && (
+                            <div className="eval-stagger-item" style={{ animationDelay: '100ms' }}>
+                              <div className="flex items-center gap-2 mb-2">
+                                <CheckCircle2 size={14} className="text-[var(--color-bench-success)]" />
+                                <span className="text-sm font-semibold text-[var(--color-bench-success)]">{tq('Strengths', '优点')}</span>
+                              </div>
+                              <ul className="space-y-1.5">
+                                {ev.strengths.map((s: string, i: number) => <li key={i} className="text-sm text-[var(--color-bench-text-dim)] pl-6">{s}</li>)}
+                              </ul>
+                            </div>
+                          )}
+                          {ev.improvements.length > 0 && (
+                            <div className="eval-stagger-item" style={{ animationDelay: '200ms' }}>
+                              <div className="flex items-center gap-2 mb-2">
+                                <AlertCircle size={14} className="text-[var(--color-bench-accent)]" />
+                                <span className="text-sm font-semibold text-[var(--color-bench-accent)]">{tq('Improvements', '可改进')}</span>
+                              </div>
+                              <ul className="space-y-1.5">
+                                {ev.improvements.map((s: string, i: number) => <li key={i} className="text-sm text-[var(--color-bench-text-dim)] pl-6">{s}</li>)}
+                              </ul>
+                            </div>
+                          )}
+                          {ev.suggestions.length > 0 && (
+                            <div className="eval-stagger-item" style={{ animationDelay: '300ms' }}>
+                              <div className="flex items-center gap-2 mb-2">
+                                <Lightbulb size={14} className="text-[var(--color-bench-accent)] opacity-80" />
+                                <span className="text-sm font-semibold text-[var(--color-bench-accent)] opacity-80">{tq('Suggestions', '建议')}</span>
+                              </div>
+                              <ul className="space-y-1.5">
+                                {ev.suggestions.map((s: string, i: number) => <li key={i} className="text-sm text-[var(--color-bench-text-dim)] pl-6">{s}</li>)}
+                              </ul>
+                            </div>
+                          )}
                         </div>
                       </div>
-                    )}
-                    {strengths.length > 0 && (
-                      <div>
-                        <span className="text-sm text-[var(--color-bench-success)] font-medium">{'✅'} {tq('Strengths', '优点')}</span>
-                        <ul className="mt-1 space-y-0.5">
-                          {strengths.map((s, i) => <li key={i} className="text-sm text-[var(--color-bench-text-dim)] pl-2">{s}</li>)}
-                        </ul>
-                      </div>
-                    )}
-                    {improvements.length > 0 && (
-                      <div>
-                        <span className="text-sm text-[var(--color-bench-accent)] font-medium">{'⚠﻿'} {tq('Improvements', '可改进')}</span>
-                        <ul className="mt-1 space-y-0.5">
-                          {improvements.map((s, i) => <li key={i} className="text-sm text-[var(--color-bench-text-dim)] pl-2">{s}</li>)}
-                        </ul>
-                      </div>
-                    )}
-                    {templateMatches.length > 0 && (
-                      <div>
-                        <span className="text-sm text-[var(--color-bench-accent)]/80 font-medium">{'💡'} {tq('Suggestions', '建议')}</span>
-                        <ul className="mt-1 space-y-0.5">
-                          {suggestions.map((s, i) => <li key={i} className="text-sm text-[var(--color-bench-text-dim)] pl-2">{s}</li>)}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                );
-              })()}
-            </div>
-            )}
-            {!editing ? (
+                    </div>
+                  )}
+                </>
+              );
+            })()}{!editing ? (
             <div className="flex-1 overflow-y-auto bg-[var(--color-bench-bg)]"><pre className="p-4 md:p-6 text-sm text-[var(--color-bench-text)] leading-relaxed whitespace-pre-wrap font-mono">{result}{loading && <span className="ai-cursor" />}</pre></div>
             ) : (
             <div className="flex-1 flex flex-col">

@@ -280,8 +280,8 @@ export async function evaluatePrompt(
   onChunk: (text: string) => void
 ): Promise<string> {
   const system = lang === "zh-CN"
-    ? "你是一位 Prompt 质量评审专家。请对以下 Prompt 进行评分和改进建议。用以下格式回复：Score: <0-100>\n✅ <优点1>\n✅ <优点2>\n⚠️ <可改进1>\n⚠️ <可改进2>\n💡 <建议1>\n💡 <建议2>"
-    : "You are a prompt quality reviewer. Score the following prompt and provide improvement suggestions. Reply in this format: Score: <0-100>\n✅ <strength1>\n✅ <strength2>\n⚠️ <improvement1>\n⚠️ <improvement2>\n💡 <suggestion1>\n💡 <suggestion2>";
+    ? "你是一位 Prompt 质量评审专家。请对以下 Prompt 进行评分和改进建议。\n\n严格按以下格式输出（每行必须以指定 emoji 开头，不要添加额外说明）：\n\nScore: <0-100>\n[+] <优点1>\n[+] <优点2>\n[-] <可改进1>\n[-] <可改进2>\n[~] <建议1>\n[~] <建议2>\n\n注意：不要输出标题文字，每条严格以 [+], [-], [~] 开头。"
+    : "You are a prompt quality reviewer. Score the following prompt and provide improvement suggestions.\n\nStrictly follow this format (each line must start with the specified emoji, no extra headings):\n\nScore: <0-100>\n[+] <strength1>\n[+] <strength2>\n[-] <improvement1>\n[-] <improvement2>\n[~] <suggestion1>\n[~] <suggestion2>\n\nImportant: Do NOT output headings. Each line must start strictly with [+], [-], or [~].";
 
   const userMsg = lang === "zh-CN" ? `请评审以下 Prompt：\n\n${promptText}` : `Please evaluate this prompt:\n\n${promptText}`;
 

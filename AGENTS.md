@@ -49,6 +49,27 @@ Correct approach (no exceptions):
 check actual line endings with `file.indexOf("\r\n")`. Files can switch between `\r\n`
 and `\n` after `git checkout`.
 
+**Silent failure trap:** `.replace()` returns the original string when no match is found —
+it never throws. Multi-step replace chains silently skip failed steps, leaving half-fixed files.
+Always verify: check `c.includes('success marker')` and `process.exit(1)` on failure.
+
+**Prefer `apply_patch` for targeted edits.** Patch format shows exact line-level diffs,
+fails loudly on mismatch, and is easier to review than regex replacements.
+
+**Before complex edits — mandatory stash flow:**
+1. `git stash push -m "pre-edit: <what>"` — saves all uncommitted changes
+2. Make the changes
+3. If broken: `git checkout -- <file>` then `git stash pop` — restores original state
+4. NEVER `git checkout -- .` without stashing first — it discards uncommitted work
+5. This applies to ANY multi-step edit, not just "complex" ones. If unsure, stash.
+
+**If >3 changes in one file**, rewrite the whole file instead of chaining `.replace()`.
+Read → construct new content → `writeFileSync` once. Fewer moving parts, fewer failures.
+
+**Always normalize line endings** before string matching. Read with `fs.readFileSync(f, 'utf8')`,
+then `c = c.replace(/\r\n/g, '\n')`. Write back with `\n`. This eliminates Windows CRLF
+matching failures.
+
 ## Font Scale
 
 Redefined in `src/index.css` `@theme` block (not global replacements):
