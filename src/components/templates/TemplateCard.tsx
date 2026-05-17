@@ -58,8 +58,9 @@ export function TemplateCard({ template, onClick, score = 0, copyCount = 0, onCo
             {getPlatformLabel(platform, lang)}
           </span>
           {template.verified && (
-            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-xs font-semibold bg-[var(--color-bench-success)]/10 text-[var(--color-bench-success)]">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold bg-[var(--color-bench-success)]/10 text-[var(--color-bench-success)]">
               <BadgeCheck size={11} />
+              {t('card.verified')}
             </span>
           )}
           <div className="flex items-center gap-1.5">
