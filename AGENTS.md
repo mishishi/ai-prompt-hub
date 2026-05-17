@@ -45,6 +45,10 @@ Correct approach (no exceptions):
 , `"`, `'`, `--`, Chinese characters
 - When in doubt, use `.cjs`
 
+**Line ending trap:** Git may convert CRLF↔LF on checkout. Before replacing text, always
+check actual line endings with `file.indexOf("\r\n")`. Files can switch between `\r\n`
+and `\n` after `git checkout`.
+
 ## Font Scale
 
 Redefined in `src/index.css` `@theme` block (not global replacements):
