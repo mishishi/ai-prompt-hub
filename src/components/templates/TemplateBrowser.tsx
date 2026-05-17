@@ -150,6 +150,7 @@ export function TemplateBrowser() {
         <button onClick={() => { setActiveTab('library'); setShowFavorites(false); }} className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${activeTab === 'library' ? 'bg-[var(--color-bench-accent)]/12 text-[var(--color-bench-accent)] shadow-[0_0_16px_var(--color-bench-accent-glow)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}>
           <Star size={15} fill={activeTab === 'library' ? 'currentColor' : 'none'} />
           {tq('Library', '\u6A21\u677F\u5E93')}
+          <span className="ml-1 px-1.5 py-0.5 rounded-full text-xs bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)]">{templates.length}</span>
         </button>
         <button onClick={() => { setActiveTab('community'); fetchCommunity(); setShowFavorites(false); setActiveCategory(null); }} className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${activeTab === 'community' ? 'bg-[var(--color-bench-accent)]/12 text-[var(--color-bench-accent)] shadow-[0_0_16px_var(--color-bench-accent-glow)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}>
           <Globe size={15} />
