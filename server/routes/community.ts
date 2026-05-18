@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
-import { db } from '../../lib/db/index';
-import { communityTemplates, templateFeedback, templateComments } from '../../lib/db/schema';
+import { db } from '../../lib/db/index.js';
+import { communityTemplates, templateFeedback, templateComments } from '../../lib/db/schema.js';
 import { eq, desc, sql, and, gte } from 'drizzle-orm';
 
 interface PublishBody {
