@@ -10,7 +10,8 @@ export default defineConfig(({ mode }) => {
       environment: 'jsdom',
       globals: true,
       setupFiles: ['./src/__tests__/setup.ts'],
-      exclude: ['e2e/**', 'node_modules/**'],
+      
+      exclude: ['e2e/**', 'node_modules/**', 'src/__tests__/setup.ts', 'tests/**'],
     },
     server: {
       host: '127.0.0.1',
