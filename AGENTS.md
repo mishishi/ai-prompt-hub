@@ -144,12 +144,15 @@ npx vitest run   # 30 tests across 4 files
 
 ## Mandatory Post-Edit Verification
 
-After ANY file modification, run ALL THREE before reporting success:
+After ANY file modification, run ALL FOUR before reporting success:
 - `npx tsc --noEmit`
 - `npx vite build`
-- `npx eslint src/ --ext .ts,.tsx --max-warnings 0`
+- `npx vitest run`
+- `npx eslint src/ --ext .ts,.tsx --max-warnings 0` (if eslint configured)
 
 If any fail, fix the error and re-verify. Do NOT report "done" until all pass clean.
+
+**Never commit without passing tests.** Run tests as part of the verification flow before `git commit`.
 
 When adding new interactive elements (buttons, onClick handlers, new components),
 also add at least one Vitest smoke test that renders the component.
