@@ -23,7 +23,7 @@ function saveQuota(q: QuotaData) {
   localStorage.setItem(QUOTA_KEY, JSON.stringify(q));
 }
 
-export function useQuota(): boolean {
+export function checkQuota(): boolean {
   const q = loadQuota();
   if (q.used >= DAILY_QUOTA) return false;
   q.used++;
@@ -300,7 +300,7 @@ export async function evaluatePrompt(
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error((err as any).error?.message || `API error ${res.status}`);
+    throw new Error((err as { error?: { message?: string } }).error?.message || `API error ${res.status}`);
   }
 
   const reader = res.body?.getReader();
@@ -326,7 +326,7 @@ export async function evaluatePrompt(
         const j = JSON.parse(data);
         const content = j.choices?.[0]?.delta?.content || "";
         full += content;
-      } catch {}
+      } catch { /* parse failure, skip chunk */ }
     }
     buffer.length = 0;
     buffer.push(lines[lines.length - 1]);

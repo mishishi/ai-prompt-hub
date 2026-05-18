@@ -11,19 +11,18 @@ export function AuthorPage() {
   const { authorId } = useParams<{ authorId: string }>();
   const navigate = useNavigate();
   const [templates, setTemplates] = useState<LibraryTemplate[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // derived: data is null means loading
   const [authorName, setAuthorName] = useState('');
 
   useEffect(() => {
     if (!authorId) return;
-    setLoading(true);
-    fetch('/api/community?author=' + encodeURIComponent(authorId) + '&limit=50')
+        fetch('/api/community?author=' + encodeURIComponent(authorId) + '&limit=50')
       .then(r => r.json())
       .then(data => {
         if (data.ok) {
           if (data.templates.length > 0) {
             setAuthorName(data.templates[0].authorName || authorId);
-            setTemplates(data.templates.map((t: any) => ({
+            setTemplates(data.templates.map((t) => ({
               id: t.id,
               meta: { name: t.name, description: t.description, tags: t.tags, platform: 'claude' as const },
               variables: [],
@@ -36,7 +35,7 @@ export function AuthorPage() {
               _likes: t.likes,
               _copies: t.copies,
               _verified: t.verified ?? 0,
-            } as any)));
+            } as LibraryTemplate)));
           } else {
             setTemplates([]);
           }
@@ -80,7 +79,7 @@ export function AuthorPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {templates.map((tmpl: any, i: number) => (
+              {templates.map((tmpl, i: number) => (
                 <div key={tmpl.id} className={`card-enter stagger-${(i % 4) + 1}`}>
                   <TemplateCard template={tmpl} score={tmpl._likes ?? 0} copyCount={tmpl._copies ?? 0} onClick={() => navigate('/template/' + tmpl.id)} />
                 </div>

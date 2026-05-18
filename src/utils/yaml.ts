@@ -15,15 +15,15 @@ export function promptToYaml(p: Prompt): string {
     user: p.user,
   };
 
-  if (p.meta.nameZh) (obj.meta as any).nameZh = p.meta.nameZh;
-  if (p.meta.descriptionZh) (obj.meta as any).descriptionZh = p.meta.descriptionZh;
-  if (p.system.roleZh) (obj.system as any).roleZh = p.system.roleZh;
-  if (p.system.personality) (obj.system as any).personality = p.system.personality;
-  if (p.system.personalityZh) (obj.system as any).personalityZh = p.system.personalityZh;
-  if (p.system.rules && p.system.rules.length > 0) (obj.system as any).rules = p.system.rules;
-  if (p.system.rulesZh && p.system.rulesZh.length > 0) (obj.system as any).rulesZh = p.system.rulesZh;
-  if (p.system.stop_rules && p.system.stop_rules.length > 0) (obj.system as any).stop_rules = p.system.stop_rules;
-  if (p.system.stop_rulesZh && p.system.stop_rulesZh.length > 0) (obj.system as any).stop_rulesZh = p.system.stop_rulesZh;
+  if (p.meta.nameZh) (obj.meta as Record<string,unknown>).nameZh = p.meta.nameZh;
+  if (p.meta.descriptionZh) (obj.meta as Record<string,unknown>).descriptionZh = p.meta.descriptionZh;
+  if (p.system.roleZh) (obj.system as Record<string,unknown>).roleZh = p.system.roleZh;
+  if (p.system.personality) (obj.system as Record<string,unknown>).personality = p.system.personality;
+  if (p.system.personalityZh) (obj.system as Record<string,unknown>).personalityZh = p.system.personalityZh;
+  if (p.system.rules && p.system.rules.length > 0) (obj.system as Record<string,unknown>).rules = p.system.rules;
+  if (p.system.rulesZh && p.system.rulesZh.length > 0) (obj.system as Record<string,unknown>).rulesZh = p.system.rulesZh;
+  if (p.system.stop_rules && p.system.stop_rules.length > 0) (obj.system as Record<string,unknown>).stop_rules = p.system.stop_rules;
+  if (p.system.stop_rulesZh && p.system.stop_rulesZh.length > 0) (obj.system as Record<string,unknown>).stop_rulesZh = p.system.stop_rulesZh;
   if (p.userZh) obj.userZh = p.userZh;
 
   if (p.variables.length > 0) {
@@ -67,7 +67,7 @@ export function yamlToPrompt(yamlStr: string, id: string, source: Prompt['source
     };
 
     const variables: PromptVariable[] = Array.isArray(obj.variables)
-      ? (obj.variables as any[]).map((v: any) => ({
+      ? (obj.variables).map((v) => ({
           name: String(v.name || ''),
           label: String(v.label || ''),
           labelZh: v.labelZh ? String(v.labelZh) : undefined,
@@ -133,26 +133,26 @@ export function renderPrompt(p: Prompt, values: Record<string, string | boolean>
 }
 
 export function templateToCleanYaml(t: Prompt | Record<string, unknown>, lang?: string): string {
-  const anyT = t as any;
+  const anyT = t as Prompt | Record<string, unknown>;
   if (t.meta && t.system) {
     const isZh = lang === 'zh-CN';
-    const filtered: any = {
-      id: anyT.id || '',
+    const filtered: Record<string, unknown> = {
+      id: (anyT as Record<string,unknown>).id || '',
       yaml: '',
       meta: {
-        name: isZh && anyT.meta.nameZh ? anyT.meta.nameZh : anyT.meta.name,
-        description: isZh && anyT.meta.descriptionZh ? anyT.meta.descriptionZh : anyT.meta.description,
-        tags: anyT.meta.tags,
-        platform: anyT.meta.platform,
+        name: isZh && (anyT as Record<string,unknown>).meta.nameZh ? (anyT as Record<string,unknown>).meta.nameZh : (anyT as Record<string,unknown>).meta.name,
+        description: isZh && (anyT as Record<string,unknown>).meta.descriptionZh ? (anyT as Record<string,unknown>).meta.descriptionZh : (anyT as Record<string,unknown>).meta.description,
+        tags: (anyT as Record<string,unknown>).meta.tags,
+        platform: (anyT as Record<string,unknown>).meta.platform,
       },
       system: {
-        role: isZh && anyT.system.roleZh ? anyT.system.roleZh : anyT.system.role,
-        personality: isZh && anyT.system.personalityZh ? anyT.system.personalityZh : anyT.system.personality,
-        rules: isZh && anyT.system.rulesZh ? anyT.system.rulesZh : (anyT.system.rules || []),
-        stop_rules: isZh && anyT.system.stop_rulesZh ? anyT.system.stop_rulesZh : (anyT.system.stop_rules || []),
+        role: isZh && (anyT as Record<string,unknown>).system.roleZh ? (anyT as Record<string,unknown>).system.roleZh : (anyT as Record<string,unknown>).system.role,
+        personality: isZh && (anyT as Record<string,unknown>).system.personalityZh ? (anyT as Record<string,unknown>).system.personalityZh : (anyT as Record<string,unknown>).system.personality,
+        rules: isZh && (anyT as Record<string,unknown>).system.rulesZh ? (anyT as Record<string,unknown>).system.rulesZh : ((anyT as Record<string,unknown>).system.rules || []),
+        stop_rules: isZh && (anyT as Record<string,unknown>).system.stop_rulesZh ? (anyT as Record<string,unknown>).system.stop_rulesZh : ((anyT as Record<string,unknown>).system.stop_rules || []),
       },
-      user: isZh && anyT.userZh ? anyT.userZh : anyT.user,
-      variables: (anyT.variables || []).map((v: any) => ({
+      user: isZh && (anyT as Record<string,unknown>).userZh ? (anyT as Record<string,unknown>).userZh : (anyT as Record<string,unknown>).user,
+      variables: ((anyT as Record<string,unknown>).variables || []).map((v: PromptVariable) => ({
         name: v.name,
         label: isZh && v.labelZh ? v.labelZh : v.label,
         type: v.type,
@@ -166,23 +166,23 @@ export function templateToCleanYaml(t: Prompt | Record<string, unknown>, lang?: 
       version: t.version || 1,
       versions: [],
     };
-    if (anyT.output_schema) filtered.output_schema = anyT.output_schema;
+    if ((anyT as Record<string,unknown>).output_schema) filtered.output_schema = (anyT as Record<string,unknown>).output_schema;
     return promptToYaml(filtered);
   }
   const isZh = lang === 'zh-CN';
-  const a = t as any;
+  const a = t as Prompt;
   const meta = { name: (isZh && a.nameZh ? a.nameZh : a.name) || '', nameZh: a.nameZh || undefined, description: (isZh && a.shortZh ? a.shortZh : a.short) || '', descriptionZh: a.shortZh || undefined, tags: a.tags || a.category || [], platform: 'codex' as const };
   const system = { role: '', rules: [], rulesZh: [] };
   const user = (isZh && a.promptZh ? a.promptZh : a.prompt) || '';
   const userZh = a.promptZh || undefined;
-  const variables = (a.variables || []).map((v: any) => ({ name: v.name || '', label: (isZh && v.labelZh ? v.labelZh : v.label) || '', labelZh: v.labelZh || undefined, type: v.type || 'string', options: (isZh && v.optionsZh ? v.optionsZh : v.options) || undefined, optionsZh: v.optionsZh || undefined, default: v.default, required: v.required }));
+  const variables = (a.variables || []).map((v) => ({ name: v.name || '', label: (isZh && v.labelZh ? v.labelZh : v.label) || '', labelZh: v.labelZh || undefined, type: v.type || 'string', options: (isZh && v.optionsZh ? v.optionsZh : v.options) || undefined, optionsZh: v.optionsZh || undefined, default: v.default, required: v.required }));
   return promptToYaml({ id: a.id || '', yaml: '', meta, variables, system, user, userZh, source: 'library', createdAt: Date.now(), updatedAt: Date.now(), version: 1, versions: [] });
 }
 
 export function yamlToTemplate(y: string, id: string): (Prompt & { name?: string; short?: string; description?: string; category?: string[]; tags?: string[]; difficulty?: string; prompt?: string; promptZh?: string }) | null {
   const p = yamlToPrompt(y, id, 'forked');
   if (!p) return null;
-  return { ...p, name: p.meta.name, short: p.meta.description.slice(0, 80), description: p.meta.description, category: p.meta.tags, tags: p.meta.tags, difficulty: 'Intermediate' as const, prompt: p.user, promptZh: p.userZh, variables: p.variables.map(v => ({ name: v.name, label: v.label, labelZh: (v as any).labelZh, type: v.type, options: v.options, optionsZh: (v as any).optionsZh, default: v.default, required: v.required })) };
+  return { ...p, name: p.meta.name, short: p.meta.description.slice(0, 80), description: p.meta.description, category: p.meta.tags, tags: p.meta.tags, difficulty: 'Intermediate' as const, prompt: p.user, promptZh: p.userZh, variables: p.variables.map(v => ({ name: v.name, label: v.label, labelZh: v.labelZh, type: v.type, options: v.options, optionsZh: v.optionsZh, default: v.default, required: v.required })) };
 }
 
 export const templateToYaml = templateToCleanYaml;

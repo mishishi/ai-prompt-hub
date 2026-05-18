@@ -1,5 +1,5 @@
 ﻿import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { AuthorPage } from '../components/templates/AuthorPage';
 import { LanguageProvider } from '../i18n/LanguageContext';
@@ -62,7 +62,7 @@ describe('AuthorPage', () => {
           ],
         }),
       })
-    ) as any;
+    ) ;
 
     const { container } = render(
       <MemoryRouter>
@@ -84,7 +84,7 @@ describe('AuthorPage', () => {
   it('shows empty state when no templates', async () => {
     global.fetch = vi.fn(() =>
       Promise.resolve({ json: () => Promise.resolve({ ok: true, templates: [] }) })
-    ) as any;
+    ) ;
 
     const { container } = render(
       <MemoryRouter>

@@ -12,7 +12,7 @@ interface Comment {
 }
 
 export function CommentsSection({ templateId }: { templateId: string }) {
-  const { t, lang } = useT();
+  const { t } = useT();
   const { user } = useUser();
   const [comments, setComments] = useState<Comment[]>([]);
   const [text, setText] = useState('');
@@ -47,7 +47,7 @@ export function CommentsSection({ templateId }: { templateId: string }) {
         setComments(prev => [data.comment, ...prev]);
         setText('');
       }
-    } catch {}
+    } catch { /* no comments yet */ }
     setSending(false);
   };
 

@@ -16,11 +16,17 @@ export default defineConfig([
       reactRefresh.configs.vite,
     ],
     languageOptions: {
-      globals: globals.browser,
+      globals: { ...globals.browser, React: true },
     },
     rules: {
       'no-undef': 'error',
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+    },
+  },
+  {
+    files: ['**/__tests__/**'],
+    languageOptions: {
+      globals: { ...globals.vitest, global: true },
     },
   },
 ])

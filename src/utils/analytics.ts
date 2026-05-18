@@ -86,7 +86,7 @@ export function clearEvents() {
 }
 
 if (typeof window !== 'undefined') {
-  (window as any).__pb_stats = getStats;
-  (window as any).__pb_events = getEvents;
-  (window as any).__pb_clear = clearEvents;
+  (window as Record<string, unknown>).__pb_stats = getStats;
+  (window as Record<string, unknown>).__pb_events = getEvents;
+  (window as Record<string, unknown>).__pb_clear = clearEvents;
 }

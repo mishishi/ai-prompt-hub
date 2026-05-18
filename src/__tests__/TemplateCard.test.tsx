@@ -1,5 +1,5 @@
 ﻿import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { TemplateCard } from '../components/templates/TemplateCard';
 import { LanguageProvider } from '../i18n/LanguageContext';
@@ -23,8 +23,8 @@ vi.mock('../utils/clipboard', () => ({
   copyToClipboard: vi.fn(),
 }));
 
-function renderCard(overrides: any = {}) {
-  const template: any = {
+function renderCard(overrides: Record<string, unknown> = {}) {
+  const template = {
     id: 'test-1',
     meta: {
       name: 'Test Template',

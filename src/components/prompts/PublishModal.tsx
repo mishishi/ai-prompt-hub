@@ -47,7 +47,7 @@ export function PublishModal({ prompt, authorId, authorName, onClose, onPublishe
       const data = await res.json();
       if (!data.ok) throw new Error(data.error);
       onPublished();
-    } catch (e: any) {
+    } catch (e: unknown) {
       setError(e.message);
     } finally {
       setPublishing(false);

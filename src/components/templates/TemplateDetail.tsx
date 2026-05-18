@@ -12,8 +12,7 @@ import { useT } from '../../i18n/LanguageContext';
 import { useUser } from '@clerk/clerk-react';
 import { useToast } from '../ui/Toast';
 import { CommentsSection } from './CommentsSection';
-import { savePrompt, generateId, addRecentView } from '../../utils/storage';
-import type { Prompt } from '../../types';
+import { addRecentView } from '../../utils/storage';
 export function TemplateDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -25,15 +24,15 @@ export function TemplateDetail() {
   // Community template — fetch from API when not found locally
   const [communityTemplate, setCommunityTemplate] = useState<LibraryTemplate | null>(null);
   const [communityLoading, setCommunityLoading] = useState(false);
+  const effectiveLoading = communityLoading && !localTemplate;
   useEffect(() => {
     if (localTemplate || communityTemplate) return;
-    setCommunityLoading(true);
     fetch('/api/community/' + id)
       .then(r => r.json())
       .then(data => {
         if (data.ok && data.template) {
           setCommunityTemplate({
-            _community: true as any,
+            _community: true,
             _verified: data.template.verified ?? 0,
             id: data.template.id,
             meta: {
@@ -49,7 +48,7 @@ export function TemplateDetail() {
             user: data.template.prompt,
             category: [data.template.category],
             difficulty: data.template.difficulty || 'Beginner',
-          } as any);
+          } as LibraryTemplate);
         }
       })
       .catch(() => {})
@@ -57,19 +56,19 @@ export function TemplateDetail() {
   }, [id, localTemplate, communityTemplate]);
 
   const template = localTemplate || communityTemplate;
-  const tipsText = template ? tTips(template as any, lang) : '';
+  const tipsText = template ? tTips(template, lang) : '';
   const hasExpected = !!(template?.expectedOutput || (template?.expectedDeliverables?.length ?? 0) > 0);
   const [values, setValues] = useState<Record<string, string | boolean | string[]>>({});
   const [copied, setCopied] = useState(false);
   const [flash, setFlash] = useState(false);
-  const [saved, setSaved] = useState(false);
-  const [popoverOpen, setPopoverOpen] = useState(false);
+    const [popoverOpen, setPopoverOpen] = useState(false);
   const [examplesOpen, setExamplesOpen] = useState(false);
   const [checklistOpen, setChecklistOpen] = useState(false);
   const [antiOpen, setAntiOpen] = useState(false);
   const [sourceView, setSourceView] = useState(true);
   const [feedback, setFeedback] = useState<"up" | "down" | null>(null);
   const [ready, setReady] = useState(false);
+  const [saveTicker, setSaveTicker] = useState(0);
   const [mobileTab, setMobileTab] = useState<'params' | 'preview'>('params');
   const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
   useEffect(() => {
@@ -85,7 +84,7 @@ export function TemplateDetail() {
     const setMeta = (attr: string, val: string, isProp: boolean) => {
       const sel = isProp ? 'meta[property="' + attr + '"]' : 'meta[name="' + attr + '"]';
       let el = document.querySelector(sel) as HTMLMetaElement | null;
-      if (!el) { el = document.createElement('meta'); isProp ? el.setAttribute('property', attr) : el.setAttribute('name', attr); document.head.appendChild(el); }
+      if (!el) { el = document.createElement('meta'); if (isProp) { el.setAttribute('property', attr); } else { el.setAttribute('name', attr); } document.head.appendChild(el); }
       el.content = val;
     };
     setMeta('description', desc, false);
@@ -100,10 +99,12 @@ export function TemplateDetail() {
       addRecentView(template.id);
       const defaults: Record<string, string | boolean | string[]> = {};
       template.variables.forEach((v) => { if (v.default !== undefined) defaults[v.name] = v.default; });
-      setValues(defaults);
-      setReady(true);
+      requestAnimationFrame(() => {
+        setValues(defaults);
+        setReady(true);
+      });
     }
-  }, [template]);
+  }, [template, saveTicker]);
   const rendered = useMemo(() => {
     if (!template) return '';
     return renderPrompt(template, lang, values);
@@ -112,7 +113,7 @@ export function TemplateDetail() {
     ? (<>
 
                     <div className="space-y-3 overflow-y-auto max-h-[calc(100vh-200px)] md:max-h-[calc(100vh-280px)]">
-                      {parseSections(template.user).map((sec: any, i: number) => (
+                      {parseSections(template.user).map((sec, i: number) => (
                         <div key={i} className="bg-[var(--color-bench-bg)] border rounded-xl p-4" style={{ borderColor: sec.color + '33' }}>
                           <div className="flex items-center gap-2 mb-2">
                             <div className="w-2 h-2 rounded-full" style={{ backgroundColor: sec.color }} />
@@ -164,7 +165,7 @@ export function TemplateDetail() {
                       <span className="text-sm font-semibold text-[#22c55e]">{tq('Variables', '变量')} (variables)</span>
                     </div>
                     <div className="space-y-1.5">
-                      {template.variables.map((v: any, i: number) => {
+                      {template.variables.map((v, i: number) => {
                         const val = values[v.name];
                         const label = (lang === 'zh-CN' ? v.labelZh : v.label) || v.name;
                         return (
@@ -208,29 +209,29 @@ export function TemplateDetail() {
     try {
       const key = 'promptbench-saved-templates';
       const arr = JSON.parse(localStorage.getItem(key) || '[]');
-      const idx = arr.findIndex((s: any) => s.id === template?.id);
+      const idx = arr.findIndex((s: { id: string }) => s.id === template?.id);
       if (idx >= 0) {
         arr.splice(idx, 1);
-        setSaved(false);
+        setSaveTicker(t => t + 1);
         toast.show(tq("Removed from My Prompts", "已从我的 Prompt 移除"));
       } else {
         arr.push({
           id: template?.id,
-          name: tName(template as any, lang),
+          name: tName(template, lang),
           prompt: template?.user || '',
           savedAt: Date.now(),
         });
-        setSaved(true);
+        setSaveTicker(t => t + 1);
         toast.show(tq("Saved to My Prompts", "已保存到我的 Prompt"));
       }
       localStorage.setItem(key, JSON.stringify(arr));
-    } catch {}
+    } catch { /* storage write failed */ }
   };
 
-  useEffect(() => {
-    if (!template) return;
+  const saved = useMemo(() => {
+    if (!template) return false;
     const arr = JSON.parse(localStorage.getItem('promptbench-saved-templates') || '[]');
-    setSaved(arr.some((s: any) => s.id === template.id));
+    return arr.some((s: { id: string }) => s.id === template.id);
   }, [template]);
 const handleFeedback = async (value: 'up' | 'down') => {
     setFeedback(value);
@@ -244,10 +245,10 @@ const handleFeedback = async (value: 'up' | 'down') => {
         });
         const data = await res.json();
         if (!data.ok) console.warn('feedback failed')
-      } catch {}
+      } catch { /* feedback api failed */ }
     } else {
       const fb = JSON.parse(localStorage.getItem('promptbench-tpl-feedback') || '[]');
-      const existing = fb.findIndex((f: any) => f.id === template!.id);
+      const existing = fb.findIndex((f: { id: string; value?: string; ts?: number }) => f.id === template!.id);
       if (existing >= 0) fb[existing].value = value;
       else fb.push({ id: template!.id, value, ts: Date.now() });
       localStorage.setItem('promptbench-tpl-feedback', JSON.stringify(fb));
@@ -261,7 +262,7 @@ const handleCopy = async () => {
     setFlash(true);
     setTimeout(() => { setCopied(false); setFlash(false); }, 2000);
   };
-  if (communityLoading) {
+  if (effectiveLoading) {
     return (
       <div className="flex flex-col lg:flex-row h-full">
         <div className="w-full lg:w-80 lg:border-r border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] p-4 md:p-5 space-y-4">
@@ -322,7 +323,7 @@ const handleCopy = async () => {
             <ChevronLeftIcon size={12} className="" />
             {t('detail.back')}
           </button>
-          <h2 className="text-lg font-bold text-[var(--color-bench-text)] font-[var(--font-display)] tracking-tight">{tName(template, lang)}{(template as any)._authorName && (<span className="text-sm text-[var(--color-bench-muted)] ml-3">by {(template as any)._authorName}</span>)}</h2>
+          <h2 className="text-lg font-bold text-[var(--color-bench-text)] font-[var(--font-display)] tracking-tight">{tName(template, lang)}{(template as LibraryTemplate & { _authorName?: string })._authorName && (<span className="text-sm text-[var(--color-bench-muted)] ml-3">by {(template as LibraryTemplate & { _authorName?: string })._authorName}</span>)}</h2>
           <p className="text-sm text-[var(--color-bench-text-dim)] mt-1.5 leading-relaxed">{tShort(template, lang)}</p>
           <div className="flex items-center gap-2 mt-3 flex-wrap">
             {template.meta.tags.slice(0, 4).map((tag) => (<span key={tag} onClick={(e) => { e.stopPropagation(); navigate(`/library?search=${encodeURIComponent(tag)}`); }} className="text-xs px-2 py-1 rounded-md bg-white/5 text-[var(--color-bench-muted)] hover:text-[var(--color-bench-accent)] hover:bg-[var(--color-bench-accent)]/10 cursor-pointer transition-colors">{(() => { const translated = t(`tag.${tag}`); return translated === `tag.${tag}` ? tag : translated; })()}</span>))}

@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, type ReactNode } from 'react';
+import { useMemo, useState, useEffect, useCallback, type ReactNode } from 'react';
 import { BarChart3, Eye, Copy, Zap, ThumbsUp, RefreshCw, Star, TrendingUp, User, Users, Activity, Layers, UserPlus, Clock } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, PieChart, Pie, LineChart, Line,
@@ -19,17 +19,15 @@ export function Dashboard() {
   const [today, setToday] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
   const [refreshKey, setRefreshKey] = useState(0);
-  const [kvData, setKvData] = useState<any>(null);
-  const [kvLoading, setKvLoading] = useState(false);
-  const [communityNames, setCommunityNames] = useState<Record<string, string>>({});
+  const [kvData, setKvData] = useState<{ stats?: Record<string, number>; events?: Array<{ event: string; templateId?: string; templateName?: string; timestamp?: number; userId?: string }> } | null>(null);
+    const [communityNames, setCommunityNames] = useState<Record<string, string>>({});
+  const [nowTs] = useState(() => Date.now());
 
   useEffect(() => {
-    setKvLoading(true);
     fetch(`/api/stats${today ? '?today=1' : ''}`)
       .then(r => r.json())
       .then(data => { if (!data.error) setKvData(data); })
-      .catch(() => {})
-      .finally(() => setKvLoading(false));
+      .catch(() => {});
   }, [refreshKey, today]);
 
   const events: AnalyticsEvent[] = useMemo(() => getEvents(), [refreshKey]);
@@ -42,23 +40,23 @@ export function Dashboard() {
 
   const mergedEvents = useMemo(() => {
     if (!kvData?.events) return filteredEvents;
-    const localIds = new Set(filteredEvents.map((e: any) => e.timestamp + (e.templateId || '')));
-    const kvEvents = kvData.events.filter((e: any) => !localIds.has(e.timestamp + (e.templateId || '')));
-    return [...filteredEvents, ...kvEvents].sort((a: any, b: any) => a.timestamp - b.timestamp);
+    const localIds = new Set(filteredEvents.map((e) => e.timestamp + (e.templateId || '')));
+    const kvEvents = kvData.events.filter((e) => !localIds.has(e.timestamp + (e.templateId || '')));
+    return [...filteredEvents, ...kvEvents].sort((a, b) => a.timestamp - b.timestamp);
   }, [filteredEvents, kvData]);
 
   // Fetch community template names for Dashboard display
   useEffect(() => {
     const ids = mergedEvents
-      .filter((e: any) => e.templateId && !templates.find(t => t.id === e.templateId) && !communityNames[e.templateId])
-      .map((e: any) => e.templateId);
+      .filter((e) => e.templateId && !templates.find(t => t.id === e.templateId) && !communityNames[e.templateId])
+      .map((e) => e.templateId);
     const unique = [...new Set(ids)].slice(0, 10);
     if (!unique.length) return;
     Promise.all(unique.map(id =>
       fetch('/api/community/' + id).then(r => r.json()).then(d => ({ id, name: d?.template?.name })).catch(() => ({ id, name: null }))
     )).then(results => {
       const map: Record<string, string> = { ...communityNames };
-      results.forEach((r: any) => { if (r.name) map[r.id] = r.name; });
+      results.forEach((r) => { if (r.name) map[r.id] = r.name; });
       setCommunityNames(map);
     });
   }, [mergedEvents]);
@@ -83,7 +81,7 @@ export function Dashboard() {
     try { return JSON.parse(localStorage.getItem('promptbench-tpl-feedback') || '[]'); }
     catch { return []; }
   }, [refreshKey]);
-  const thumbsUp = feedbackData.filter((f: any) => f.value === 'up').length;
+  const thumbsUp = feedbackData.filter((f) => f.value === 'up').length;
   const feedbackTotal = feedbackData.length;
 
   const templateName = (id: string) => {
@@ -91,13 +89,15 @@ export function Dashboard() {
     const tmpl = templates.find(tpl => tpl.id === id);
     return tmpl ? tName(tmpl, lang) : id;
   };
-  const timeAgo = (ts: number) => {
-    const s = Math.floor((Date.now() - ts) / 1000);
+  const [nowTick, setNowTick] = useState(() => Date.now());
+  useEffect(() => { const id = setInterval(() => setNowTick(Date.now()), 10000); return () => clearInterval(id); }, []);
+  const timeAgo = useCallback((ts: number) => {
+    const s = Math.floor((nowTick - ts) / 1000);
     if (s < 60) return tq(s + 's', s + '秒前');
     if (s < 3600) return tq(Math.floor(s / 60) + 'm', Math.floor(s / 60) + '分钟前');
     if (s < 86400) return tq(Math.floor(s / 3600) + 'h', Math.floor(s / 3600) + '小时前');
     return tq(Math.floor(s / 86400) + 'd', Math.floor(s / 86400) + '天前');
-  };
+  }, [nowTick]);
 
   // Leaderboard data for chart
   const leaderboard = useMemo(() => {
@@ -181,7 +181,7 @@ export function Dashboard() {
   const recentEvents = useMemo(() => mergedEvents.slice(-8).reverse(), [mergedEvents]);
   // ---- DAU / WAU / MAU ----
   const dauWauMau = useMemo(() => {
-    const now = Date.now();
+    const now = nowTs;
     const dayMs = 86400000;
     const dailyUsers: Record<string, Set<string>> = {};
     for (const e of mergedEvents) {
@@ -224,11 +224,11 @@ export function Dashboard() {
       { name: tq("Regular", "中度"), value: tiers.medium, color: "#5aab7a" },
       { name: tq("Power", "重度"), value: tiers.heavy, color: "#d4a843" },
     ];
-  }, [userStats, lang]);
+  }, [userStats, lang, nowTs]);
 
   // ---- Retention ----
   const retention = useMemo(() => {
-    const now = Date.now();
+    const now = nowTs;
     const dayMs = 86400000;
     const firstSeen: Record<string, number> = {};
     const activeDays: Record<string, Set<number>> = {};
@@ -251,11 +251,11 @@ export function Dashboard() {
       if (daysSinceFirst >= 30 && Array.from({length:30},(_,i)=>firstDay+i+1).some(d=>activeDays[uid].has(d))) d30++;
     }
     return { d1: total > 0 ? Math.round(d1 / total * 100) : 0, d7: total > 0 ? Math.round(d7 / total * 100) : 0, d30: total > 0 ? Math.round(d30 / total * 100) : 0 };
-  }, [mergedEvents, lang]);
+  }, [mergedEvents, lang, nowTs]);
 
   // ---- New vs Returning ----
   const newVsReturning = useMemo(() => {
-    const now = Date.now();
+    const now = nowTs;
     const dayMs = 86400000;
     const firstSeen: Record<string, number> = {};
     for (const e of mergedEvents) {
@@ -281,7 +281,7 @@ export function Dashboard() {
       result.push({ date: d.toLocaleDateString(lang === "zh-CN" ? "zh-CN" : "en-US", {month:"short",day:"numeric"}), newUsers: n, returning: r });
     }
     return result;
-  }, [mergedEvents, lang]);
+  }, [mergedEvents, lang, nowTs]);
 
   // ---- Hourly Heatmap ----
   const hourlyHeatmap = useMemo(() => {
@@ -341,7 +341,7 @@ export function Dashboard() {
             {tq('Today', '今日')}
           </button>
           <button onClick={() => setRefreshKey(k => k + 1)} className="p-2 rounded-lg text-[var(--color-bench-muted)] hover:text-[var(--color-bench-text)] hover:bg-[var(--color-bench-elevated)] transition-colors cursor-pointer">
-            <RefreshCw size={14} className={kvLoading ? "animate-spin" : ""} />
+            <RefreshCw size={14} className={!kvData ? "animate-spin" : ""} />
           </button>
         </div>
       </div>
@@ -603,7 +603,7 @@ export function Dashboard() {
 }
 
 
-function SectionHeader({ icon: Icon, title }: { icon: any; title: string }) {
+function SectionHeader({ icon: Icon, title }: { icon: React.ComponentType<{ className?: string }>; title: string }) {
   return (
     <div className="flex items-center gap-2.5 mb-4 mt-2">
       <div className="w-1 h-5 rounded-full bg-[var(--color-bench-accent)]" />
@@ -614,7 +614,7 @@ function SectionHeader({ icon: Icon, title }: { icon: any; title: string }) {
 }
 
 function StatCard({ icon: Icon, color, value, label }: {
-  icon: any; color: string; value: number | string; label: string;
+  icon: React.ComponentType<{ className?: string }>; color: string; value: number | string; label: string;
 }) {
   const colorMap: Record<string, string> = {
     accent: 'text-[var(--color-bench-accent)]',
@@ -632,7 +632,7 @@ function StatCard({ icon: Icon, color, value, label }: {
 }
 
 function ChartCard({ title, icon: Icon, children, className = '' }: {
-  title: string; icon: any; children: ReactNode; className?: string;
+  title: string; icon: React.ComponentType<{ className?: string }>; children: ReactNode; className?: string;
 }) {
   return (
     <div className={`bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-xl overflow-hidden ${className}`}>

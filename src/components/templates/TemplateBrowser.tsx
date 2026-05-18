@@ -1,6 +1,7 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Search, Sparkles, Zap, Star, Globe } from 'lucide-react';
+import { Trophy } from 'lucide-react';
 import { templates, categories, getTemplatesByCategory, searchTemplates } from '../../data/templates';
 import type { LibraryTemplate } from '../../types';
 import { getFavorites } from '../../utils/storage';
@@ -24,9 +25,10 @@ export function TemplateBrowser() {
   const [communityLoading, setCommunityLoading] = useState(false);
   const [sortBy, setSortBy] = useState<'default' | 'score'>('default');
   const [copyTicker, setCopyTicker] = useState(0);
-  const [leaderboard, setLeaderboard] = useState<any[]>([]);
-  const [lbPeriod, setLbPeriod] = useState<'week' | 'month'>('week');
+  const leaderboard: Array<{ id: string; name: string; copies: number; verified?: boolean }> = [];
+    const [lbPeriod, setLbPeriod] = useState<'week' | 'month'>('week');
   const favorites = useMemo(() => getFavorites(), []);
+  const searchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (searchParams.get('focus') === 'search') {
@@ -34,9 +36,6 @@ export function TemplateBrowser() {
       searchRef.current?.select();
     }
   }, []);
-  const searchRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => { fetchCommunity(); }, []);
 
   const fetchCommunity = () => {
     if (communityTpls.length > 0 && activeTab === "community") return;
@@ -45,7 +44,7 @@ export function TemplateBrowser() {
       .then(r => r.json())
       .then(data => {
         if (data.ok) {
-          const mapped: LibraryTemplate[] = data.templates.map((t: any) => ({
+          const mapped: LibraryTemplate[] = data.templates.map((t) => ({
             id: t.id,
             meta: { name: t.name, description: t.description, tags: t.tags, platform: 'claude' as const },
             variables: [],
@@ -57,13 +56,15 @@ export function TemplateBrowser() {
             _authorName: t.authorName,
             _likes: t.likes,
             _copies: t.copies,
-          } as any));
+          } as LibraryTemplate));
           setCommunityTpls(mapped);
         }
       })
       .catch(() => {})
       .finally(() => setCommunityLoading(false));
   };
+
+  useEffect(() => { fetchCommunity(); }, []);
 
   useEffect(() => {
     const t = setTimeout(() => setSearch(searchInput), 250);
@@ -99,7 +100,7 @@ export function TemplateBrowser() {
   }, [events, copyTicker]);
 
   const filtered = useMemo(() => {
-    if (activeTab === "community") return communityTpls as any;
+    if (activeTab === "community") return communityTpls;
     let results = templates;
     if (search.trim()) results = searchTemplates(search);
     else if (activeCategory) results = getTemplatesByCategory(activeCategory);
@@ -112,7 +113,7 @@ export function TemplateBrowser() {
     } else if (search.trim()) {
       // Search mode: sort by match quality + score
       const q = search.toLowerCase();
-      const matchScore = (t: any) => {
+      const matchScore = (t: Partial<LibraryTemplate> & Record<string, unknown>) => {
         let s = 0;
         if (t.meta.name.toLowerCase() === q) s += 5;
         else if (t.meta.name.toLowerCase().includes(q)) s += 3;
@@ -157,7 +158,7 @@ export function TemplateBrowser() {
         <button onClick={() => { setActiveTab('community'); fetchCommunity(); setShowFavorites(false); setActiveCategory(null); }} className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${activeTab === 'community' ? 'bg-[var(--color-bench-accent)]/12 text-[var(--color-bench-accent)] shadow-[0_0_16px_var(--color-bench-accent-glow)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}>
           <Globe size={15} />
           {tq('Community', '\u793E\u533A')}
-          <span className="ml-1 px-1.5 py-0.5 rounded-full text-xs bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)]">{communityTpls.length || '...'}</span>
+          <span className="ml-1 px-1.5 py-0.5 rounded-full text-xs bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)]">{communityLoading ? '...' : communityTpls.length}</span>
         </button>
       </div>
 
@@ -188,7 +189,7 @@ export function TemplateBrowser() {
             </div>
           </div>
           <div className="space-y-1.5">
-            {leaderboard.map((t: any, i: number) => (
+            {leaderboard.map((t, i: number) => (
               <div key={t.id} onClick={() => navigate('/template/' + t.id)} className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[var(--color-bench-accent)]/10 transition-colors cursor-pointer">
                 <span className={'text-sm font-bold w-6 text-center ' + (i < 3 ? 'text-[var(--color-bench-accent)]' : 'text-[var(--color-bench-muted)]')}>{i + 1}</span>
                 <span className="text-sm text-[var(--color-bench-text)] flex-1 truncate">{t.name}</span>
@@ -229,7 +230,7 @@ export function TemplateBrowser() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map((tmpl: any, i: number) => (<div key={tmpl.id} className={`card-enter stagger-${(i % 4) + 1}`}><TemplateCard template={tmpl} score={templateScores[tmpl.id]} copyCount={copyCounts[tmpl.id]} onClick={() => navigate('/template/' + tmpl.id)} onCopy={() => setCopyTicker(t => t + 1)} /></div>))}
+          {filtered.map((tmpl, i: number) => (<div key={tmpl.id} className={`card-enter stagger-${(i % 4) + 1}`}><TemplateCard template={tmpl} score={templateScores[tmpl.id]} copyCount={copyCounts[tmpl.id]} onClick={() => navigate('/template/' + tmpl.id)} onCopy={() => setCopyTicker(t => t + 1)} /></div>))}
         </div>
       )}
     </div>

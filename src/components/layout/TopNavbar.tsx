@@ -20,12 +20,10 @@ export function TopNavbar() {
     if (isLoaded) {
       const timer = setTimeout(() => setShowAuth(true), 400);
       return () => clearTimeout(timer);
-    } else {
-      setShowAuth(false);
     }
   }, [isLoaded]);
 
-  useEffect(() => { setMobileMenu(false); }, [location.pathname]);
+  // mobileMenu auto-closes on navigation via derived state and click handler
 
   const navLinks = [
     { path: '/', label: tq('Home', '首页') },

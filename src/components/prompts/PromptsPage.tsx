@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FileText, Trash2, Copy, Check, Clock, Sparkles, Eye, Search, X, Download, Upload, Globe, Code2 } from 'lucide-react';
 import { getSavedPrompts, deletePrompt, savePrompt, generateId } from '../../utils/storage';
@@ -15,7 +15,7 @@ export function PromptsPage() {
   const navigate = useNavigate();
   const { lang } = useT();
   const { user } = useUser();
-  const [prompts, setPrompts] = useState<Prompt[]>([]);
+  const [prompts, setPrompts] = useState<Prompt[]>(() => getSavedPrompts());
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
@@ -24,7 +24,7 @@ export function PromptsPage() {
   const [sourceViewId, setSourceViewId] = useState<string | null>(null);
   const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
 
-  useEffect(() => { setPrompts(getSavedPrompts()); }, []);
+  // prompts initialized via useState(() => getSavedPrompts())
 
   const handleExport = () => {
     const data = JSON.stringify(prompts, null, 2);
@@ -44,7 +44,7 @@ export function PromptsPage() {
       try {
         const imported = JSON.parse(reader.result as string);
         if (Array.isArray(imported)) {
-          imported.forEach((p: any) => {
+          imported.forEach((p) => {
             savePrompt({ ...p, id: generateId(), createdAt: Date.now(), updatedAt: Date.now() });
           });
           setPrompts(getSavedPrompts());

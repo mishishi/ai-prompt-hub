@@ -20,6 +20,6 @@ describe('getPlatformLabel', () => {
   });
 
   it('falls back to id for unknown platform', () => {
-    expect(getPlatformLabel('unknown' as any)).toBe('unknown');
+    expect(getPlatformLabel('unknown' )).toBe('unknown');
   });
 });

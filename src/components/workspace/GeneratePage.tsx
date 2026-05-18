@@ -1,10 +1,10 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Sparkles, Copy, Check, Loader, ThumbsUp, ThumbsDown, Zap, Lightbulb, RefreshCw, Edit3, X, Save, CheckCircle2, AlertCircle } from 'lucide-react';
 import { parseEval } from '../../utils/parseEval';
 import { parseSections } from '../../utils/parseSections';
-import { aiGenerate, useQuota, getRemainingQuota, evaluatePrompt } from '../../utils/ai';
-import { findBestMatch, type TemplateMatch } from '../../data/templates';
+import { aiGenerate, checkQuota, getRemainingQuota, evaluatePrompt } from '../../utils/ai';
+import { findBestMatch } from '../../data/templates';
 import { tName } from '../../data/templates/helper';
 import { copyToClipboard } from '../../utils/clipboard';
 import { track, getDisplayName } from '../../utils/analytics';
@@ -17,7 +17,7 @@ import { useUser } from '@clerk/clerk-react';
 const CountUpDisplay = ({ target, color }: { target: number; color: string }) => {
   const [display, setDisplay] = useState(0);
   useEffect(() => {
-    if (target <= 0) { setDisplay(0); return; }
+    if (target <= 0) { requestAnimationFrame(() => setDisplay(0)); return; }
     const duration = 1500;
     const startTime = performance.now();
     const tick = () => {
@@ -32,19 +32,19 @@ const CountUpDisplay = ({ target, color }: { target: number; color: string }) =>
 };
 
 const SparkleBurst = ({ color }: { color: string }) => {
-  const particles = Array.from({ length: 8 }, (_, i) => ({
-    angle: (i / 8) * 360 + Math.random() * 20 - 10,
-    distance: 35 + Math.random() * 40,
-    size: 4 + Math.random() * 6,
-    delay: Math.random() * 0.15,
-  }));
+  const particles = useMemo(() => Array.from({ length: 8 }, (_, i) => ({
+    angle: (i / 8) * 360 + (i % 3) * 6 - 9,
+    distance: 35 + (i % 4) * 10,
+    size: 4 + (i % 2) * 3,
+    delay: (i % 4) * 0.04,
+  })), []);
   return (
     <div className="absolute inset-0 pointer-events-none" style={{ animation: "eval-sparkle-burst 0.8s ease-out forwards" }}>
       {particles.map((p, i) => (
         <div key={i} className="absolute rounded-full" style={{
           width: p.size, height: p.size, background: color, left: "50%", top: "35%",
           boxShadow: "0 0 " + (p.size * 2) + "px " + color,
-          animation: "eval-particle " + (0.6 + Math.random() * 0.4) + "s ease-out " + p.delay + "s forwards",
+          animation: `eval-particle ${0.6 + (p.delay * 2)}s ease-out ${p.delay}s forwards`,
           "--angle": p.angle + "deg", "--dist": p.distance + "px",
         } as React.CSSProperties} />
       ))}
@@ -66,7 +66,7 @@ const ResultView = ({ result, loading }: { result: string; loading: boolean }) =
   }
   return (
     <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 md:p-6 space-y-3 bg-[var(--color-bench-bg)]">
-      {sections.map((sec: any, i: number) => (
+      {sections.map((sec, i: number) => (
         <div key={i} className="rounded-xl border overflow-hidden" style={{ borderColor: sec.color + '33' }}>
           <div className="flex items-center gap-2 px-4 py-2.5" style={{ backgroundColor: sec.color + '14' }}>
             <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: sec.color }} />
@@ -106,9 +106,8 @@ export function GeneratePage() {
   const [saved, setSaved] = useState(false);
   const [quotaLeft, setQuotaLeft] = useState(() => getRemainingQuota());
   const [refineInput, setRefineInput] = useState('');
-  const [templateMatches, setTemplateMatches] = useState<TemplateMatch[]>([]);
-  const [evaluating, setEvaluating] = useState(false);
-  const [evaluation, setEvaluation] = useState<string | null>(null);
+  // templateMatches computed via useMemo below
+    const [evaluation, setEvaluation] = useState<string | null>(null);
   const [showEvalPopover, setShowEvalPopover] = useState(false);
   const evaluationPillRef = useRef<HTMLButtonElement>(null);
   const [refining, setRefining] = useState(false);
@@ -118,14 +117,10 @@ export function GeneratePage() {
 
   useEffect(() => { inputRef.current?.focus(); }, []);
 
-  useEffect(() => {
+  const templateMatches = useMemo(() => {
     const q = intent.trim();
-    if (q.length < 4) { setTemplateMatches([]); return; }
-    const timer = setTimeout(() => {
-      const matches = findBestMatch(q, 3);
-      setTemplateMatches(matches.filter(m => m.score >= 50));
-    }, 400);
-    return () => clearTimeout(timer);
+    if (q.length < 4) return [];
+    return findBestMatch(q, 3).filter(m => m.score >= 50);
   }, [intent]);
 
   useEffect(() => {
@@ -139,21 +134,19 @@ export function GeneratePage() {
 
   const handleGenerate = async () => {
     if (!intent.trim()) return;
-    if (!useQuota()) { setError(tq('Daily quota exhausted. Browse the template library instead.', '今日免费次数已用完，明天重置。试试浏览模板库？')); return; }
+    if (!checkQuota()) { setError(tq('Daily quota exhausted. Browse the template library instead.', '今日免费次数已用完，明天重置。试试浏览模板库？')); return; }
     setLoading(true); setError(''); setFeedback(null);
     setResult('');
     setQuotaLeft(getRemainingQuota());
     try {
       const fullPrompt = await aiGenerate(intent.trim(), lang, (chunk) => setResult(chunk));
       setResult(fullPrompt);
-      setEvaluating(true);
       setEvaluation(null);
       evaluatePrompt(fullPrompt, lang, (chunk) => setEvaluation(chunk)).then((evalText) => {
         setEvaluation(evalText);
-        setEvaluating(false);
-      }).catch((err: any) => { console.error('[eval] failed:', err?.message); setEvaluating(false); });
+      }).catch((err: unknown) => { console.error('[eval] failed:', err?.message); });
       track({ type: 'ai_generate', lang, userId: user?.id, userName: getDisplayName(user), provider: user?.externalAccounts?.[0]?.provider });
-    } catch (e: any) { setError(e.message || tq('API error. Please try again.', 'API 错误，请重试。')); }
+    } catch (e: unknown) { setError(e.message || tq('API error. Please try again.', 'API 错误，请重试。')); }
     finally { setLoading(false); }
   };
 
@@ -187,14 +180,14 @@ const handleSave = () => {
 
   const handleRefine = async () => {
     if (!refineInput.trim() || !result) return;
-    if (!useQuota()) { setError(tq('Daily quota exhausted.', '今日免费次数已用完。')); return; }
+    if (!checkQuota()) { setError(tq('Daily quota exhausted.', '今日免费次数已用完。')); return; }
     setRefining(true); setError('');
     setQuotaLeft(getRemainingQuota());
     try {
       await aiGenerate(intent.trim(), lang, (chunk) => setResult(chunk), { previousResult: result, feedback: refineInput.trim() });
       setRefineInput('');
       track({ type: 'ai_generate', lang, userId: user?.id, userName: getDisplayName(user), provider: user?.externalAccounts?.[0]?.provider });
-    } catch (e: any) { setError(e.message || tq('API error.', 'API 错误，请重试。')); }
+    } catch (e: unknown) { setError(e.message || tq('API error.', 'API 错误，请重试。')); }
     finally { setRefining(false); }
   };
 

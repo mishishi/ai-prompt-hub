@@ -31,7 +31,7 @@ describe('CommentsSection', () => {
   it('shows empty state when no comments', async () => {
     global.fetch = vi.fn(() =>
       Promise.resolve({ json: () => Promise.resolve({ ok: true, comments: [] }) })
-    ) as any;
+    ) ;
 
     const { container } = render(
       <LanguageProvider>
@@ -55,7 +55,7 @@ describe('CommentsSection', () => {
           ],
         }),
       })
-    ) as any;
+    ) ;
 
     const { container } = render(
       <LanguageProvider>
@@ -73,7 +73,7 @@ describe('CommentsSection', () => {
   it('shows input for logged-in users', async () => {
     global.fetch = vi.fn(() =>
       Promise.resolve({ json: () => Promise.resolve({ ok: true, comments: [] }) })
-    ) as any;
+    ) ;
 
     render(
       <LanguageProvider>
@@ -94,7 +94,7 @@ describe('CommentsSection', () => {
           comments: [{ id: 'c1', userId: 'u1', userName: 'Alice', content: 'Test', createdAt: new Date().toISOString() }],
         }),
       })
-    ) as any;
+    ) ;
 
     const { container } = render(
       <LanguageProvider>
