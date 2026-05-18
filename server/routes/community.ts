@@ -41,8 +41,9 @@ export async function communityRoutes(app: FastifyInstance) {
 
   // GET /api/community — list
   app.get('/', async (request) => {
-    const { category, search, author, sort, limit: limitStr } = request.query as Record<string, string>;
+    const { category, search, author, sort, limit: limitStr, offset: offsetStr } = request.query as Record<string, string>;
     const limit = Math.min(parseInt(limitStr || '50'), 100);
+    const offset = Math.max(parseInt(offsetStr || '0'), 0);
 
     let query = db.select().from(communityTemplates);
 
@@ -51,7 +52,10 @@ export async function communityRoutes(app: FastifyInstance) {
     if (sort === 'popular') query = query.orderBy(desc(communityTemplates.likes));
     else if (sort === 'copied') query = query.orderBy(desc(communityTemplates.copies));
     else query = query.orderBy(desc(communityTemplates.createdAt));
-    query = query.limit(limit);
+    query = query.limit(limit).offset(offset);
+
+    const countResult = await db.select({ count: sql`count(*)` }).from(communityTemplates);
+    const total = Number(countResult[0]?.count ?? 0);
 
     let results = await query;
     if (search) {
@@ -63,7 +67,7 @@ export async function communityRoutes(app: FastifyInstance) {
       );
     }
 
-    return { ok: true, templates: results };
+    return { ok: true, templates: results, total, offset, limit };
   });
 
   // GET /api/community/:id — single

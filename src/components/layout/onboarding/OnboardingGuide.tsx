@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { ArrowRight, Sparkles, Copy, Zap, X } from "lucide-react";
 import { useT } from "../../../i18n/LanguageContext";
+import { STORAGE_KEYS } from '../../../utils/constants';
 
 const STEPS = [
   {
@@ -33,7 +34,7 @@ export function OnboardingGuide() {
   const [exiting, setExiting] = useState(false);
 
   useEffect(() => {
-    const dismissed = localStorage.getItem("promptbench-onboarding");
+    const dismissed = localStorage.getItem(STORAGE_KEYS.onboarding);
     if (!dismissed) {
       const t = setTimeout(() => setVisible(true), 400);
       return () => clearTimeout(t);
@@ -42,7 +43,7 @@ export function OnboardingGuide() {
 
   const dismiss = () => {
     setExiting(true);
-    setTimeout(() => { setVisible(false); localStorage.setItem("promptbench-onboarding", "1"); }, 250);
+    setTimeout(() => { setVisible(false); localStorage.setItem(STORAGE_KEYS.onboarding, "1"); }, 250);
   };
 
   const next = () => {

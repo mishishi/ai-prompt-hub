@@ -1,7 +1,7 @@
 import { verifyAuth } from '../../lib/auth.js';
 import { db } from '../../lib/db/index.js';
 import { communityTemplates } from '../../lib/db/schema.js';
-import { eq, desc } from 'drizzle-orm';
+import { eq, desc, sql } from 'drizzle-orm';
 import { publishSchema } from '../../lib/validation.js';
 import { checkRateLimit, rateLimitKey } from '../../lib/rate-limit.js';
 
@@ -46,6 +46,7 @@ export async function GET(request: Request) {
     const search = url.searchParams.get('search');
     const sort = url.searchParams.get('sort') || 'recent';
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '50'), 100);
+    const offset = Math.max(parseInt(url.searchParams.get('offset') || '0'), 0);
 
     let query = db.select().from(communityTemplates);
 
@@ -54,7 +55,10 @@ export async function GET(request: Request) {
     if (sort === 'popular') query = query.orderBy(desc(communityTemplates.likes));
     else if (sort === 'copied') query = query.orderBy(desc(communityTemplates.copies));
     else query = query.orderBy(desc(communityTemplates.createdAt));
-    query = query.limit(limit);
+    query = query.limit(limit).offset(offset);
+
+    const countResult = await db.select({ count: sql`count(*)` }).from(communityTemplates);
+    const total = Number(countResult[0]?.count ?? 0);
 
     let results = await query;
     if (search) {
@@ -66,7 +70,7 @@ export async function GET(request: Request) {
       );
     }
 
-    return Response.json({ ok: true, templates: results });
+    return Response.json({ ok: true, templates: results, total, offset, limit });
   } catch (e: any) {
     return Response.json({ ok: false, error: e.message }, { status: 500 });
   }

@@ -1,6 +1,7 @@
 import type { Prompt } from '../types';
+import { STORAGE_KEYS } from './constants';
 
-const STORAGE_KEY = 'promptbench-saved';
+const STORAGE_KEY = STORAGE_KEYS.savedPrompts;
 
 export function getSavedPrompts(): Prompt[] {
   try {
@@ -30,7 +31,7 @@ export function generateId(): string {
 }
 
 
-const FAVORITES_KEY = 'promptbench-favorites';
+const FAVORITES_KEY = STORAGE_KEYS.favorites;
 
 export function getFavorites(): string[] {
   try {
@@ -58,7 +59,7 @@ export function isFavorite(id: string): boolean {
 }
 
 
-const RECENT_KEY = 'promptbench-recent';
+const RECENT_KEY = STORAGE_KEYS.recent;
 
 export function addRecentView(id: string): void {
   const recents = getRecentViews();

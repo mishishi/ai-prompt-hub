@@ -1,3 +1,4 @@
+import { STORAGE_KEYS } from './constants';
 export interface AnalyticsEvent {
   type: 'template_view' | 'template_copy' | 'ai_generate' | 'ai_copy' | 'ai_feedback' | 'ai_save' | 'template_save';
   templateId?: string;
@@ -8,7 +9,7 @@ export interface AnalyticsEvent {
   provider?: string;
 }
 
-const KEY = 'pb_analytics';
+const KEY = STORAGE_KEYS.analytics;
 const MAX = 2000;
 
 function load(): AnalyticsEvent[] {

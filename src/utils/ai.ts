@@ -1,5 +1,6 @@
+import { STORAGE_KEYS } from './constants';
 const DAILY_QUOTA = 10;
-const QUOTA_KEY = "promptbench-quota";
+const QUOTA_KEY = STORAGE_KEYS.aiQuota;
 
 interface QuotaData {
   date: string;

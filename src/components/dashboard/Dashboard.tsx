@@ -1,4 +1,7 @@
 import { useMemo, useState, useEffect, useCallback, type ReactNode } from 'react';
+import { SectionHeader } from './SectionHeader';
+import { StatCard } from './StatCard';
+import { ChartCard } from './ChartCard';
 import { BarChart3, Eye, Copy, Zap, ThumbsUp, RefreshCw, Star, TrendingUp, User, Users, Activity, Layers, UserPlus, Clock } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, PieChart, Pie, LineChart, Line,
@@ -9,6 +12,7 @@ import { tName } from '../../data/templates/helper';
 import { getFavorites } from '../../utils/storage';
 import type { AnalyticsEvent } from '../../utils/analytics';
 import { useT } from '../../i18n/LanguageContext';
+import { STORAGE_KEYS } from '../../utils/constants';
 
 interface DashboardEvent { type: string; templateId?: string; timestamp: number; userId?: string; userName?: string; templateName?: string; provider?: string }
 
@@ -84,7 +88,7 @@ export function Dashboard() {
 
   // Template feedback
   const feedbackData = useMemo(() => {
-    try { return JSON.parse(localStorage.getItem('promptbench-tpl-feedback') || '[]'); }
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEYS.templateFeedback) || '[]'); }
     catch { return []; }
   }, [refreshKey]);
   const thumbsUp = feedbackData.filter((f: {value: string}) => f.value === 'up').length;
@@ -609,44 +613,5 @@ export function Dashboard() {
 }
 
 
-function SectionHeader({ icon: Icon, title }: { icon: React.ComponentType<{ className?: string; size?: number }>; title: string }) {
-  return (
-    <div className="flex items-center gap-2.5 mb-4 mt-2">
-      <div className="w-1 h-5 rounded-full bg-[var(--color-bench-accent)]" />
-      <Icon size={15} className="text-[var(--color-bench-accent)]" />
-      <h3 className="text-sm font-semibold text-[var(--color-bench-text)]">{title}</h3>
-    </div>
-  );
-}
 
-function StatCard({ icon: Icon, color, value, label }: {
-  icon: React.ComponentType<{ className?: string; size?: number }>; color: string; value: number | string; label: string;
-}) {
-  const colorMap: Record<string, string> = {
-    accent: 'text-[var(--color-bench-accent)]',
-    success: 'text-[var(--color-bench-success)]',
-    warn: 'text-[var(--color-bench-warn)]',
-    error: 'text-[var(--color-bench-error)]',
-  };
-  return (
-    <div className="bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-xl p-4">
-      <Icon size={14} className={(colorMap[color] || '') + ' mb-2'} />
-      <div className="text-2xl font-bold text-[var(--color-bench-text)] font-[var(--font-display)]">{value}</div>
-      <div className="text-xs text-[var(--color-bench-muted)] mt-0.5">{label}</div>
-    </div>
-  );
-}
 
-function ChartCard({ title, icon: Icon, children, className = '' }: {
-  title: string; icon: React.ComponentType<{ className?: string; size?: number }>; children: ReactNode; className?: string;
-}) {
-  return (
-    <div className={`bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-xl overflow-hidden ${className}`}>
-      <div className="px-5 py-3.5 border-b border-[var(--color-bench-border)] flex items-center gap-2">
-        <Icon size={14} className="text-[var(--color-bench-accent)]" />
-        <h3 className="text-sm font-semibold text-[var(--color-bench-text)]">{title}</h3>
-      </div>
-      <div className="p-4">{children}</div>
-    </div>
-  );
-}

@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import type { Lang } from './translations';
 import { t } from './translations';
+import { STORAGE_KEYS } from '../utils/constants';
 
 interface LangContextType {
   lang: Lang;
@@ -13,14 +14,14 @@ const LangContext = createContext<LangContextType>({ lang: 'zh-CN', setLang: () 
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLang] = useState<Lang>(() => {
-    const saved = localStorage.getItem('promptbench-lang');
+    const saved = localStorage.getItem(STORAGE_KEYS.lang);
     return (saved === 'zh-CN' || saved === 'en') ? saved : 'zh-CN';
   });
 
   const changeLang = useCallback((l: Lang) => {
     document.documentElement.lang = l === 'zh-CN' ? 'zh-CN' : 'en';
     document.title = l === 'zh-CN' ? 'PromptBench — 结构化 Prompt 工程' : 'PromptBench — Structured Prompt Engineering';
-    localStorage.setItem('promptbench-lang', l);
+    localStorage.setItem(STORAGE_KEYS.lang, l);
     setLang(l);
   }, []);
 

@@ -12,6 +12,7 @@ import { savePrompt, generateId } from '../../utils/storage';
 import type { Prompt } from '../../types';
 import { useT } from '../../i18n/LanguageContext';
 import { useUser } from '@clerk/clerk-react';
+import { STORAGE_KEYS } from '../../utils/constants';
 
 
 const CountUpDisplay = ({ target, color }: { target: number; color: string }) => {
@@ -176,7 +177,7 @@ const handleSave = () => {
     setTimeout(() => setSaved(false), 2000);
   };
 
-  const handleFeedback = (v: 'up' | 'down') => { setFeedback(v); track({ type: 'ai_feedback', lang }); const k = 'promptbench-feedback'; const ex = JSON.parse(localStorage.getItem(k) || '[]'); ex.push({ intent: intent.slice(0, 100), value: v, ts: Date.now() }); localStorage.setItem(k, JSON.stringify(ex.slice(-50))); };
+  const handleFeedback = (v: 'up' | 'down') => { setFeedback(v); track({ type: 'ai_feedback', lang }); const k = STORAGE_KEYS.aiFeedback; const ex = JSON.parse(localStorage.getItem(k) || '[]'); ex.push({ intent: intent.slice(0, 100), value: v, ts: Date.now() }); localStorage.setItem(k, JSON.stringify(ex.slice(-50))); };
 
   const handleRefine = async () => {
     if (!refineInput.trim() || !result) return;

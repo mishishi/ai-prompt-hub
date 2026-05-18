@@ -13,6 +13,7 @@ import { useUser } from '@clerk/clerk-react';
 import { useToast } from '../ui/Toast';
 import { CommentsSection } from './CommentsSection';
 import { addRecentView } from '../../utils/storage';
+import { STORAGE_KEYS } from '../../utils/constants';
 export function TemplateDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -207,7 +208,7 @@ export function TemplateDetail() {
 
   const handleSave = () => {
     try {
-      const key = 'promptbench-saved-templates';
+      const key = STORAGE_KEYS.savedTemplates;
       const arr = JSON.parse(localStorage.getItem(key) || '[]');
       const idx = arr.findIndex((s: { id: string }) => s.id === template?.id);
       if (idx >= 0) {
@@ -230,7 +231,7 @@ export function TemplateDetail() {
 
   const saved = useMemo(() => {
     if (!template) return false;
-    const arr = JSON.parse(localStorage.getItem('promptbench-saved-templates') || '[]');
+    const arr = JSON.parse(localStorage.getItem(STORAGE_KEYS.savedTemplates) || '[]');
     return arr.some((s: { id: string }) => s.id === template.id);
   }, [template]);
 const handleFeedback = async (value: 'up' | 'down') => {
@@ -247,11 +248,11 @@ const handleFeedback = async (value: 'up' | 'down') => {
         if (!data.ok) console.warn('feedback failed')
       } catch { toast.show(tq('Feedback failed', '反馈提交失败'), 'error'); }
     } else {
-      const fb = JSON.parse(localStorage.getItem('promptbench-tpl-feedback') || '[]');
+      const fb = JSON.parse(localStorage.getItem(STORAGE_KEYS.templateFeedback) || '[]');
       const existing = fb.findIndex((f: { id: string; value?: string; ts?: number }) => f.id === template!.id);
       if (existing >= 0) fb[existing].value = value;
       else fb.push({ id: template!.id, value, ts: Date.now() });
-      localStorage.setItem('promptbench-tpl-feedback', JSON.stringify(fb));
+      localStorage.setItem(STORAGE_KEYS.templateFeedback, JSON.stringify(fb));
     }
   };
 
