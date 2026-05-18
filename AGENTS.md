@@ -163,3 +163,20 @@ also add at least one Vitest smoke test that renders the component.
 
 - After significant changes, check if AGENTS.md needs updating (new conventions, gotchas, changed patterns). Keep it short.
 - This file is a living document — git history IS the version log.
+
+
+## Vercel Deployment Rules (CRITICAL)
+
+### ESM Import Paths
+- Vercel Node runtime is strict ESM — every relative import MUST have explicit path + .js extension
+- `from "../../lib/db"` → ❌ dir import unsupported
+- `from "../../lib/db/index"` → ❌ missing extension
+- `from "../../lib/db/index.js"` → ✅ correct
+
+### Database
+- Schema changes require `npx drizzle-kit push` before deploy
+- DATABASE_URL is auto-set by Vercel Storage — never hardcode
+
+### vercel.json
+- Write with Node, never PowerShell (BOM breaks JSON)
+- Must include SPA rewrites + functions.regions
