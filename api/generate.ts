@@ -1,50 +1,57 @@
-﻿import type { VercelRequest, VercelResponse } from '@vercel/node';
+const MINIMAX_URL = "https://api.minimax.chat/v1/text/chatcompletion_v2";
 
-const MINIMAX_URL = 'https://api.minimax.chat/v1/text/chatcompletion_v2';
-
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
+export async function POST(request: Request) {
   const apiKey = process.env.MINIMAX_API_KEY;
   if (!apiKey) {
-    return res.status(500).json({ error: 'MINIMAX_API_KEY not configured' });
+    return Response.json({ error: "MINIMAX_API_KEY not configured" }, { status: 500 });
   }
 
   try {
-    const response = await fetch(MINIMAX_URL, {
-      method: 'POST',
+    const body = await request.json();
+    const upstream = await fetch(MINIMAX_URL, {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${apiKey}`,
       },
-      body: JSON.stringify(req.body),
+      body: JSON.stringify(body),
     });
 
-    if (!response.ok) {
-      const err = await response.text();
-      return res.status(response.status).send(err);
+    if (!upstream.ok) {
+      const err = await upstream.text();
+      return new Response(err, { status: upstream.status });
     }
 
-    // Stream the response back
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-
-    const reader = response.body?.getReader();
-    if (!reader) {
-      return res.status(500).json({ error: 'No response body from Minimax' });
+    if (!upstream.body) {
+      return Response.json({ error: "No response body from Minimax" }, { status: 500 });
     }
 
-    const decoder = new TextDecoder();
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      res.write(decoder.decode(value, { stream: true }));
-    }
-    res.end();
+    const stream = new ReadableStream({
+      async start(controller) {
+        const reader = upstream.body!.getReader();
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            controller.enqueue(value);
+          }
+        } catch (e: any) {
+          controller.error(e);
+        } finally {
+          controller.close();
+          reader.releaseLock();
+        }
+      },
+    });
+
+    return new Response(stream, {
+      headers: {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        Connection: "keep-alive",
+      },
+    });
   } catch (e: any) {
-    res.status(500).json({ error: e.message || 'Internal error' });
+    return Response.json({ error: e.message || "Internal error" }, { status: 500 });
   }
 }
