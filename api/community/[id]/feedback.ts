@@ -1,4 +1,4 @@
-﻿import { db } from '../../../lib/db';
+﻿import { db } from '../../../lib/db/index';
 import { communityTemplates, templateFeedback } from '../../../lib/db/schema';
 import { eq, and, sql } from 'drizzle-orm';
 

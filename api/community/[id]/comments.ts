@@ -1,4 +1,4 @@
-import { db } from '../../../lib/db';
+import { db } from '../../../lib/db/index';
 import { templateComments } from '../../../lib/db/schema';
 import { eq, desc } from 'drizzle-orm';
 

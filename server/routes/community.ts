@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify';
-import { db } from '../../lib/db';
+import { db } from '../../lib/db/index';
 import { communityTemplates, templateFeedback, templateComments } from '../../lib/db/schema';
 import { eq, desc, sql, and, gte } from 'drizzle-orm';
 
