@@ -488,15 +488,6 @@ const handleSave = () => {
             </div>
           )}
         </div>
-      {/* History Panel */}
-      <HistoryPanel
-        open={historyOpen}
-        onClose={() => setHistoryOpen(false)}
-        entries={history.entries}
-        onClearAll={history.clearAll}
-        onLoad={(entry) => { setIntent(entry.intent); setResult(entry.result); }}
-        onDelete={history.removeEntry}
-      />
       </div>
     </div>
   )}
@@ -548,6 +539,15 @@ const handleSave = () => {
           </>
         )}
       </div>
+      {/* History Panel */}
+      <HistoryPanel
+        open={historyOpen}
+        onClose={() => setHistoryOpen(false)}
+        entries={history.entries}
+        onClearAll={history.clearAll}
+        onLoad={(entry) => { setIntent(entry.intent); setResult(entry.result); }}
+        onDelete={history.removeEntry}
+      />
     </div>
   );
 }
