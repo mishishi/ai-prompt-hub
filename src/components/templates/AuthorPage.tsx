@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useT } from '../../i18n/LanguageContext';
 import type { LibraryTemplate } from '../../types';

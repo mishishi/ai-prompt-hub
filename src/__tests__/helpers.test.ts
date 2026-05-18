@@ -1,4 +1,4 @@
-﻿import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { tName, tShort, tTips, tLabel, tOptions } from '../data/templates/helper';
 import type { LibraryTemplate } from '../types';
 

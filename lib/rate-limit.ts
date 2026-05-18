@@ -1,4 +1,4 @@
-﻿import { kv } from "@vercel/kv";
+import { kv } from "@vercel/kv";
 
 const WINDOW_MS = 60_000; // 1 minute
 const DEFAULT_LIMIT = 100;

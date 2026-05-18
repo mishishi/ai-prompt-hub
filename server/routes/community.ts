@@ -98,7 +98,7 @@ export async function communityRoutes(app: FastifyInstance) {
 
   // POST /api/community/:id/feedback
   app.post('/:id/feedback', async (request, reply) => {
-    await tx.transaction(async (tx) => {
+    await db.transaction(async (tx) => {
     try {
       const { userId, value } = request.body as any;
       if (!userId || !value || !['up', 'down'].includes(value)) {

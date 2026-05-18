@@ -1,4 +1,4 @@
-﻿export type Lang = "en" | "zh-CN";
+export type Lang = "en" | "zh-CN";
 
 export const UI: Record<Lang, Record<string, string>> = {
   en: {

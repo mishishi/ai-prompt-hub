@@ -1,4 +1,4 @@
-﻿import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vitest';
 
 // Test the feedback vote toggle logic (pure function extracted from API)
 function computeFeedbackDelta(

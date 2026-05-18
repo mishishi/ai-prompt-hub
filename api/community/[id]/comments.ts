@@ -6,9 +6,6 @@ import { eq, desc } from 'drizzle-orm';
 // GET /api/community/[id]/comments
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
-    const auth = await verifyAuth(request);
-    if (!auth) return Response.json({ error: 'Authentication required' }, { status: 401 });
-
     const comments = await db.select()
       .from(templateComments)
       .where(eq(templateComments.templateId, params.id))
@@ -23,6 +20,9 @@ export async function GET(request: Request, { params }: { params: { id: string }
 // POST /api/community/[id]/comments
 export async function POST(request: Request, { params }: { params: { id: string } }) {
   try {
+    const auth = await verifyAuth(request);
+    if (!auth) return Response.json({ error: 'Authentication required' }, { status: 401 });
+
     const body = await request.json();
     const { userId, userName, content } = body;
     if (!userId || !content || !content.trim()) {

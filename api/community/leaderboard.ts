@@ -1,4 +1,4 @@
-﻿import { db } from '../../lib/db/index.js';
+import { db } from '../../lib/db/index.js';
 import { communityTemplates } from '../../lib/db/schema.js';
 import { desc, sql, gte } from 'drizzle-orm';
 

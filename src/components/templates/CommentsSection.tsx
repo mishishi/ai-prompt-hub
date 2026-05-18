@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import { useT } from '../../i18n/LanguageContext';
 import { Send } from 'lucide-react';
