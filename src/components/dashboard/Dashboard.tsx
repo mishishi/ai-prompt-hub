@@ -20,6 +20,7 @@ interface DashboardEvent { type: string; templateId?: string; timestamp: number;
 const CHART_COLORS = ['#d4a843', '#7c8aa5', '#5aab7a', '#c47a5a', '#8b7aaf', '#5a9eaa', '#b8943b', '#6b8a6b'];
 
 export function Dashboard() {
+  useEffect(() => { document.title = 'Dashboard — PromptBench'; }, []);
   const { t, lang } = useT();
   const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
   const shortName = (name: string) => name.includes("@") ? name.split("@")[0] : (name.length > 15 ? name.slice(0, 14) + "…" : name);

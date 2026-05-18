@@ -95,6 +95,7 @@ const StatusLabel = ({ tq }: { tq: (en: string, zh: string) => string }) => {
 };
 
 export function GeneratePage() {
+  useEffect(() => { document.title = 'AI Generator — PromptBench'; }, []);
   const { user } = useUser();
   const { lang } = useT();
   const navigate = useNavigate();

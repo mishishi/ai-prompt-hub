@@ -57,7 +57,10 @@ export async function GET(request: Request) {
     else query = query.orderBy(desc(communityTemplates.createdAt));
     query = query.limit(limit).offset(offset);
 
-    const countResult = await db.select({ count: sql`count(*)` }).from(communityTemplates);
+    const countQuery = db.select({ count: sql`count(*)` }).from(communityTemplates);
+    if (category) (countQuery as any).where(eq(communityTemplates.category, category));
+    if (author) (countQuery as any).where(eq(communityTemplates.authorId, author));
+    const countResult = await countQuery;
     const total = Number(countResult[0]?.count ?? 0);
 
     let results = await query;

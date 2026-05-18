@@ -11,6 +11,7 @@ import { getEvents } from '../../utils/analytics';
 import { aggregateEvents, calcScore } from '../../utils/scoring';
 
 export function TemplateBrowser() {
+  useEffect(() => { document.title = 'Library — PromptBench'; }, []);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { t, lang } = useT();
