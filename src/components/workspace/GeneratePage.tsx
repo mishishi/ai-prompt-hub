@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, Copy, Check, Loader, ThumbsUp, ThumbsDown, Zap, Lightbulb, RefreshCw, Edit3, X, Save, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Sparkles, Copy, Check, Loader, Clock, ThumbsUp, ThumbsDown, Zap, Lightbulb, RefreshCw, Edit3, X, Save, CheckCircle2, AlertCircle } from 'lucide-react';
 import { parseEval } from '../../utils/parseEval';
 import { parseSections } from '../../utils/parseSections';
 import { aiGenerate, checkQuota, getRemainingQuota, evaluatePrompt } from '../../utils/ai';
@@ -109,6 +109,7 @@ export function GeneratePage() {
   const [saved, setSaved] = useState(false);
   const [quotaLeft, setQuotaLeft] = useState(() => getRemainingQuota());
   const history = useGenerationHistory();
+  const [historyOpen, setHistoryOpen] = useState(false);
   const [refineInput, setRefineInput] = useState('');
   // templateMatches computed via useMemo below
     const [evaluation, setEvaluation] = useState<string | null>(null);
@@ -206,7 +207,7 @@ const handleSave = () => {
   ];
 
   return (
-    <div className="flex flex-col lg:flex-row h-full page-enter relative">
+    <div className="flex flex-col lg:flex-row h-full page-enter">
       {/* Input Panel */}
       <div className="w-full lg:w-[420px] flex-shrink-0 border-b lg:border-b-0 lg:border-r border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] flex flex-col">
         <div className="px-4 md:px-6 pt-6 lg:pt-8 pb-4">
@@ -371,6 +372,12 @@ const handleSave = () => {
               <div className="flex items-center gap-2">
                 <button onClick={handleGenerate} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all" title={tq('Regenerate', '重新生成')}><RefreshCw size={12} />{tq('Retry', '重试')}</button>
                 <button onClick={() => { setEditing(true); setEditText(result || ''); }} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all" title={tq('Edit result', '编辑结果')}><Edit3 size={12} />{tq('Edit', '编辑')}</button>
+                
+                <button onClick={() => setHistoryOpen(!historyOpen)} className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${historyOpen ? 'bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)]' : 'bg-[var(--color-bench-elevated)] text-[var(--color-bench-muted)] hover:text-[var(--color-bench-text)]'}`}>
+                  <Clock size={12} />
+                  {tq('History', '历史')}
+                  {history.entries.length > 0 && <span className="ml-0.5 text-[10px] opacity-70">{history.entries.length}</span>}
+                </button>
                 <button onClick={() => { setResult(null); setError(''); handleGenerate(); }} disabled={loading} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)] hover:bg-[var(--color-bench-accent)]/10 disabled:opacity-30 transition-all"><RefreshCw size={12} />{tq('Regenerate', '重新生成')}</button>
                 
                 <button onClick={handleSave} className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${saved ? 'bg-[var(--color-bench-success)]/10 text-[var(--color-bench-success)]' : 'text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)]'}`} title={tq('Save to my prompts', '保存到我的 Prompt')}><Save size={12} />{saved ? tq('Saved!', '已保存') : tq('Save', '保存')}</button>
@@ -506,6 +513,8 @@ const handleSave = () => {
               </div>
       {/* History Panel */}
       <HistoryPanel
+        open={historyOpen}
+        onClose={() => setHistoryOpen(false)}
         entries={history.entries}
         onClearAll={history.clearAll}
         onLoad={(entry) => { setIntent(entry.intent); setResult(entry.result); }}
