@@ -98,38 +98,39 @@ export async function communityRoutes(app: FastifyInstance) {
 
   // POST /api/community/:id/feedback
   app.post('/:id/feedback', async (request, reply) => {
+    await tx.transaction(async (tx) => {
     try {
       const { userId, value } = request.body as any;
       if (!userId || !value || !['up', 'down'].includes(value)) {
         return reply.status(400).send({ error: 'Missing userId or invalid value' });
       }
       const templateId = request.params.id;
-      const existing = await db.select().from(templateFeedback)
+      const existing = await tx.select().from(templateFeedback)
         .where(and(eq(templateFeedback.templateId, templateId), eq(templateFeedback.userId, userId)))
         .limit(1);
       let likeDelta = 0;
       if (existing.length > 0) {
         const oldValue = existing[0].value;
         if (oldValue === value) {
-          await db.delete(templateFeedback)
+          await tx.delete(templateFeedback)
             .where(and(eq(templateFeedback.templateId, templateId), eq(templateFeedback.userId, userId)));
           likeDelta = value === 'up' ? -1 : 1;
         } else {
-          await db.update(templateFeedback)
+          await tx.update(templateFeedback)
             .set({ value, createdAt: new Date() })
             .where(and(eq(templateFeedback.templateId, templateId), eq(templateFeedback.userId, userId)));
           likeDelta = value === 'up' ? 2 : -2;
         }
       } else {
-        await db.insert(templateFeedback).values({ templateId, userId, value });
+        await tx.insert(templateFeedback).values({ templateId, userId, value });
         likeDelta = value === 'up' ? 1 : -1;
       }
       if (likeDelta !== 0) {
-        await db.update(communityTemplates)
+        await tx.update(communityTemplates)
           .set({ likes: sql`GREATEST(0, likes + ${likeDelta})` })
           .where(eq(communityTemplates.id, templateId));
       }
-      const updated = await db.select().from(communityTemplates).where(eq(communityTemplates.id, templateId)).limit(1);
+      const updated = await tx.select().from(communityTemplates).where(eq(communityTemplates.id, templateId)).limit(1);
       return { ok: true, likes: updated[0]?.likes ?? 0, userVote: value };
     } catch (e: any) {
       return reply.status(500).send({ ok: false, error: e.message });

@@ -1,22 +1,16 @@
 {
-  "name": "PromptBench - Structured Prompt Engineering",
+  "name": "PromptBench",
   "short_name": "PromptBench",
-  "description": "Craft prompts like code. Browse templates, AI-generate prompts, version control.",
+  "description": "Structured prompt templates for developers",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#09090d",
   "theme_color": "#d4a843",
   "icons": [
     {
-      "src": "/icon-192.svg",
-      "sizes": "192x192",
+      "src": "/og-image.svg",
+      "sizes": "1200x630",
       "type": "image/svg+xml"
-    },
-    {
-      "src": "/icon-192.svg",
-      "sizes": "512x512",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
     }
   ]
 }

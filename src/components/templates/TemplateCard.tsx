@@ -101,11 +101,11 @@ export function TemplateCard({ template, onClick, score = 0, copyCount = 0, onCo
         )}
         
         <div className="flex items-center justify-between pt-4 mt-4 border-t border-[var(--color-bench-border)] group-hover:border-[var(--color-bench-accent)]/30 transition-colors">
-          <button onClick={handleFavorite} className={"flex items-center gap-1 text-sm font-medium transition-colors " + (fav ? 'text-[var(--color-bench-warn)]' : 'text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-warn)]')}>
+          <button onClick={handleFavorite} aria-label={tq('Favorite', '收藏')} className={"flex items-center gap-1 text-sm font-medium transition-colors " + (fav ? 'text-[var(--color-bench-warn)]' : 'text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-warn)]')}>
             <Star size={12} fill={fav ? 'currentColor' : 'none'} />
             {t(fav ? 'card.favorited' : 'card.favorite')}
           </button>
-          <button onClick={handleCopy} className={"flex items-center gap-1 text-sm font-medium transition-colors " + (copied ? 'text-[var(--color-bench-success)]' : 'text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)]')}>
+          <button onClick={handleCopy} aria-label={tq('Copy prompt', '复制 Prompt')} className={"flex items-center gap-1 text-sm font-medium transition-colors " + (copied ? 'text-[var(--color-bench-success)]' : 'text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)]')}>
             {copied ? <Check size={12} /> : <Copy size={12} />}
             {copied ? t('card.copied') : t('card.copy')}
           </button>

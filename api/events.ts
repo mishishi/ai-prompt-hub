@@ -1,11 +1,12 @@
 import { kv } from "@vercel/kv";
+import { eventSchema } from "../../lib/validation.js";
 
 const EVENTS_KEY = "pb:events";
 const MAX_EVENTS = 5000;
 
 export async function POST(request: Request) {
   try {
-    const event = await request.json();
+    const event = eventSchema.parse(await request.json());
     event.timestamp = event.timestamp || Date.now();
 
     // Push to events list
@@ -36,7 +37,7 @@ export async function POST(request: Request) {
 
     return Response.json({ ok: true });
   } catch (e: any) {
-    console.error("KV event error:", e);
+    console.error("KV event failed");
     return Response.json({ ok: false, error: e.message }, { status: 500 });
   }
 }

@@ -56,7 +56,7 @@ export async function GET(request: Request) {
       todayTotal: today ? filtered.length : events.filter((e: any) => e.timestamp >= todayStart.getTime()).length,
     });
   } catch (e: any) {
-    console.error("KV stats error:", e);
+    console.error("KV stats failed");
     return Response.json({ error: e.message }, { status: 500 });
   }
 }

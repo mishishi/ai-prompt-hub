@@ -1,3 +1,5 @@
+import { generateSchema } from "../../lib/validation.js";
+
 const MINIMAX_URL = "https://api.minimax.chat/v1/text/chatcompletion_v2";
 
 export async function POST(request: Request) {
@@ -7,7 +9,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const body = await request.json();
+    const body = generateSchema.parse(await request.json());
     const upstream = await fetch(MINIMAX_URL, {
       method: "POST",
       headers: {

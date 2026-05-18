@@ -1,11 +1,16 @@
 import { db } from '../../lib/db/index.js';
 import { communityTemplates } from '../../lib/db/schema.js';
 import { eq, desc } from 'drizzle-orm';
+import { publishSchema } from '../../lib/validation.js';
+import { checkRateLimit, rateLimitKey } from '../../lib/rate-limit.js';
 
 // POST /api/community — publish
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const rl = await checkRateLimit(rateLimitKey(request), 20);
+    if (!rl.allowed) return Response.json({ error: 'Rate limit exceeded' }, { status: 429 });
+
+    const body = publishSchema.parse(await request.json());
     const { authorId, authorName, name, description, tags, category, difficulty, prompt } = body;
 
     if (!authorId || !authorName || !name || !prompt) {
