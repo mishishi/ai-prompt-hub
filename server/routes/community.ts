@@ -41,12 +41,13 @@ export async function communityRoutes(app: FastifyInstance) {
 
   // GET /api/community — list
   app.get('/', async (request) => {
-    const { category, search, sort, limit: limitStr } = request.query as Record<string, string>;
+    const { category, search, author, sort, limit: limitStr } = request.query as Record<string, string>;
     const limit = Math.min(parseInt(limitStr || '50'), 100);
 
     let query = db.select().from(communityTemplates);
 
     if (category) query = query.where(eq(communityTemplates.category, category));
+    if (author) query = query.where(eq(communityTemplates.authorId, author));
     if (sort === 'popular') query = query.orderBy(desc(communityTemplates.likes));
     else if (sort === 'copied') query = query.orderBy(desc(communityTemplates.copies));
     else query = query.orderBy(desc(communityTemplates.createdAt));
