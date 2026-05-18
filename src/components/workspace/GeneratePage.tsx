@@ -221,25 +221,6 @@ const handleSave = () => {
                           </div>
           </div>
 
-        {/* History toggle — always visible */}
-        <div className="px-4 md:px-6 pb-3 border-b border-[var(--color-bench-border)]/50">
-          <button
-            onClick={() => setHistoryOpen(!historyOpen)}
-            className={`flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm font-medium transition-all
-              ${historyOpen
-                ? 'bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)] border border-[var(--color-bench-accent)]/20'
-                : 'bg-[var(--color-bench-bg)] text-[var(--color-bench-muted)] hover:text-[var(--color-bench-text)] hover:bg-[var(--color-bench-elevated)] border border-transparent'
-              }`}
-          >
-            <Clock size={14} />
-            <span className="flex-1 text-left">{tq('Generation History', '生成历史')}</span>
-            {history.entries.length > 0 ? (
-              <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)]">{history.entries.length}</span>
-            ) : (
-              <span className="text-[11px] text-[var(--color-bench-muted)]/50">{tq('Empty', '暂无')}</span>
-            )}
-          </button>
-        </div>
         </div>
 
         <div className="flex-1 flex flex-col px-4 md:px-6 space-y-4 overflow-y-auto pb-4">
@@ -288,6 +269,25 @@ const handleSave = () => {
             <p className="text-xs font-semibold text-[var(--color-bench-muted)] uppercase tracking-wider mb-2.5 flex items-center gap-1"><Lightbulb size={10} />{tq('Quick Start', '快捷开始')}</p>
             <div className="flex flex-wrap gap-1.5">
               {suggestions.map(s => <button key={s.en} onClick={() => setIntent(tq(s.en, s.zh))} className="px-2.5 py-1.5 rounded-md text-xs text-[var(--color-bench-muted)] bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] hover:border-[var(--color-bench-accent)]/30 hover:text-[var(--color-bench-accent)] transition-colors">{tq(s.en, s.zh)}</button>)}
+            </div>
+
+
+            {/* History */}
+            <div className="pt-2">
+              <button
+                onClick={() => setHistoryOpen(!historyOpen)}
+                className={`flex items-center gap-2 w-full px-3 py-2 rounded-lg text-xs font-medium transition-colors
+                  ${historyOpen
+                    ? 'bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)]'
+                    : 'text-[var(--color-bench-muted)] hover:text-[var(--color-bench-text)] hover:bg-[var(--color-bench-elevated)]/50'
+                  }`}
+              >
+                <Clock size={13} />
+                <span className="flex-1 text-left">{tq('History', '生成历史')}</span>
+                {history.entries.length > 0 && (
+                  <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)]">{history.entries.length}</span>
+                )}
+              </button>
             </div>
           </div>
         </div>
