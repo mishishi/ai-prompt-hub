@@ -203,6 +203,35 @@ export function TemplateDetail() {
     }
   };
 
+
+  const handleSave = () => {
+    try {
+      const key = 'promptbench-saved-templates';
+      const arr = JSON.parse(localStorage.getItem(key) || '[]');
+      const idx = arr.findIndex((s: any) => s.id === template?.id);
+      if (idx >= 0) {
+        arr.splice(idx, 1);
+        setSaved(false);
+        toast.show(tq("Removed from My Prompts", "已从我的 Prompt 移除"));
+      } else {
+        arr.push({
+          id: template?.id,
+          name: tName(template as any, lang),
+          prompt: template?.user || '',
+          savedAt: Date.now(),
+        });
+        setSaved(true);
+        toast.show(tq("Saved to My Prompts", "已保存到我的 Prompt"));
+      }
+      localStorage.setItem(key, JSON.stringify(arr));
+    } catch {}
+  };
+
+  useEffect(() => {
+    if (!template) return;
+    const arr = JSON.parse(localStorage.getItem('promptbench-saved-templates') || '[]');
+    setSaved(arr.some((s: any) => s.id === template.id));
+  }, [template]);
 const handleFeedback = async (value: 'up' | 'down') => {
     setFeedback(value);
     track({ type: 'ai_feedback', templateId: template!.id, lang, userId: user?.id, userName: getDisplayName(user), provider: user?.externalAccounts?.[0]?.provider });
