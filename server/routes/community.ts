@@ -112,7 +112,8 @@ export async function communityRoutes(app: FastifyInstance) {
     try {
       const { userId, value } = request.body as any;
       if (!userId || !value || !['up', 'down'].includes(value)) {
-        return reply.status(400).send({ error: 'Missing userId or invalid value' });
+        reply.status(400).send({ error: 'Missing userId or invalid value' });
+        return;
       }
       const templateId = request.params.id;
       const existing = await tx.select().from(templateFeedback)

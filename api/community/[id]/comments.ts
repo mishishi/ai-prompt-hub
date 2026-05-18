@@ -2,6 +2,8 @@ import { verifyAuth } from '../../../lib/auth.js';
 import { db } from '../../../lib/db/index.js';
 import { templateComments } from '../../../lib/db/schema.js';
 import { eq, desc } from 'drizzle-orm';
+import { checkRateLimit, rateLimitKey } from '../../../lib/rate-limit.js';
+import { commentSchema } from '../../../lib/validation.js';
 
 // GET /api/community/[id]/comments
 export async function GET(request: Request, { params }: { params: { id: string } }) {
@@ -23,8 +25,14 @@ export async function POST(request: Request, { params }: { params: { id: string 
     const auth = await verifyAuth(request);
     if (!auth) return Response.json({ error: 'Authentication required' }, { status: 401 });
 
-    const body = await request.json();
-    const { userId, userName, content } = body;
+    const rl = await checkRateLimit(rateLimitKey(request) + ':comment', 20);
+    if (!rl.allowed) return Response.json({ error: 'Rate limit exceeded' }, { status: 429 });
+
+    const raw = await request.json();
+    const body = commentSchema.parse(raw);
+    const userId = body.userId;
+    const userName = body.userName || userId;
+    const content = body.content;
     if (!userId || !content || !content.trim()) {
       return Response.json({ error: 'Missing required fields' }, { status: 400 });
     }
