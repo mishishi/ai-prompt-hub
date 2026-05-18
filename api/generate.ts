@@ -1,8 +1,16 @@
 import { generateSchema } from "../../lib/validation.js";
+import { verifyAuth } from "../../lib/auth.js";
+import { checkRateLimit, rateLimitKey } from "../../lib/rate-limit.js";
 
 const MINIMAX_URL = "https://api.minimax.chat/v1/text/chatcompletion_v2";
 
 export async function POST(request: Request) {
+  const auth = await verifyAuth(request);
+  if (!auth) return Response.json({ error: "Authentication required" }, { status: 401 });
+
+  const rl = await checkRateLimit(rateLimitKey(request) + ":generate", 10);
+  if (!rl.allowed) return Response.json({ error: "Rate limit exceeded", retryAfter: rl.retryAfter }, { status: 429 });
+
   const apiKey = process.env.MINIMAX_API_KEY;
   if (!apiKey) {
     return Response.json({ error: "MINIMAX_API_KEY not configured" }, { status: 500 });
@@ -20,8 +28,8 @@ export async function POST(request: Request) {
     });
 
     if (!upstream.ok) {
-      const err = await upstream.text();
-      return new Response(err, { status: upstream.status });
+      console.error("Minimax upstream error:", upstream.status);
+      return Response.json({ error: "Upstream AI service error" }, { status: 502 });
     }
 
     if (!upstream.body) {

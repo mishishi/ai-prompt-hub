@@ -17,6 +17,8 @@ interface PublishBody {
 export async function communityRoutes(app: FastifyInstance) {
   // POST /api/community — publish
   app.post<{ Body: PublishBody }>('/', async (request, reply) => {
+    const auth = await verifyAuth(request);
+    if (!auth) return reply.status(401).send({ error: 'Authentication required' });
     const { authorId, authorName, name, description, tags, category, difficulty, prompt } = request.body;
 
     if (!authorId || !authorName || !name || !prompt) {
@@ -79,6 +81,8 @@ export async function communityRoutes(app: FastifyInstance) {
 
   // PATCH /api/community/:id — like / copy
   app.patch<{ Params: { id: string }; Body: { action: string } }>('/:id', async (request, reply) => {
+    const auth = await verifyAuth(request);
+    if (!auth) return reply.status(401).send({ error: 'Authentication required' });
     const { action } = request.body;
     if (action === 'like') {
       const rows = await db.update(communityTemplates)
@@ -102,6 +106,8 @@ export async function communityRoutes(app: FastifyInstance) {
 
   // POST /api/community/:id/feedback
   app.post('/:id/feedback', async (request, reply) => {
+    const auth = await verifyAuth(request);
+    if (!auth) return reply.status(401).send({ error: 'Authentication required' });
     await db.transaction(async (tx) => {
     try {
       const { userId, value } = request.body as any;
@@ -156,6 +162,8 @@ export async function communityRoutes(app: FastifyInstance) {
 
   // POST /api/community/:id/comments
   app.post('/:id/comments', async (request, reply) => {
+    const auth = await verifyAuth(request);
+    if (!auth) return reply.status(401).send({ error: 'Authentication required' });
     try {
       const { userId, userName, content } = request.body as any;
       if (!userId || !content?.trim()) {
@@ -196,6 +204,8 @@ export async function communityRoutes(app: FastifyInstance) {
   });
   // DELETE /api/community/:id
   app.delete<{ Params: { id: string }; Body: { authorId: string } }>('/:id', async (request, reply) => {
+    const auth = await verifyAuth(request);
+    if (!auth) return reply.status(401).send({ error: 'Authentication required' });
     const { authorId } = request.body;
     const rows = await db.select().from(communityTemplates).where(eq(communityTemplates.id, request.params.id)).limit(1);
     if (!rows.length) return reply.status(404).send({ error: 'Not found' });

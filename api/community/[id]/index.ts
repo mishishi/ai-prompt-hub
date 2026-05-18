@@ -14,6 +14,9 @@ export async function GET(request: Request, { params }: { params: { id: string }
 
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
   try {
+    const auth = await verifyAuth(request);
+    if (!auth) return Response.json({ error: "Authentication required" }, { status: 401 });
+
     const body = await request.json();
     const { action } = body;
     if (action === "like") {
