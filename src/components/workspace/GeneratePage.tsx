@@ -488,6 +488,15 @@ const handleSave = () => {
             </div>
           )}
         </div>
+      {/* History Panel */}
+      <HistoryPanel
+        open={historyOpen}
+        onClose={() => setHistoryOpen(false)}
+        entries={history.entries}
+        onClearAll={history.clearAll}
+        onLoad={(entry) => { setIntent(entry.intent); setResult(entry.result); }}
+        onDelete={history.removeEntry}
+      />
       </div>
     </div>
   )}
@@ -526,15 +535,7 @@ const handleSave = () => {
                   {tq('Refine', '调整')}
                 </button>
               </div>
-      {/* History Panel */}
-      <HistoryPanel
-        open={historyOpen}
-        onClose={() => setHistoryOpen(false)}
-        entries={history.entries}
-        onClearAll={history.clearAll}
-        onLoad={(entry) => { setIntent(entry.intent); setResult(entry.result); }}
-        onDelete={history.removeEntry}
-      />
+
             </div>
           )}
           <div className="px-5 py-3 border-t border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] flex items-center justify-center gap-3">
