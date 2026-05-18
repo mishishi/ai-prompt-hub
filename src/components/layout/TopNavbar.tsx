@@ -69,7 +69,7 @@ export function TopNavbar() {
         <div className="flex-1" />
 
         {/* Theme toggle */}
-        <button onClick={toggle} className="flex items-center justify-center w-8 h-8 md:w-auto md:h-auto md:px-2.5 md:py-1.5 rounded-lg text-sm text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 cursor-pointer flex-shrink-0" title={tq('Switch theme', '切换主题')}>
+        <button onClick={toggle} className="flex items-center justify-center w-8 h-8 md:w-auto md:h-auto md:px-2.5 md:py-1.5 rounded-lg text-sm text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 cursor-pointer flex-shrink-0" title={tq('Switch theme', '切换主题')} aria-label={tq('Switch theme', '切换主题')}>
           {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
         </button>
 
@@ -92,13 +92,13 @@ export function TopNavbar() {
         </div>
 
         {/* Language toggle */}
-        <button onClick={() => { setLang(lang === 'zh-CN' ? 'en' : 'zh-CN'); setSwitchAnim(true); setTimeout(() => setSwitchAnim(false), 300); }} className={"flex items-center justify-center w-8 h-8 md:w-auto md:h-auto md:px-2.5 md:py-1.5 rounded-lg text-sm text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 cursor-pointer flex-shrink-0 " + (switchAnim ? "scale-110" : "")}>
+        <button aria-label={tq('Switch language', '切换语言')} onClick={() => { setLang(lang === 'zh-CN' ? 'en' : 'zh-CN'); setSwitchAnim(true); setTimeout(() => setSwitchAnim(false), 300); }} className={"flex items-center justify-center w-8 h-8 md:w-auto md:h-auto md:px-2.5 md:py-1.5 rounded-lg text-sm text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 cursor-pointer flex-shrink-0 " + (switchAnim ? "scale-110" : "")}>
           <Globe size={14} />
           <span className="hidden md:inline text-xs font-bold px-1.5 py-0.5 rounded bg-[var(--color-bench-accent)]/25 text-[var(--color-bench-accent)] ml-1.5">{lang === 'zh-CN' ? '中文' : 'EN'}</span>
         </button>
 
         {/* Mobile hamburger */}
-        <button onClick={() => setMobileMenu(!mobileMenu)} className="md:hidden flex items-center justify-center w-8 h-8 rounded-lg text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 flex-shrink-0">
+        <button onClick={() => setMobileMenu(!mobileMenu)} aria-label={tq('Menu', '菜单')} className="md:hidden flex items-center justify-center w-8 h-8 rounded-lg text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 flex-shrink-0">
           {mobileMenu ? <X size={18} /> : <Menu size={18} />}
         </button>
       </header>

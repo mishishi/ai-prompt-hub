@@ -515,7 +515,7 @@ const handleSave = () => {
                 <span className="text-sm font-medium text-[var(--color-bench-accent)]">{tq('Editing result...', '编辑中...')}</span>
                 <div className="flex items-center gap-2">
                   <button onClick={() => { setResult(editText); setEditing(false); }} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)] hover:bg-[var(--color-bench-accent)]/20 transition-colors">{tq('Apply', '应用')}</button>
-                  <button onClick={() => setEditing(false)} className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-sm font-medium text-[var(--color-bench-muted)] hover:text-[var(--color-bench-text)] transition-colors"><X size={12} /></button>
+                  <button onClick={() => setEditing(false)} aria-label={tq('Cancel editing', '取消编辑')} className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-sm font-medium text-[var(--color-bench-muted)] hover:text-[var(--color-bench-text)] transition-colors"><X size={12} /></button>
                 </div>
               </div>
               <textarea value={editText} onChange={(e) => setEditText(e.target.value)} className="flex-1 p-4 md:p-6 text-sm text-[var(--color-bench-text)] leading-relaxed font-mono bg-[var(--color-bench-bg)] border-0 resize-none focus:outline-none focus:ring-2 focus:ring-[var(--color-bench-accent)]/30 rounded-b-lg" />
