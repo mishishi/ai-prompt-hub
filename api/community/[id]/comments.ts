@@ -1,3 +1,4 @@
+import { verifyAuth } from '../../../lib/auth.js';
 import { db } from '../../../lib/db/index.js';
 import { templateComments } from '../../../lib/db/schema.js';
 import { eq, desc } from 'drizzle-orm';
@@ -5,6 +6,9 @@ import { eq, desc } from 'drizzle-orm';
 // GET /api/community/[id]/comments
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
+    const auth = await verifyAuth(request);
+    if (!auth) return Response.json({ error: 'Authentication required' }, { status: 401 });
+
     const comments = await db.select()
       .from(templateComments)
       .where(eq(templateComments.templateId, params.id))

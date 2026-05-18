@@ -1,3 +1,4 @@
+import { verifyAuth } from '../../lib/auth.js';
 import { db } from '../../lib/db/index.js';
 import { communityTemplates } from '../../lib/db/schema.js';
 import { eq, desc } from 'drizzle-orm';
@@ -7,6 +8,9 @@ import { checkRateLimit, rateLimitKey } from '../../lib/rate-limit.js';
 // POST /api/community — publish
 export async function POST(request: Request) {
   try {
+    const auth = await verifyAuth(request);
+    if (!auth) return Response.json({ error: 'Authentication required' }, { status: 401 });
+
     const rl = await checkRateLimit(rateLimitKey(request), 20);
     if (!rl.allowed) return Response.json({ error: 'Rate limit exceeded' }, { status: 429 });
 

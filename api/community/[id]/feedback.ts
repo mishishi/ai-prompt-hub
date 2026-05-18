@@ -1,3 +1,4 @@
+import { verifyAuth } from '../../../lib/auth.js';
 ﻿import { db } from '../../../lib/db/index.js';
 import { communityTemplates, templateFeedback } from '../../../lib/db/schema.js';
 import { eq, and, sql } from 'drizzle-orm';
@@ -5,6 +6,9 @@ import { eq, and, sql } from 'drizzle-orm';
 // POST /api/community/[id]/feedback
 export async function POST(request: Request, { params }: { params: { id: string } }) {
   try {
+    const auth = await verifyAuth(request);
+    if (!auth) return Response.json({ error: 'Authentication required' }, { status: 401 });
+
     const body = await request.json();
     const { userId, value } = body;
     if (!userId || !value || !['up', 'down'].includes(value)) {
