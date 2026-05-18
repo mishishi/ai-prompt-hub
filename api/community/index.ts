@@ -1,5 +1,5 @@
-import { db } from '../../lib/db.js';
-import { communityTemplates } from '../../lib/db/schema.js';
+import { db } from '../../lib/db';
+import { communityTemplates } from '../../lib/db/schema';
 import { eq, desc } from 'drizzle-orm';
 
 // POST /api/community — publish

@@ -1,5 +1,5 @@
-import { db } from '../../../lib/db.js';
-import { templateComments } from '../../../lib/db/schema.js';
+import { db } from '../../../lib/db';
+import { templateComments } from '../../../lib/db/schema';
 import { eq, desc } from 'drizzle-orm';
 
 // GET /api/community/[id]/comments
