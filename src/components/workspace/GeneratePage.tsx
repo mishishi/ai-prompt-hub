@@ -13,6 +13,8 @@ import type { Prompt } from '../../types';
 import { useT } from '../../i18n/LanguageContext';
 import { useUser } from '@clerk/clerk-react';
 import { STORAGE_KEYS } from '../../utils/constants';
+import { useGenerationHistory } from '../../hooks/useGenerationHistory';
+import { HistoryPanel } from './HistoryPanel';
 
 
 const CountUpDisplay = ({ target, color }: { target: number; color: string }) => {
@@ -106,6 +108,7 @@ export function GeneratePage() {
   const [editText, setEditText] = useState('');
   const [saved, setSaved] = useState(false);
   const [quotaLeft, setQuotaLeft] = useState(() => getRemainingQuota());
+  const history = useGenerationHistory();
   const [refineInput, setRefineInput] = useState('');
   // templateMatches computed via useMemo below
     const [evaluation, setEvaluation] = useState<string | null>(null);
@@ -147,6 +150,7 @@ export function GeneratePage() {
         setEvaluation(evalText);
       }).catch((err: unknown) => { console.error('[eval] failed:', (err as Error)?.message); });
       track({ type: 'ai_generate', lang, userId: user?.id, userName: getDisplayName(user), provider: user?.externalAccounts?.[0]?.provider });
+      history.addEntry(intent.trim(), fullPrompt);
     } catch (e: unknown) { setError((e as Error).message || tq('API error. Please try again.', 'API 错误，请重试。')); }
     finally { setLoading(false); }
   };
@@ -202,7 +206,7 @@ const handleSave = () => {
   ];
 
   return (
-    <div className="flex flex-col lg:flex-row h-full page-enter">
+    <div className="flex flex-col lg:flex-row h-full page-enter relative">
       {/* Input Panel */}
       <div className="w-full lg:w-[420px] flex-shrink-0 border-b lg:border-b-0 lg:border-r border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] flex flex-col">
         <div className="px-4 md:px-6 pt-6 lg:pt-8 pb-4">
@@ -500,6 +504,13 @@ const handleSave = () => {
                   {tq('Refine', '调整')}
                 </button>
               </div>
+      {/* History Panel */}
+      <HistoryPanel
+        entries={history.entries}
+        onClearAll={history.clearAll}
+        onLoad={(entry) => { setIntent(entry.intent); setResult(entry.result); }}
+        onDelete={history.removeEntry}
+      />
             </div>
           )}
           <div className="px-5 py-3 border-t border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)] flex items-center justify-center gap-3">
