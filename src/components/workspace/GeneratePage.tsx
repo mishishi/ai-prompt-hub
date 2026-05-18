@@ -220,6 +220,26 @@ const handleSave = () => {
               <p className="text-sm text-[var(--color-bench-text-dim)] mt-1">{tq("Describe your task and we will generate a professional prompt", "描述你的任务，我们帮你生成专业 Prompt")}</p>
                           </div>
           </div>
+
+        {/* History toggle — always visible */}
+        <div className="px-4 md:px-6 pb-3 border-b border-[var(--color-bench-border)]/50">
+          <button
+            onClick={() => setHistoryOpen(!historyOpen)}
+            className={`flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm font-medium transition-all
+              ${historyOpen
+                ? 'bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)] border border-[var(--color-bench-accent)]/20'
+                : 'bg-[var(--color-bench-bg)] text-[var(--color-bench-muted)] hover:text-[var(--color-bench-text)] hover:bg-[var(--color-bench-elevated)] border border-transparent'
+              }`}
+          >
+            <Clock size={14} />
+            <span className="flex-1 text-left">{tq('Generation History', '生成历史')}</span>
+            {history.entries.length > 0 ? (
+              <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)]">{history.entries.length}</span>
+            ) : (
+              <span className="text-[11px] text-[var(--color-bench-muted)]/50">{tq('Empty', '暂无')}</span>
+            )}
+          </button>
+        </div>
         </div>
 
         <div className="flex-1 flex flex-col px-4 md:px-6 space-y-4 overflow-y-auto pb-4">
@@ -373,11 +393,6 @@ const handleSave = () => {
                 <button onClick={handleGenerate} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all" title={tq('Regenerate', '重新生成')}><RefreshCw size={12} />{tq('Retry', '重试')}</button>
                 <button onClick={() => { setEditing(true); setEditText(result || ''); }} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all" title={tq('Edit result', '编辑结果')}><Edit3 size={12} />{tq('Edit', '编辑')}</button>
                 
-                <button onClick={() => setHistoryOpen(!historyOpen)} className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${historyOpen ? 'bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)]' : 'bg-[var(--color-bench-elevated)] text-[var(--color-bench-muted)] hover:text-[var(--color-bench-text)]'}`}>
-                  <Clock size={12} />
-                  {tq('History', '历史')}
-                  {history.entries.length > 0 && <span className="ml-0.5 text-[10px] opacity-70">{history.entries.length}</span>}
-                </button>
                 <button onClick={() => { setResult(null); setError(''); handleGenerate(); }} disabled={loading} className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-accent)] hover:bg-[var(--color-bench-accent)]/10 disabled:opacity-30 transition-all"><RefreshCw size={12} />{tq('Regenerate', '重新生成')}</button>
                 
                 <button onClick={handleSave} className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${saved ? 'bg-[var(--color-bench-success)]/10 text-[var(--color-bench-success)]' : 'text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)]'}`} title={tq('Save to my prompts', '保存到我的 Prompt')}><Save size={12} />{saved ? tq('Saved!', '已保存') : tq('Save', '保存')}</button>
