@@ -22,7 +22,7 @@ export function AuthorPage() {
         if (data.ok) {
           if (data.templates.length > 0) {
             setAuthorName(data.templates[0].authorName || authorId);
-            setTemplates(data.templates.map((t) => ({
+            setTemplates(data.templates.map((t: any) => ({
               id: t.id,
               meta: { name: t.name, description: t.description, tags: t.tags, platform: 'claude' as const },
               variables: [],
@@ -81,7 +81,7 @@ export function AuthorPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {templates.map((tmpl, i: number) => (
                 <div key={tmpl.id} className={`card-enter stagger-${(i % 4) + 1}`}>
-                  <TemplateCard template={tmpl} score={tmpl._likes ?? 0} copyCount={tmpl._copies ?? 0} onClick={() => navigate('/template/' + tmpl.id)} />
+                  <TemplateCard template={tmpl} score={(tmpl as any)._likes ?? 0} copyCount={(tmpl as any)._copies ?? 0} onClick={() => navigate('/template/' + tmpl.id)} />
                 </div>
               ))}
             </div>

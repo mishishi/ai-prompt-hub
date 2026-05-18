@@ -109,7 +109,7 @@ export function TemplateDetail() {
     if (!template) return '';
     return renderPrompt(template, lang, values);
   }, [template, lang, values]);
-  const sourceContent = !template ? null : template._community
+  const sourceContent = !template ? null : (template as any)._community
     ? (<>
 
                     <div className="space-y-3 overflow-y-auto max-h-[calc(100vh-200px)] md:max-h-[calc(100vh-280px)]">
@@ -217,7 +217,7 @@ export function TemplateDetail() {
       } else {
         arr.push({
           id: template?.id,
-          name: tName(template, lang),
+          name: template ? tName(template, lang) : '',
           prompt: template?.user || '',
           savedAt: Date.now(),
         });

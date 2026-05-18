@@ -44,7 +44,7 @@ export function TemplateBrowser() {
       .then(r => r.json())
       .then(data => {
         if (data.ok) {
-          const mapped: LibraryTemplate[] = data.templates.map((t) => ({
+          const mapped: LibraryTemplate[] = data.templates.map((t: any) => ({
             id: t.id,
             meta: { name: t.name, description: t.description, tags: t.tags, platform: 'claude' as const },
             variables: [],
@@ -113,13 +113,13 @@ export function TemplateBrowser() {
     } else if (search.trim()) {
       // Search mode: sort by match quality + score
       const q = search.toLowerCase();
-      const matchScore = (t: Partial<LibraryTemplate> & Record<string, unknown>) => {
+      const matchScore = (t: any) => {
         let s = 0;
-        if (t.meta.name.toLowerCase() === q) s += 5;
-        else if (t.meta.name.toLowerCase().includes(q)) s += 3;
-        if (t.meta.nameZh && t.meta.nameZh.toLowerCase().includes(q)) s += 3;
-        if (t.meta.description.toLowerCase().includes(q)) s += 1;
-        if (t.meta.descriptionZh && t.meta.descriptionZh.toLowerCase().includes(q)) s += 1;
+        if (t.meta?.name.toLowerCase() === q) s += 5;
+        else if (t.meta?.name.toLowerCase().includes(q)) s += 3;
+        if (t.meta?.nameZh && t.meta?.nameZh.toLowerCase().includes(q)) s += 3;
+        if (t.meta?.description.toLowerCase().includes(q)) s += 1;
+        if (t.meta?.descriptionZh && t.meta?.descriptionZh.toLowerCase().includes(q)) s += 1;
         return s;
       };
       results = [...results].sort((a, b) => {
@@ -164,7 +164,7 @@ export function TemplateBrowser() {
 
       {/* Library filters */}
       {activeTab === 'library' && (
-      <div className="flex items-center gap-1.5 flex-wrap">
+      <div className="flex items-center gap-1.5 flex-wrap mb-5">
         <button onClick={() => setActiveCategory(null)} className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${!activeCategory ? 'bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)] shadow-[0_0_12px_var(--color-bench-accent-glow)]' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}>{t('browser.all')} ({templates.length})</button>
         <button onClick={() => { setShowFavorites(!showFavorites); if (!showFavorites) setActiveCategory(null); }} className={`px-4 py-2 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-1.5 ${showFavorites ? 'bg-[var(--color-bench-warn)]/15 text-[var(--color-bench-warn)] shadow-[0_0_12px_var(--color-bench-warn)]/20' : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] text-[var(--color-bench-text-dim)] hover:text-[var(--color-bench-text)]'}`}><Star size={12} fill={showFavorites ? 'currentColor' : 'none'} />{t('browser.favorites')} ({favorites.length})</button>
         {categories.map((cat) => (

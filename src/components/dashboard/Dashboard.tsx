@@ -10,6 +10,9 @@ import { getFavorites } from '../../utils/storage';
 import type { AnalyticsEvent } from '../../utils/analytics';
 import { useT } from '../../i18n/LanguageContext';
 
+interface DashboardEvent { type: string; templateId?: string; timestamp: number; userId?: string; userName?: string; templateName?: string; provider?: string }
+
+
 const CHART_COLORS = ['#d4a843', '#7c8aa5', '#5aab7a', '#c47a5a', '#8b7aaf', '#5a9eaa', '#b8943b', '#6b8a6b'];
 
 export function Dashboard() {
@@ -19,7 +22,7 @@ export function Dashboard() {
   const [today, setToday] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
   const [refreshKey, setRefreshKey] = useState(0);
-  const [kvData, setKvData] = useState<{ stats?: Record<string, number>; events?: Array<{ event: string; templateId?: string; templateName?: string; timestamp?: number; userId?: string }> } | null>(null);
+  const [kvData, setKvData] = useState<{ stats?: Record<string, number>; events?: Array<{ event: string; templateId?: string; templateName?: string; timestamp?: number; userId?: string }>; trend?: Array<{ date: string; views: number; copies: number; gens: number }> } | null>(null);
     const [communityNames, setCommunityNames] = useState<Record<string, string>>({});
   const [nowTs] = useState(() => Date.now());
 
@@ -38,11 +41,14 @@ export function Dashboard() {
   const todayTs = todayStart.getTime();
   const filteredEvents = today ? events.filter(e => e.timestamp >= todayTs) : events;
 
-  const mergedEvents = useMemo(() => {
-    if (!kvData?.events) return filteredEvents;
+  const mergedEvents = useMemo((): DashboardEvent[] => {
+    const local: DashboardEvent[] = filteredEvents.map(e => ({ type: e.type, templateId: e.templateId, timestamp: e.timestamp, userId: e.userId, userName: e.userName }));
+    if (!kvData?.events) return local;
     const localIds = new Set(filteredEvents.map((e) => e.timestamp + (e.templateId || '')));
-    const kvEvents = kvData.events.filter((e) => !localIds.has(e.timestamp + (e.templateId || '')));
-    return [...filteredEvents, ...kvEvents].sort((a, b) => a.timestamp - b.timestamp);
+    const kv: DashboardEvent[] = kvData.events
+      .filter((e) => !localIds.has((e.timestamp || 0) + (e.templateId || '')))
+      .map(e => ({ type: e.event, templateId: e.templateId, timestamp: e.timestamp || 0, userId: e.userId, userName: e.templateName || '', templateName: e.templateName || '' }));
+    return [...local, ...kv].sort((a, b) => a.timestamp - b.timestamp);
   }, [filteredEvents, kvData]);
 
   // Fetch community template names for Dashboard display
@@ -56,7 +62,7 @@ export function Dashboard() {
       fetch('/api/community/' + id).then(r => r.json()).then(d => ({ id, name: d?.template?.name })).catch(() => ({ id, name: null }))
     )).then(results => {
       const map: Record<string, string> = { ...communityNames };
-      results.forEach((r) => { if (r.name) map[r.id] = r.name; });
+      results.forEach((r: any) => { if (r.name) map[r.id!] = r.name; });
       setCommunityNames(map);
     });
   }, [mergedEvents]);
@@ -81,7 +87,7 @@ export function Dashboard() {
     try { return JSON.parse(localStorage.getItem('promptbench-tpl-feedback') || '[]'); }
     catch { return []; }
   }, [refreshKey]);
-  const thumbsUp = feedbackData.filter((f) => f.value === 'up').length;
+  const thumbsUp = feedbackData.filter((f: {value: string}) => f.value === 'up').length;
   const feedbackTotal = feedbackData.length;
 
   const templateName = (id: string) => {
@@ -132,7 +138,7 @@ export function Dashboard() {
     for (const e of mergedEvents) {
       if (!e.userId) continue;
       const u = e.userId;
-      if (!users[u]) users[u] = { name: shortName(e.userName || 'Unknown'), views: 0, copies: 0, gens: 0, lastSeen: 0 };
+      if (!users[u!]) users[u!] = { name: shortName(e.userName || 'Unknown'), views: 0, copies: 0, gens: 0, lastSeen: 0 };
       // Always update name from latest (new Clerk names override old email prefixes)
       if (e.userName) users[u].name = shortName(e.userName);
       if (e.type === 'template_view') users[u].views++;
@@ -603,7 +609,7 @@ export function Dashboard() {
 }
 
 
-function SectionHeader({ icon: Icon, title }: { icon: React.ComponentType<{ className?: string }>; title: string }) {
+function SectionHeader({ icon: Icon, title }: { icon: React.ComponentType<{ className?: string; size?: number }>; title: string }) {
   return (
     <div className="flex items-center gap-2.5 mb-4 mt-2">
       <div className="w-1 h-5 rounded-full bg-[var(--color-bench-accent)]" />
@@ -614,7 +620,7 @@ function SectionHeader({ icon: Icon, title }: { icon: React.ComponentType<{ clas
 }
 
 function StatCard({ icon: Icon, color, value, label }: {
-  icon: React.ComponentType<{ className?: string }>; color: string; value: number | string; label: string;
+  icon: React.ComponentType<{ className?: string; size?: number }>; color: string; value: number | string; label: string;
 }) {
   const colorMap: Record<string, string> = {
     accent: 'text-[var(--color-bench-accent)]',
@@ -632,7 +638,7 @@ function StatCard({ icon: Icon, color, value, label }: {
 }
 
 function ChartCard({ title, icon: Icon, children, className = '' }: {
-  title: string; icon: React.ComponentType<{ className?: string }>; children: ReactNode; className?: string;
+  title: string; icon: React.ComponentType<{ className?: string; size?: number }>; children: ReactNode; className?: string;
 }) {
   return (
     <div className={`bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-xl overflow-hidden ${className}`}>

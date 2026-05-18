@@ -83,6 +83,7 @@ export interface LibraryTemplate {
   mode?: 'single-turn' | 'multi-turn' | 'multi-agent';
   usage_tips?: string;
   usage_tipsZh?: string;
+  _community?: boolean;
   stages?: { name: string; nameZh?: string }[];
 }
 

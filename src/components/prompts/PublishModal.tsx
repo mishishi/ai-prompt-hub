@@ -48,7 +48,7 @@ export function PublishModal({ prompt, authorId, authorName, onClose, onPublishe
       if (!data.ok) throw new Error(data.error);
       onPublished();
     } catch (e: unknown) {
-      setError(e.message);
+      setError((e as Error).message);
     } finally {
       setPublishing(false);
     }

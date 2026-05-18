@@ -93,7 +93,7 @@ export function TemplateCard({ template, onClick, score = 0, copyCount = 0, onCo
         {(template as LibraryTemplate & { _verified?: boolean; _authorName?: string })._authorName && (
           <div className="flex items-center gap-1.5 mt-2 text-sm text-[var(--color-bench-muted)]">
             <span className="w-5 h-5 rounded-full bg-[var(--color-bench-accent)]/20 flex items-center justify-center text-sm font-medium text-[var(--color-bench-accent)]">
-              {(template as LibraryTemplate & { _verified?: boolean; _authorName?: string })._authorName.charAt(0)}
+              {(template as LibraryTemplate & { _verified?: boolean; _authorName?: string })._authorName?.charAt(0)}
             </span>
             {(template as LibraryTemplate & { _verified?: boolean; _authorName?: string })._authorName}
           </div>

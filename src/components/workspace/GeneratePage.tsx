@@ -144,9 +144,9 @@ export function GeneratePage() {
       setEvaluation(null);
       evaluatePrompt(fullPrompt, lang, (chunk) => setEvaluation(chunk)).then((evalText) => {
         setEvaluation(evalText);
-      }).catch((err: unknown) => { console.error('[eval] failed:', err?.message); });
+      }).catch((err: unknown) => { console.error('[eval] failed:', (err as Error)?.message); });
       track({ type: 'ai_generate', lang, userId: user?.id, userName: getDisplayName(user), provider: user?.externalAccounts?.[0]?.provider });
-    } catch (e: unknown) { setError(e.message || tq('API error. Please try again.', 'API 错误，请重试。')); }
+    } catch (e: unknown) { setError((e as Error).message || tq('API error. Please try again.', 'API 错误，请重试。')); }
     finally { setLoading(false); }
   };
 
@@ -187,7 +187,7 @@ const handleSave = () => {
       await aiGenerate(intent.trim(), lang, (chunk) => setResult(chunk), { previousResult: result, feedback: refineInput.trim() });
       setRefineInput('');
       track({ type: 'ai_generate', lang, userId: user?.id, userName: getDisplayName(user), provider: user?.externalAccounts?.[0]?.provider });
-    } catch (e: unknown) { setError(e.message || tq('API error.', 'API 错误，请重试。')); }
+    } catch (e: unknown) { setError((e as Error).message || tq('API error.', 'API 错误，请重试。')); }
     finally { setRefining(false); }
   };
 
