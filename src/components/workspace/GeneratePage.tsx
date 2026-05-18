@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, Copy, Check, Loader, Clock, ThumbsUp, ThumbsDown, Zap, Lightbulb, RefreshCw, Edit3, X, Save, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Sparkles, Copy, Check, Loader, Clock, ThumbsUp, ThumbsDown, Zap, Lightbulb, RefreshCw, Edit3, X, Save, CheckCircle2, AlertCircle, ChevronRight } from 'lucide-react';
 import { parseEval } from '../../utils/parseEval';
 import { parseSections } from '../../utils/parseSections';
 import { aiGenerate, checkQuota, getRemainingQuota, evaluatePrompt } from '../../utils/ai';
@@ -272,25 +272,40 @@ const handleSave = () => {
             </div>
 
 
-            {/* History */}
-            <div className="pt-2">
-              <button
-                onClick={() => setHistoryOpen(!historyOpen)}
-                className={`flex items-center gap-2 w-full px-3 py-2 rounded-lg text-xs font-medium transition-colors
-                  ${historyOpen
-                    ? 'bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)]'
-                    : 'text-[var(--color-bench-muted)] hover:text-[var(--color-bench-text)] hover:bg-[var(--color-bench-elevated)]/50'
-                  }`}
-              >
-                <Clock size={13} />
-                <span className="flex-1 text-left">{tq('History', '生成历史')}</span>
-                {history.entries.length > 0 && (
-                  <span className="text-[11px] px-1.5 py-0.5 rounded-full bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)]">{history.entries.length}</span>
-                )}
-              </button>
-            </div>
           </div>
         </div>
+        {/* History — bottom of sidebar */}
+        <div className="px-4 md:px-6 pb-2.5 pt-2">
+          <button
+            onClick={() => setHistoryOpen(!historyOpen)}
+            className={`group flex items-center gap-2.5 w-full px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300
+              ${historyOpen
+                ? 'bg-[var(--color-bench-accent)]/10 text-[var(--color-bench-accent)] shadow-[0_0_20px_-8px_var(--color-bench-accent)]'
+                : 'bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)]/60 text-[var(--color-bench-muted)] hover:border-[var(--color-bench-accent)]/20 hover:text-[var(--color-bench-text)] hover:bg-[var(--color-bench-elevated)] hover:shadow-md'
+              }`}
+          >
+            <span className={`flex items-center justify-center w-8 h-8 rounded-lg transition-colors ${historyOpen ? 'bg-[var(--color-bench-accent)]/20' : 'bg-[var(--color-bench-bg)] group-hover:bg-[var(--color-bench-accent)]/10'}`}>
+              <Clock size={15} className={`transition-colors ${historyOpen ? 'text-[var(--color-bench-accent)]' : ''}`} />
+            </span>
+            <div className="flex-1 text-left min-w-0">
+              <span className="block truncate">{tq('History', '生成历史')}</span>
+              {history.entries.length > 0 && (
+                <span className="block text-[11px] text-[var(--color-bench-muted)]/60 mt-0.5 truncate">
+                  {tq('Latest', '最近')}: {history.entries[0]?.intent?.slice(0, 20) || ''}{history.entries[0]?.intent?.length > 20 ? '…' : ''}
+                </span>
+              )}
+            </div>
+            {history.entries.length > 0 ? (
+              <span className="flex items-center gap-1 text-[11px] px-2 py-1 rounded-full bg-[var(--color-bench-accent)]/15 text-[var(--color-bench-accent)] font-medium flex-shrink-0">
+                {history.entries.length}
+              </span>
+            ) : (
+              <span className="text-[11px] text-[var(--color-bench-muted)]/40 flex-shrink-0">{tq('Empty', '暂无')}</span>
+            )}
+            <ChevronRight size={14} className={`text-[var(--color-bench-muted)]/40 transition-transform duration-300 group-hover:translate-x-0.5 flex-shrink-0 ${historyOpen ? 'rotate-90' : ''}`} />
+          </button>
+        </div>
+
         <div className="px-4 md:px-6 py-3 border-t border-[var(--color-bench-border)] bg-[var(--color-bench-elevated)]"><p className="text-xs text-[var(--color-bench-muted)] text-center uppercase tracking-wider">{tq('Press Enter · ' + quotaLeft + ' free today', '回车生成 · 今日剩余 ' + quotaLeft + ' 次')}</p></div>
       </div>
 
