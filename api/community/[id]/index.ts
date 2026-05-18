@@ -1,5 +1,5 @@
-import { db } from '../../lib/db';
-import { communityTemplates } from '../../../src/db/schema';
+import { db } from '../../lib/db.js';
+import { communityTemplates } from '../../../lib/db/schema.js';
 import { eq, sql } from 'drizzle-orm';
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
