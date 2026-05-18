@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { db } from '../../lib/db';
-import { communityTemplates } from '../../lib/db/schema';
-import { eq, desc, sql } from 'drizzle-orm';
+import { communityTemplates, templateFeedback, templateComments } from '../../lib/db/schema';
+import { eq, desc, sql, and, gte } from 'drizzle-orm';
 
 interface PublishBody {
   authorId: string;
@@ -94,6 +94,100 @@ export async function communityRoutes(app: FastifyInstance) {
     return reply.status(400).send({ error: 'Invalid action' });
   });
 
+
+  // POST /api/community/:id/feedback
+  app.post('/:id/feedback', async (request, reply) => {
+    try {
+      const { userId, value } = request.body as any;
+      if (!userId || !value || !['up', 'down'].includes(value)) {
+        return reply.status(400).send({ error: 'Missing userId or invalid value' });
+      }
+      const templateId = request.params.id;
+      const existing = await db.select().from(templateFeedback)
+        .where(and(eq(templateFeedback.templateId, templateId), eq(templateFeedback.userId, userId)))
+        .limit(1);
+      let likeDelta = 0;
+      if (existing.length > 0) {
+        const oldValue = existing[0].value;
+        if (oldValue === value) {
+          await db.delete(templateFeedback)
+            .where(and(eq(templateFeedback.templateId, templateId), eq(templateFeedback.userId, userId)));
+          likeDelta = value === 'up' ? -1 : 1;
+        } else {
+          await db.update(templateFeedback)
+            .set({ value, createdAt: new Date() })
+            .where(and(eq(templateFeedback.templateId, templateId), eq(templateFeedback.userId, userId)));
+          likeDelta = value === 'up' ? 2 : -2;
+        }
+      } else {
+        await db.insert(templateFeedback).values({ templateId, userId, value });
+        likeDelta = value === 'up' ? 1 : -1;
+      }
+      if (likeDelta !== 0) {
+        await db.update(communityTemplates)
+          .set({ likes: sql`GREATEST(0, likes + ${likeDelta})` })
+          .where(eq(communityTemplates.id, templateId));
+      }
+      const updated = await db.select().from(communityTemplates).where(eq(communityTemplates.id, templateId)).limit(1);
+      return { ok: true, likes: updated[0]?.likes ?? 0, userVote: value };
+    } catch (e: any) {
+      return reply.status(500).send({ ok: false, error: e.message });
+    }
+  });
+
+  // GET /api/community/:id/comments
+  app.get('/:id/comments', async (request) => {
+    try {
+      const comments = await db.select().from(templateComments)
+        .where(eq(templateComments.templateId, request.params.id))
+        .orderBy(desc(templateComments.createdAt))
+        .limit(100);
+      return { ok: true, comments };
+    } catch (e: any) {
+      return { ok: false, error: e.message };
+    }
+  });
+
+  // POST /api/community/:id/comments
+  app.post('/:id/comments', async (request, reply) => {
+    try {
+      const { userId, userName, content } = request.body as any;
+      if (!userId || !content?.trim()) {
+        return reply.status(400).send({ error: 'Missing required fields' });
+      }
+      const result = await db.insert(templateComments).values({
+        templateId: request.params.id,
+        userId,
+        userName: userName || userId,
+        content: content.trim().slice(0, 1000),
+      }).returning();
+      return { ok: true, comment: result[0] };
+    } catch (e: any) {
+      return reply.status(500).send({ ok: false, error: e.message });
+    }
+  });
+
+  // GET /api/community/leaderboard
+  app.get('/leaderboard', async (request) => {
+    try {
+      const query = request.query as any;
+      const period = query.period || 'week';
+      const limit = Math.min(parseInt(query.limit || '10'), 50);
+      let dbQuery = db.select().from(communityTemplates);
+      if (period === 'week') {
+        const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        dbQuery = dbQuery.where(gte(communityTemplates.createdAt, weekAgo));
+      } else if (period === 'month') {
+        const monthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+        dbQuery = dbQuery.where(gte(communityTemplates.createdAt, monthAgo));
+      }
+      dbQuery = dbQuery.orderBy(desc(communityTemplates.copies)).limit(limit);
+      const results = await dbQuery;
+      return { ok: true, leaderboard: results, period };
+    } catch (e: any) {
+      return { ok: false, error: e.message };
+    }
+  });
   // DELETE /api/community/:id
   app.delete<{ Params: { id: string }; Body: { authorId: string } }>('/:id', async (request, reply) => {
     const { authorId } = request.body;
