@@ -91,7 +91,7 @@ export function Dashboard() {
   const feedbackTotal = feedbackData.length;
 
   const templateName = (id: string) => {
-    if (id.length > 30) return communityNames[id] || (lang === 'zh-CN' ? '社区模板' : 'Community');
+    if (id.length > 30) return communityNames[id] || tq('Community Template', '社区模板');
     const tmpl = templates.find(tpl => tpl.id === id);
     return tmpl ? tName(tmpl, lang) : id;
   };

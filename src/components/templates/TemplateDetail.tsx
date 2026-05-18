@@ -225,7 +225,7 @@ export function TemplateDetail() {
         toast.show(tq("Saved to My Prompts", "已保存到我的 Prompt"));
       }
       localStorage.setItem(key, JSON.stringify(arr));
-    } catch { /* storage write failed */ }
+    } catch { toast.show(tq('Save failed', '保存失败'), 'error'); }
   };
 
   const saved = useMemo(() => {
@@ -245,7 +245,7 @@ const handleFeedback = async (value: 'up' | 'down') => {
         });
         const data = await res.json();
         if (!data.ok) console.warn('feedback failed')
-      } catch { /* feedback api failed */ }
+      } catch { toast.show(tq('Feedback failed', '反馈提交失败'), 'error'); }
     } else {
       const fb = JSON.parse(localStorage.getItem('promptbench-tpl-feedback') || '[]');
       const existing = fb.findIndex((f: { id: string; value?: string; ts?: number }) => f.id === template!.id);

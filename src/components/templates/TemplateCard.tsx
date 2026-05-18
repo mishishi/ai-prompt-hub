@@ -12,6 +12,7 @@ import { getPlatformLabel } from '../../utils/platform';
 
 export function TemplateCard({ template, onClick, score = 0, copyCount = 0, onCopy }: { template: LibraryTemplate; onClick: () => void; score?: number; copyCount?: number; onCopy?: () => void }) {
   const { t, lang } = useT();
+  const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
   const { user } = useUser();
   const toast = useToast();
   const [copied, setCopied] = useState(false);
@@ -73,7 +74,7 @@ export function TemplateCard({ template, onClick, score = 0, copyCount = 0, onCo
           <div className="flex items-center gap-1.5">
             {score > 0 && (
               <span className={"text-sm font-semibold px-1.5 py-0.5 rounded bg-white/5 " + (score >= 60 ? 'text-[var(--color-bench-success)]' : score >= 30 ? 'text-[var(--color-bench-warn)]' : 'text-[var(--color-bench-muted)]')}>
-                {lang === 'zh-CN' ? score + '分' : score + 'pts'}
+                {tq(score + 'pts', score + '分')}
               </span>
             )}
             <span className={"text-sm font-semibold px-1.5 py-0.5 rounded " + (diffColors[template.difficulty] || diffColors.Intermediate) + " bg-white/5"}>
