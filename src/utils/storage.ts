@@ -18,7 +18,7 @@ export function savePrompt(prompt: Prompt): void {
   } else {
     prompts.unshift({ ...prompt, createdAt: Date.now(), updatedAt: Date.now() });
   }
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(prompts));
+  try { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(prompts)); } catch { /* quota exceeded */ } } catch { console.warn('localStorage quota exceeded'); }
 }
 
 export function deletePrompt(id: string): void {
@@ -45,7 +45,7 @@ export function toggleFavorite(id: string): boolean {
   const idx = favs.indexOf(id);
   if (idx >= 0) {
     favs.splice(idx, 1);
-    localStorage.setItem(FAVORITES_KEY, JSON.stringify(favs));
+    try { try { localStorage.setItem(FAVORITES_KEY, JSON.stringify(favs)); } catch { /* quota exceeded */ } } catch { /* quota exceeded */ }
     return false;
   } else {
     favs.push(id);

@@ -98,7 +98,7 @@ export function TopNavbar() {
         </button>
 
         {/* Mobile hamburger */}
-        <button onClick={() => setMobileMenu(!mobileMenu)} aria-label={tq('Menu', '菜单')} className="md:hidden flex items-center justify-center w-8 h-8 rounded-lg text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 flex-shrink-0">
+        <button onClick={() => setMobileMenu(!mobileMenu)} aria-label={tq('Menu', '菜单')} className="md:hidden flex items-center justify-center min-w-[44px] min-h-[44px] rounded-lg text-[var(--color-bench-text-dim)] hover:bg-white/5 hover:text-[var(--color-bench-text)] transition-all duration-200 flex-shrink-0">
           {mobileMenu ? <X size={18} /> : <Menu size={18} />}
         </button>
       </header>

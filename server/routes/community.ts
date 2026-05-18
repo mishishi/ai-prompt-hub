@@ -79,19 +79,10 @@ export async function communityRoutes(app: FastifyInstance) {
     return { ok: true, template: rows[0] };
   });
 
-  // PATCH /api/community/:id — like / copy
+  // PATCH /api/community/:id — copy (likes via /feedback)
   app.patch<{ Params: { id: string }; Body: { action: string } }>('/:id', async (request, reply) => {
     const auth = await verifyAuth(request);
     if (!auth) return reply.status(401).send({ error: 'Authentication required' });
-    const { action } = request.body;
-    if (action === 'like') {
-      const rows = await db.update(communityTemplates)
-        .set({ likes: sql`likes + 1` })
-        .where(eq(communityTemplates.id, request.params.id))
-        .returning();
-      if (!rows.length) return reply.status(404).send({ error: 'Not found' });
-      return { ok: true, template: rows[0] };
-    }
     if (action === 'copy') {
       const rows = await db.update(communityTemplates)
         .set({ copies: sql`copies + 1` })

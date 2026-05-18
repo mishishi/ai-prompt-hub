@@ -73,10 +73,10 @@ export function PromptsPage() {
 
   const handlePublished = () => { setPublishTarget(null); setPublishSuccess(true); setTimeout(() => setPublishSuccess(false), 3000); };
 
-  const formatDate = (ts: number) => {
+  const formatDate = useCallback((ts: number) => {
     const d = new Date(ts);
     return d.toLocaleDateString(lang === 'zh-CN' ? 'zh-CN' : 'en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-  };
+  }, [lang]);
 
   return (
     <div className="max-w-4xl mx-auto px-4 md:px-6 py-6 md:py-8 page-enter">
