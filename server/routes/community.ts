@@ -139,6 +139,7 @@ export async function communityRoutes(app: FastifyInstance) {
       return reply.status(500).send({ ok: false, error: e.message });
     }
   });
+  });
 
   // GET /api/community/:id/comments
   app.get('/:id/comments', async (request) => {
