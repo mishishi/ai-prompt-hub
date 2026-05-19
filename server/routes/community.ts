@@ -83,6 +83,7 @@ export async function communityRoutes(app: FastifyInstance) {
   app.patch<{ Params: { id: string }; Body: { action: string } }>('/:id', async (request, reply) => {
     const auth = await verifyAuth(request);
     if (!auth) return reply.status(401).send({ error: 'Authentication required' });
+    const { action } = request.body;
     if (action === 'copy') {
       const rows = await db.update(communityTemplates)
         .set({ copies: sql`copies + 1` })
