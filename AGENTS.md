@@ -145,9 +145,10 @@ npx vitest run   # 30 tests across 4 files
 ## Mandatory Post-Edit Verification
 
 After ANY file modification, run ALL FOUR before reporting success:
-- `npx tsc --noEmit`
+- `npx tsc --noEmit` (covers src/ + server/ + api/ + lib/)
 - `npx vite build`
 - `npx vitest run`
+- `npx tsx server/index.ts` — start server briefly to verify runtime compilation (Ctrl+C after boot)
 - `npx eslint src/ --ext .ts,.tsx --max-warnings 0` (if eslint configured)
 
 If any fail, fix the error and re-verify. Do NOT report "done" until all pass clean.
