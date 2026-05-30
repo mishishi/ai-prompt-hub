@@ -1,4 +1,4 @@
-import { Clock, Copy, Trash2, Eye, X, ChevronRight } from 'lucide-react';
+import { Clock, Copy, Trash2, Eye, X } from 'lucide-react';
 import { copyToClipboard } from '../../utils/clipboard';
 import { useT } from '../../i18n/LanguageContext';
 import type { GenHistoryEntry } from '../../hooks/useGenerationHistory';

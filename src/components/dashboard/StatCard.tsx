@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 
 const colorMap: Record<string, string> = {
   accent: 'text-[var(--color-bench-accent)]',

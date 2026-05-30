@@ -18,7 +18,7 @@ export async function verifyAuth(request: Request): Promise<{ userId: string } |
   if (!sessionToken) return null;
 
   try {
-    const token = await clerk.verifyToken(sessionToken);
+    const token = await (clerk as any).verifyToken(sessionToken);
     return { userId: token.sub };
   } catch {
     return null;

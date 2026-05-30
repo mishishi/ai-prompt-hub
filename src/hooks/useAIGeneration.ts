@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback, useRef } from 'react';
 import { aiGenerate, checkQuota, getRemainingQuota, evaluatePrompt } from '../utils/ai';
 import { findBestMatch } from '../data/templates';
 import { copyToClipboard } from '../utils/clipboard';
-import { track, getDisplayName } from '../utils/analytics';
+import { track } from '../utils/analytics';
 import { parseSections } from '../utils/parseSections';
 import { savePrompt, generateId } from '../utils/storage';
 import type { Prompt } from '../types';
@@ -73,12 +73,12 @@ export function useAIGeneration({ lang, userId }: { lang: string; userId?: strin
     setShowEvalPopover(false); setEvalResult(null); setEvalDone(false);
     try {
       let full = '';
-      await aiGenerate(intent.trim(), (chunk) => { full += chunk; setResult(full); });
+      await aiGenerate(intent.trim(), lang as 'en' | 'zh-CN', (chunk: string) => { full += chunk; setResult(full); });
       setQuotaLeft(getRemainingQuota());
-      track({ type: 'ai_generate', lang, userId, userName: getDisplayName(userId) });
+      track({ type: 'ai_generate', lang, userId });
       setEvalLoading(true);
       try {
-        const raw = await evaluatePrompt(full);
+        const raw = await evaluatePrompt(full, lang as 'en' | 'zh-CN', () => {});
         setEvalResult(parseEval(raw));
       } catch {}
       setEvalLoading(false);
@@ -92,7 +92,7 @@ export function useAIGeneration({ lang, userId }: { lang: string; userId?: strin
     if (!result) return;
     await copyToClipboard(result);
     setCopied(true); setTimeout(() => setCopied(false), 2000);
-    track({ type: 'ai_copy', lang, userId, userName: getDisplayName(userId) });
+    track({ type: 'ai_copy', lang, userId });
   }, [result, lang, userId]);
 
   const handleFeedback = useCallback((v: 'up' | 'down') => {
@@ -106,9 +106,9 @@ export function useAIGeneration({ lang, userId }: { lang: string; userId?: strin
     setRefining(true); setError('');
     try {
       let full = '';
-      await aiGenerate(refineInput.trim(), (chunk) => { full += chunk; setResult(full); });
+      await aiGenerate(refineInput.trim(), lang as 'en' | 'zh-CN', (chunk: string) => { full += chunk; setResult(full); });
       setRefineInput('');
-      track({ type: 'ai_generate', lang, userId, userName: getDisplayName(userId) });
+      track({ type: 'ai_generate', lang, userId });
     } catch (e: any) { setError(e.message || 'Refine failed'); }
     finally { setRefining(false); }
   }, [refineInput, result, lang, userId]);
@@ -116,12 +116,20 @@ export function useAIGeneration({ lang, userId }: { lang: string; userId?: strin
   const handleSave = useCallback(() => {
     if (!result) return;
     const sections = parseSections(result);
+    const roleSection = sections.find((s: any) => /role/i.test(s.title));
+    const rulesSection = sections.find((s: any) => /rules?|stop.?rules?|constraint/i.test(s.title));
     const prompt: Prompt = {
-      id: generateId(), title: intent.slice(0, 60) || 'Untitled',
-      source: 'generated', createdAt: Date.now(), updatedAt: Date.now(),
-      prompt: sections.user || result,
-      system: { role: sections.role || '', rules: sections.rules || '' },
-      variables: sections.variables || [], outputSchema: sections.outputSchema || '',
+      id: generateId(),
+      yaml: result,
+      meta: { name: intent.slice(0, 60) || "Untitled", description: intent.slice(0, 200), tags: [], platform: "gpt" },
+      system: { role: roleSection ? roleSection.content : "", rules: rulesSection ? [rulesSection.content] : [] },
+      user: result,
+      variables: [],
+      source: "generated",
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      version: 1,
+      versions: [],
     };
     savePrompt(prompt);
     setSaved(true); setTimeout(() => setSaved(false), 2000);

@@ -1,8 +1,9 @@
-import { db } from '../../lib/db/index.js';
+import { db } from '../../../lib/db/index.js';
 import { communityTemplates } from '../../../lib/db/schema.js';
+import { verifyAuth } from '../../../lib/auth.js';
 import { eq, sql } from 'drizzle-orm';
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(_request: Request, { params }: { params: { id: string } }) {
   try {
     const template = await db.select().from(communityTemplates).where(eq(communityTemplates.id, params.id)).limit(1);
     if (!template.length) return Response.json({ error: "Not found" }, { status: 404 });
@@ -17,7 +18,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
     const auth = await verifyAuth(request);
     if (!auth) return Response.json({ error: "Authentication required" }, { status: 401 });
 
-    const body = await request.json();
+    const body = await request.json() as { action?: string; authorId?: string };
     const { action } = body;
     if (action === "like") {
       const result = await db.update(communityTemplates)
@@ -43,7 +44,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   try {
-    const { authorId } = await request.json();
+    const { authorId } = await request.json() as { authorId?: string };
     const tmpl = await db.select().from(communityTemplates).where(eq(communityTemplates.id, params.id)).limit(1);
     if (!tmpl.length) return Response.json({ error: "Not found" }, { status: 404 });
     if (tmpl[0].authorId !== authorId) return Response.json({ error: "Forbidden" }, { status: 403 });

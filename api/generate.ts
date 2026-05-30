@@ -1,6 +1,6 @@
-import { generateSchema } from "../../lib/validation.js";
-import { verifyAuth } from "../../lib/auth.js";
-import { checkRateLimit, rateLimitKey } from "../../lib/rate-limit.js";
+import { generateSchema } from "../lib/validation.js";
+import { verifyAuth } from "../lib/auth.js";
+import { checkRateLimit, rateLimitKey } from "../lib/rate-limit.js";
 
 const MINIMAX_URL = "https://api.minimax.chat/v1/text/chatcompletion_v2";
 
@@ -9,7 +9,7 @@ export async function POST(request: Request) {
   if (!auth) return Response.json({ error: "Authentication required" }, { status: 401 });
 
   const rl = await checkRateLimit(rateLimitKey(request) + ":generate", 10);
-  if (!rl.allowed) return Response.json({ error: "Rate limit exceeded", retryAfter: rl.retryAfter }, { status: 429 });
+  if (!rl.allowed) return Response.json({ error: "Rate limit exceeded" }, { status: 429 });
 
   const apiKey = process.env.MINIMAX_API_KEY;
   if (!apiKey) {

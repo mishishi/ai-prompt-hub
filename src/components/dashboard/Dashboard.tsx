@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, useCallback, type ReactNode } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 import { SectionHeader } from './SectionHeader';
 import { StatCard } from './StatCard';
 import { ChartCard } from './ChartCard';

@@ -1,5 +1,5 @@
 import { kv } from "@vercel/kv";
-import { eventSchema } from "../../lib/validation.js";
+import { eventSchema } from "../lib/validation.js";
 
 const EVENTS_KEY = "pb:events";
 const MAX_EVENTS = 5000;

@@ -1,6 +1,6 @@
 import { db } from '../../lib/db/index.js';
 import { communityTemplates } from '../../lib/db/schema.js';
-import { desc, sql, gte } from 'drizzle-orm';
+import { desc, gte } from 'drizzle-orm';
 
 export async function GET(request: Request) {
   try {
@@ -8,7 +8,7 @@ export async function GET(request: Request) {
     const period = url.searchParams.get('period') || 'week';
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '10'), 50);
 
-    let query = db.select().from(communityTemplates);
+    let query: any = db.select().from(communityTemplates);
 
     if (period === 'week') {
       const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);

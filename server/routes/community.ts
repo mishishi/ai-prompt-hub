@@ -1,6 +1,14 @@
 import type { FastifyInstance } from 'fastify';
 import { db } from '../../lib/db/index.js';
 import { communityTemplates, templateFeedback, templateComments } from '../../lib/db/schema.js';
+import { verifyAuth } from '../../lib/auth.js';
+
+function verifyFastifyAuth(request: any): Promise<{ userId: string } | null> {
+  const webReq = new Request('http://localhost', {
+    headers: new Headers(request.headers),
+  });
+  return verifyAuth(webReq);
+}
 import { eq, desc, sql, and, gte } from 'drizzle-orm';
 
 interface PublishBody {
@@ -17,7 +25,7 @@ interface PublishBody {
 export async function communityRoutes(app: FastifyInstance) {
   // POST /api/community — publish
   app.post<{ Body: PublishBody }>('/', async (request, reply) => {
-    const auth = await verifyAuth(request);
+    const auth = await verifyFastifyAuth(request);
     if (!auth) return reply.status(401).send({ error: 'Authentication required' });
     const { authorId, authorName, name, description, tags, category, difficulty, prompt } = request.body;
 
@@ -47,7 +55,7 @@ export async function communityRoutes(app: FastifyInstance) {
     const limit = Math.min(parseInt(limitStr || '50'), 100);
     const offset = Math.max(parseInt(offsetStr || '0'), 0);
 
-    let query = db.select().from(communityTemplates);
+    let query: any = db.select().from(communityTemplates);
 
     if (category) query = query.where(eq(communityTemplates.category, category));
     if (author) query = query.where(eq(communityTemplates.authorId, author));
@@ -62,10 +70,10 @@ export async function communityRoutes(app: FastifyInstance) {
     let results = await query;
     if (search) {
       const s = search.toLowerCase();
-      results = results.filter(t =>
+      results = results.filter((t: any) =>
         t.name.toLowerCase().includes(s) ||
         t.description.toLowerCase().includes(s) ||
-        t.tags.some(tag => tag.toLowerCase().includes(s))
+        t.tags.some((tag: any) => tag.toLowerCase().includes(s))
       );
     }
 
@@ -81,7 +89,7 @@ export async function communityRoutes(app: FastifyInstance) {
 
   // PATCH /api/community/:id — copy (likes via /feedback)
   app.patch<{ Params: { id: string }; Body: { action: string } }>('/:id', async (request, reply) => {
-    const auth = await verifyAuth(request);
+    const auth = await verifyFastifyAuth(request);
     if (!auth) return reply.status(401).send({ error: 'Authentication required' });
     const { action } = request.body;
     if (action === 'copy') {
@@ -97,8 +105,8 @@ export async function communityRoutes(app: FastifyInstance) {
 
 
   // POST /api/community/:id/feedback
-  app.post('/:id/feedback', async (request, reply) => {
-    const auth = await verifyAuth(request);
+  app.post<{ Params: { id: string } }>('/:id/feedback', async (request, reply) => {
+    const auth = await verifyFastifyAuth(request);
     if (!auth) return reply.status(401).send({ error: 'Authentication required' });
     await db.transaction(async (tx) => {
     try {
@@ -142,7 +150,7 @@ export async function communityRoutes(app: FastifyInstance) {
   });
 
   // GET /api/community/:id/comments
-  app.get('/:id/comments', async (request) => {
+  app.get<{ Params: { id: string } }>('/:id/comments', async (request) => {
     try {
       const comments = await db.select().from(templateComments)
         .where(eq(templateComments.templateId, request.params.id))
@@ -155,8 +163,8 @@ export async function communityRoutes(app: FastifyInstance) {
   });
 
   // POST /api/community/:id/comments
-  app.post('/:id/comments', async (request, reply) => {
-    const auth = await verifyAuth(request);
+  app.post<{ Params: { id: string } }>('/:id/comments', async (request, reply) => {
+    const auth = await verifyFastifyAuth(request);
     if (!auth) return reply.status(401).send({ error: 'Authentication required' });
     try {
       const { userId, userName, content } = request.body as any;
@@ -181,7 +189,7 @@ export async function communityRoutes(app: FastifyInstance) {
       const query = request.query as any;
       const period = query.period || 'week';
       const limit = Math.min(parseInt(query.limit || '10'), 50);
-      let dbQuery = db.select().from(communityTemplates);
+      let dbQuery: any = db.select().from(communityTemplates);
       if (period === 'week') {
         const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
         dbQuery = dbQuery.where(gte(communityTemplates.createdAt, weekAgo));
@@ -198,7 +206,7 @@ export async function communityRoutes(app: FastifyInstance) {
   });
   // DELETE /api/community/:id
   app.delete<{ Params: { id: string }; Body: { authorId: string } }>('/:id', async (request, reply) => {
-    const auth = await verifyAuth(request);
+    const auth = await verifyFastifyAuth(request);
     if (!auth) return reply.status(401).send({ error: 'Authentication required' });
     const { authorId } = request.body;
     const rows = await db.select().from(communityTemplates).where(eq(communityTemplates.id, request.params.id)).limit(1);

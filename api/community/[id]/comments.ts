@@ -6,7 +6,7 @@ import { checkRateLimit, rateLimitKey } from '../../../lib/rate-limit.js';
 import { commentSchema } from '../../../lib/validation.js';
 
 // GET /api/community/[id]/comments
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(_request: Request, { params }: { params: { id: string } }) {
   try {
     const comments = await db.select()
       .from(templateComments)

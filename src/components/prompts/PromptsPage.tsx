@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FileText, Trash2, Copy, Check, Clock, Sparkles, Eye, Search, X, Download, Upload, Globe, Code2 } from 'lucide-react';
 import { getSavedPrompts, deletePrompt, savePrompt, generateId } from '../../utils/storage';

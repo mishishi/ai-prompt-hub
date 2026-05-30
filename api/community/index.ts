@@ -38,9 +38,9 @@ export async function POST(request: Request) {
 }
 
 // GET /api/community — list
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   try {
-    const url = new URL(request.url);
+    const url = new URL(_request.url);
     const category = url.searchParams.get('category');
     const author = url.searchParams.get('author');
     const search = url.searchParams.get('search');
@@ -48,7 +48,7 @@ export async function GET(request: Request) {
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '50'), 100);
     const offset = Math.max(parseInt(url.searchParams.get('offset') || '0'), 0);
 
-    let query = db.select().from(communityTemplates);
+    let query: any = db.select().from(communityTemplates);
 
     if (category) query = query.where(eq(communityTemplates.category, category));
     if (author) query = query.where(eq(communityTemplates.authorId, author));
@@ -66,10 +66,10 @@ export async function GET(request: Request) {
     let results = await query;
     if (search) {
       const s = search.toLowerCase();
-      results = results.filter(t =>
+      results = results.filter((t: any) =>
         t.name.toLowerCase().includes(s) ||
         t.description.toLowerCase().includes(s) ||
-        t.tags.some(tag => tag.toLowerCase().includes(s))
+        t.tags.some((tag: any) => tag.toLowerCase().includes(s))
       );
     }
 

@@ -1,5 +1,5 @@
 import { verifyAuth } from '../../../lib/auth.js';
-﻿import { db } from '../../../lib/db/index.js';
+import { db } from '../../../lib/db/index.js';
 import { communityTemplates, templateFeedback } from '../../../lib/db/schema.js';
 import { eq, and, sql } from 'drizzle-orm';
 
@@ -9,7 +9,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
     const auth = await verifyAuth(request);
     if (!auth) return Response.json({ error: 'Authentication required' }, { status: 401 });
 
-    const body = await request.json();
+    const body = await request.json() as { userId?: string; value?: string };
     const { userId, value } = body;
     if (!userId || !value || !['up', 'down'].includes(value)) {
       return Response.json({ error: 'Missing userId or invalid value' }, { status: 400 });
