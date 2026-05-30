@@ -16,6 +16,7 @@
     "dev:server": "node --import tsx --env-file=.env.local --env-file=.env server/index.ts"
   },
   "dependencies": {
+    "@types/node": "^24.12.4",
     "@clerk/backend": "^3.4.11",
     "@clerk/clerk-react": "^5.61.6",
     "@fastify/cors": "^11.2.0",
