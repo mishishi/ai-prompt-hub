@@ -50,7 +50,7 @@ export function TopNavbar() {
         </div>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-0.5">
+        <nav role="navigation" aria-label="Main navigation" className="hidden md:flex items-center gap-0.5">
           {navLinks.map((link) => (
             <button
               key={link.path}

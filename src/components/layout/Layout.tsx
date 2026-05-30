@@ -52,7 +52,7 @@ export function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="flex flex-col h-screen bg-[var(--color-bench-bg)]">
       <TopNavbar />
-      <main className="flex-1 overflow-auto">{children}</main>
+      <main role="main" className="flex-1 overflow-auto">{children}</main>
     </div>
   );
 }
