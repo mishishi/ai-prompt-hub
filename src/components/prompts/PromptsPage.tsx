@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FileText, Trash2, Copy, Check, Clock, Sparkles, Eye, Search, X, Download, Upload, Globe, Code2 } from 'lucide-react';
 import { getSavedPrompts, deletePrompt, savePrompt, generateId } from '../../utils/storage';
@@ -15,6 +15,8 @@ export function PromptsPage() {
   const navigate = useNavigate();
   const { lang } = useT();
   const { user } = useUser();
+
+  useEffect(() => { document.title = (lang === 'zh-CN' ? '我的 Prompt' : 'My Prompts') + ' — PromptBench'; }, [lang]);
   const [prompts, setPrompts] = useState<Prompt[]>(() => getSavedPrompts());
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);

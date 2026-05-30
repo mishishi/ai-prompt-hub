@@ -82,6 +82,8 @@ export function TemplateDetail() {
     const name = tName(template, lang);
     const desc = tShort(template, lang);
     document.title = name + ' — PromptBench';
+    const descEl = document.querySelector('meta[name="description"]');
+    if (descEl) descEl.setAttribute('content', (template.meta.descriptionZh || template.meta.description).slice(0, 160));
     const setMeta = (attr: string, val: string, isProp: boolean) => {
       const sel = isProp ? 'meta[property="' + attr + '"]' : 'meta[name="' + attr + '"]';
       let el = document.querySelector(sel) as HTMLMetaElement | null;

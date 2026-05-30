@@ -1,10 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import { FileQuestion, ArrowLeft, Home } from 'lucide-react';
+import { useEffect } from 'react';
 import { useT } from '../../../i18n/LanguageContext';
 
 export function NotFound() {
   const navigate = useNavigate();
   const { lang } = useT();
+  useEffect(() => { document.title = '404 — PromptBench'; }, []);
   const tq = (en: string, zh: string) => lang === 'zh-CN' ? zh : en;
 
   return (
