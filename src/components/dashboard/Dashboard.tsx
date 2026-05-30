@@ -379,7 +379,7 @@ export function Dashboard() {
         <>
           {activeTab === 'overview' && <>
           {/* Stats Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-6 sm:mb-8">
             <StatCard icon={Eye} color="accent" value={totalViews} label={tq('Views', '查看')} />
             <StatCard icon={Copy} color="success" value={totalCopies} label={tq('Copies', '复制')} />
             <StatCard icon={Zap} color="warn" value={filteredStats.aiGen} label={tq('Generated', '生成')} />

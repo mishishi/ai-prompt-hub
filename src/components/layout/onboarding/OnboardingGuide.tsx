@@ -60,7 +60,7 @@ export function OnboardingGuide() {
   return (
     <div className={`fixed inset-0 z-50 flex items-center justify-center transition-all duration-300 ${exiting ? "opacity-0 scale-95" : "opacity-100 scale-100"}`}>
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={dismiss} />
-      <div className="relative bg-[var(--color-bench-surface-solid)] border border-[var(--color-bench-border)] rounded-2xl shadow-2xl max-w-md w-[90%] p-8 text-center animate-in fade-in zoom-in duration-300">
+      <div className="relative bg-[var(--color-bench-surface-solid)] border border-[var(--color-bench-border)] rounded-2xl shadow-2xl max-w-[90vw] sm:max-w-md w-[90%] p-8 text-center animate-in fade-in zoom-in duration-300">
         <button onClick={dismiss} className="absolute top-4 right-4 p-1.5 rounded-lg text-[var(--color-bench-muted)] hover:text-[var(--color-bench-text)] hover:bg-[var(--color-bench-border)] transition-colors cursor-pointer">
           <X size={16} />
         </button>

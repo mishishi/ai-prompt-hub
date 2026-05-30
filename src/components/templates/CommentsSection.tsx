@@ -67,7 +67,7 @@ export function CommentsSection({ templateId }: { templateId: string }) {
   return (
     <div className="space-y-4">
       {user && (
-        <div className="flex gap-3">
+        <div className="flex gap-2 sm:gap-3">
           <div className="w-8 h-8 rounded-full bg-[var(--color-bench-accent)]/20 flex items-center justify-center text-xs font-medium text-[var(--color-bench-accent)] flex-shrink-0">
             {(user.fullName || user.primaryEmailAddress?.emailAddress || '?').charAt(0).toUpperCase()}
           </div>

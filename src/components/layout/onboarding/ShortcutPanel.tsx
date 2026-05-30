@@ -43,7 +43,7 @@ export function ShortcutPanel() {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={() => setOpen(false)}>
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
-      <div onClick={(e) => e.stopPropagation()} className="relative bg-[var(--color-bench-surface-solid)] border border-[var(--color-bench-border)] rounded-2xl shadow-2xl max-w-sm w-[90%] p-6 animate-in fade-in zoom-in duration-200">
+      <div onClick={(e) => e.stopPropagation()} className="relative bg-[var(--color-bench-surface-solid)] border border-[var(--color-bench-border)] rounded-2xl shadow-2xl max-w-[85vw] sm:max-w-sm w-[90%] p-6 animate-in fade-in zoom-in duration-200">
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-base font-bold text-[var(--color-bench-text)] font-[var(--font-display)]">
             {tq("Keyboard Shortcuts", "快捷键")}

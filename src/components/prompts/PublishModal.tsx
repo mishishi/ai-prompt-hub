@@ -56,7 +56,7 @@ export function PublishModal({ prompt, authorId, authorName, onClose, onPublishe
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={onClose}>
-      <div className="bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-2xl w-full max-w-md p-6 shadow-2xl" onClick={e => e.stopPropagation()}>
+      <div className="bg-[var(--color-bench-elevated)] border border-[var(--color-bench-border)] rounded-2xl w-full max-w-md p-4 sm:p-6 shadow-2xl" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2">
             <Globe size={18} className="text-[var(--color-bench-accent)]" />
@@ -65,7 +65,7 @@ export function PublishModal({ prompt, authorId, authorName, onClose, onPublishe
           <button onClick={onClose} className="p-1 rounded-lg text-[var(--color-bench-muted)] hover:text-[var(--color-bench-text)] hover:bg-white/5 transition-colors"><X size={18} /></button>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           <div>
             <label className="block text-xs font-semibold text-[var(--color-bench-text)] mb-1.5">{tq('Name', '模板名称')} <span className="text-[var(--color-bench-error)]">*</span></label>
             <input type="text" value={name} onChange={e => setName(e.target.value)} className="w-full px-3 py-2 rounded-lg bg-[var(--color-bench-bg)] border border-[var(--color-bench-border)] text-sm text-[var(--color-bench-text)] placeholder:text-[var(--color-bench-muted)] focus:outline-none focus:border-[var(--color-bench-accent)]" placeholder={tq('e.g. Secure Login Flow', '如：安全登录流程')} />
