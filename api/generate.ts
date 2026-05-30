@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { generateSchema } from "../lib/validation.js";
 import { verifyAuth } from "../lib/auth.js";
 import { checkRateLimit, rateLimitKey } from "../lib/rate-limit.js";

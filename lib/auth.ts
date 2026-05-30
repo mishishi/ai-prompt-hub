@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { createClerkClient } from "@clerk/backend";
 
 const clerkSecretKey = process.env.CLERK_SECRET_KEY;
