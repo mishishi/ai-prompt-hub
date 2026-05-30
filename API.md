@@ -1,6 +1,6 @@
 # PromptBench API 文档
 
-Base URL: `http://localhost:3007/api` (dev) | `https://ai-propmpt-hub.vercel.app/api` (prod)
+Base URL: `http://localhost:3007/api` (dev) | `https://ai-prompt-hub.vercel.app/api` (prod)
 
 ---
 

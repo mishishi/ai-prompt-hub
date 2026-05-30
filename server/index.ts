@@ -15,7 +15,7 @@ const { statsRoutes } = await import('./routes/stats');
 
 const app = Fastify({ logger: true });
 
-await app.register(cors, { origin: process.env.CORS_ORIGIN || "https://ai-propmpt-hub.vercel.app" });
+await app.register(cors, { origin: process.env.CORS_ORIGIN || "https://ai-prompt-hub.vercel.app" });
 
 app.get('/api/health', async () => ({ ok: true, ts: Date.now() }));
 
