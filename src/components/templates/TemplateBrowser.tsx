@@ -116,16 +116,19 @@ export function TemplateBrowser() {
       const q = search.toLowerCase();
       const matchScore = (t: any) => {
         let s = 0;
-        if (t.meta?.name.toLowerCase() === q) s += 5;
-        else if (t.meta?.name.toLowerCase().includes(q)) s += 3;
-        if (t.meta?.nameZh && t.meta?.nameZh.toLowerCase().includes(q)) s += 3;
-        if (t.meta?.description.toLowerCase().includes(q)) s += 1;
-        if (t.meta?.descriptionZh && t.meta?.descriptionZh.toLowerCase().includes(q)) s += 1;
+        const ql = q.toLowerCase();
+        if (t.meta?.name.toLowerCase() === ql) s += 7;
+        else if (t.meta?.name.toLowerCase().includes(ql)) s += 4;
+        if (t.meta?.nameZh && t.meta?.nameZh.toLowerCase().includes(ql)) s += 4;
+        if (t.meta?.description.toLowerCase().includes(ql)) s += 2;
+        if (t.meta?.descriptionZh && t.meta?.descriptionZh.toLowerCase().includes(ql)) s += 2;
+        if (t.meta?.tags?.some((tag: string) => tag.toLowerCase().includes(ql))) s += 3;
+        if (t.verified) s += 1;
         return s;
       };
       results = [...results].sort((a, b) => {
-        const scoreA = matchScore(a) * 10 + (templateScores[a.id] || 0) * 0.6;
-        const scoreB = matchScore(b) * 10 + (templateScores[b.id] || 0) * 0.6;
+        const scoreA = matchScore(a) * 10 + (templateScores[a.id] || 0) * 0.6 + (copyCounts[a.id] || 0) * 0.3;
+        const scoreB = matchScore(b) * 10 + (templateScores[b.id] || 0) * 0.6 + (copyCounts[b.id] || 0) * 0.3;
         return scoreB - scoreA;
       });
     }
