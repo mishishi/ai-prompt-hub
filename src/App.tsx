@@ -62,7 +62,7 @@ function App() {
             <Route path="/template/:id" element={<TemplateDetail />} />
             <Route path="/author/:authorId" element={<AuthorPage />} />
             <Route path="/generate" element={<Suspense fallback={<LoadingFallback />}><GeneratePage /></Suspense>} />
-            <Route path="/prompts" element={<PromptsPage />} />
+            <Route path="/prompts" element={<Suspense fallback={<LoadingFallback />}><PromptsPage /></Suspense>} />
             <Route path="/dashboard" element={<Suspense fallback={<LoadingFallback />}><Dashboard /></Suspense>} />
             <Route path="*" element={<NotFound />} />
             </Routes>
