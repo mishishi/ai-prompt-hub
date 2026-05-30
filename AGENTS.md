@@ -3,7 +3,7 @@
 ## Tech Stack
 - Vite + React 19 + TypeScript + Tailwind CSS
 - No backend — all data in localStorage
-- Deployed on Vercel (`ai-prompt-hub.vercel.app`)
+- Deployed on Vercel (`ai-prompt-bench.vercel.app`)
 
 ## File Editing Rules (CRITICAL)
 
@@ -12,7 +12,7 @@
 ## Tech Stack
 - Vite + React 19 + TypeScript + Tailwind CSS
 - No backend — all data in localStorage
-- Deployed on Vercel (`ai-prompt-hub.vercel.app`)
+- Deployed on Vercel (`ai-prompt-bench.vercel.app`)
 
 ,
 `--`, backticks before Node sees them. This is the #1 cause of corrupted files.
@@ -28,7 +28,7 @@ Correct approach (no exceptions):
 ## Tech Stack
 - Vite + React 19 + TypeScript + Tailwind CSS
 - No backend — all data in localStorage
-- Deployed on Vercel (`ai-prompt-hub.vercel.app`)
+- Deployed on Vercel (`ai-prompt-bench.vercel.app`)
 
  and `"`
 - `node -e " ...replace('...','...')..." ` — quotes conflict
@@ -40,7 +40,7 @@ Correct approach (no exceptions):
 ## Tech Stack
 - Vite + React 19 + TypeScript + Tailwind CSS
 - No backend — all data in localStorage
-- Deployed on Vercel (`ai-prompt-hub.vercel.app`)
+- Deployed on Vercel (`ai-prompt-bench.vercel.app`)
 
 , `"`, `'`, `--`, Chinese characters
 - When in doubt, use `.cjs`
@@ -162,7 +162,7 @@ also add at least one Vitest smoke test that renders the component.
 
 - Do NOT push unless explicitly asked
 - Branch prefix: `codex/`
-- Remote: `git@github.com:mishishi/ai-prompt-hub.git`
+- Remote: `git@github.com:mishishi/ai-prompt-bench.git`
 ## Agent Behavior
 
 - After significant changes, check if AGENTS.md needs updating (new conventions, gotchas, changed patterns). Keep it short.
